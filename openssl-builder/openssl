@@ -1,0 +1,5 @@
+Section: misc
+Priority: optional
+Version: 1.0.2u
+Package: openssl
+Description: Conjur FIPS-OpenSSL

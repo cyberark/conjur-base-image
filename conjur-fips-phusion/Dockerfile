@@ -1,0 +1,49 @@
+ARG BUNDLER_VERSION=2.1.4
+ARG PHUSION_VERSION=0.11
+
+# OpenSSL, ruby and postgres-client Builders
+FROM registry2.itci.conjur.net/openssl-builder as OpenSSL-builder
+FROM registry2.itci.conjur.net/phusion-ruby-builder as phusion-ruby-builder
+FROM registry2.itci.conjur.net/postgres-client-builder as postgres-client-builder
+
+# Conjur Base Image (Phusion)
+FROM phusion/baseimage:$PHUSION_VERSION
+ARG BUNDLER_VERSION
+
+### We need libreadline-dev for its readline capabilities
+RUN apt-get update && \
+    apt-get dist-upgrade -y && \
+    apt-get install -y build-essential \
+                       libreadline-dev
+
+RUN apt-get purge -y --auto-remove openssl libssl1.1
+
+# Install the FIPS compliant OpenSSL
+## Copy to binary from openssl builder
+COPY --from=OpenSSL-builder /usr/local/ssl/ /usr/local/ssl/
+COPY --from=OpenSSL-builder /usr/share/ca-certificates/ /usr/share/ca-certificates/
+COPY --from=OpenSSL-builder /etc/ssl/certs/ /etc/ssl/certs/
+RUN rm -rf /usr/local/ssl/certs
+RUN ln -sf /etc/ssl/certs/ /usr/local/ssl/
+
+## Mock openssl and libssl
+COPY --from=openSSL-builder /openssl_1.0.2u_all.deb /
+COPY --from=openSSL-builder /libssl1.0.0_1.0.2u_all.deb /
+RUN dpkg -i openssl_1.0.2u_all.deb
+RUN dpkg -i libssl1.0.0_1.0.2u_all.deb
+## Prevent openssl and libssl package from being automatically installed, upgraded or removed
+RUN apt-mark hold openssl
+RUN apt-mark hold libssl1.0.0
+RUN apt-mark hold libssl1.1
+
+## Copy postgres and ruby binaries from builders
+RUN mkdir -p /var/lib/pgsql/ /var/lib/ruby/
+COPY --from=postgres-client-builder /usr/local/pgsql/ /usr/local/pgsql/
+COPY --from=phusion-ruby-builder /var/lib/ruby/ /var/lib/ruby/
+
+ENV PATH="/usr/local/pgsql/bin:/var/lib/ruby/bin:/usr/local/ssl/bin:${PATH}" \
+    LD_LIBRARY_PATH="/usr/local/ssl/lib" \
+    OPENSSL_FIPS=1
+
+## Install Ruby tools
+RUN gem install --no-document bundler:$BUNDLER_VERSION
