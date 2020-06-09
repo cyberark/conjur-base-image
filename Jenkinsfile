@@ -53,6 +53,12 @@ pipeline {
         }
       }
     }
+    stage ('Push images') {
+      steps {
+        sh "./phusion-ruby-fips/push.sh ${TAG}"
+        sh "./ubuntu-ruby-fips/push.sh ${TAG}"
+      }
+    }
   }
 
   post {
