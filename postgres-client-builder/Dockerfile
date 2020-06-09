@@ -1,10 +1,10 @@
 # Declare Ubuntu and Postgres versions
-ARG PG_VERSION=12-12.2
 ARG UBUNTU_VERSION=20.04
-ARG UBUNTU_FIPS_VERSION=18.04
+ARG PG_VERSION
+ARG OPENSSL_BUILDER_TAG
 
 # OpenSSL Builder
-FROM registry.tld/ubuntu-fips:$UBUNTU_FIPS_VERSION as OpenSSL-builder
+FROM registry.tld/openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
 
 # Postgres Builder
 FROM ubuntu:$UBUNTU_VERSION

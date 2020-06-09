@@ -1,12 +1,11 @@
-# Declare Ubuntu and Ruby versions
-ARG RUBY_MAJOR_VERSION=2.5
-ARG RUBY_FULL_VERSION=2.5.1
-ARG BUNDLER_VERSION=2.1.4
-ARG PHUSION_VERSION=0.11
-ARG UBUNTU_FIPS_VERSION=18.04
+# Declare Phusion and Ruby versions
+ARG PHUSION_VERSION
+ARG RUBY_MAJOR_VERSION
+ARG RUBY_FULL_VERSION
+ARG OPENSSL_BUILDER_TAG
 
 # OpenSSL Builder
-FROM registry.tld/ubuntu-fips:$UBUNTU_FIPS_VERSION as OpenSSL-builder
+FROM registry.tld/openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
 
 # Ruby Builder
 FROM phusion/baseimage:$PHUSION_VERSION
