@@ -39,6 +39,20 @@ pipeline {
         }
       }
     }
+    stage ('Build fips base images') {
+      parallel {
+        stage ('Build phusion-ruby-fips image') {
+          steps {
+            sh "./phusion-ruby-fips/build.sh ${TAG}"
+          }
+        }
+        stage ('Build ubuntu-ruby-fips image') {
+          steps {
+            sh "./ubuntu-ruby-fips/build.sh ${TAG}"
+          }
+        }
+      }
+    }
   }
 
   post {

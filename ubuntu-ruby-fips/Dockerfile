@@ -1,20 +1,22 @@
+ARG UBUNTU_VERSION
+ARG OPENSSL_BUILDER_TAG
+ARG RUBY_BUILDER_TAG
+ARG PG_BUILDER_TAG
 ARG BUNDLER_VERSION=2.1.4
-ARG PHUSION_VERSION=0.11
 
 # OpenSSL, ruby and postgres-client Builders
-FROM registry2.itci.conjur.net/openssl-builder as OpenSSL-builder
-FROM registry2.itci.conjur.net/phusion-ruby-builder as phusion-ruby-builder
-FROM registry2.itci.conjur.net/postgres-client-builder as postgres-client-builder
+FROM registry.tld/openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
+FROM registry.tld/ubuntu-ruby-builder:$RUBY_BUILDER_TAG as ubuntu-ruby-builder
+FROM registry.tld/postgres-client-builder:$PG_BUILDER_TAG as postgres-client-builder
 
-# Conjur Base Image (Phusion)
-FROM phusion/baseimage:$PHUSION_VERSION
+# Conjur Base Image (Ubuntu)
+FROM ubuntu:$UBUNTU_VERSION
 ARG BUNDLER_VERSION
 
 ### We need libreadline-dev for its readline capabilities
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y build-essential \
-                       libreadline-dev
+    apt-get install -y libreadline-dev
 
 RUN apt-get purge -y --auto-remove openssl libssl1.1
 
@@ -31,15 +33,15 @@ COPY --from=openSSL-builder /openssl_1.0.2u_all.deb /
 COPY --from=openSSL-builder /libssl1.0.0_1.0.2u_all.deb /
 RUN dpkg -i openssl_1.0.2u_all.deb
 RUN dpkg -i libssl1.0.0_1.0.2u_all.deb
-## Prevent openssl and libssl package from being automatically installed, upgraded or removed
+## Prevent openssl and libssl package from being automatically installed, upgraded or remove
 RUN apt-mark hold openssl
 RUN apt-mark hold libssl1.0.0
 RUN apt-mark hold libssl1.1
 
-## Copy postgres and ruby binaries from builders
+## Copy postgres and ruby binaries from fips-artifacts
 RUN mkdir -p /var/lib/pgsql/ /var/lib/ruby/
 COPY --from=postgres-client-builder /usr/local/pgsql/ /usr/local/pgsql/
-COPY --from=phusion-ruby-builder /var/lib/ruby/ /var/lib/ruby/
+COPY --from=ubuntu-ruby-builder /var/lib/ruby/ /var/lib/ruby/
 
 ENV PATH="/usr/local/pgsql/bin:/var/lib/ruby/bin:/usr/local/ssl/bin:${PATH}" \
     LD_LIBRARY_PATH="/usr/local/ssl/lib" \
