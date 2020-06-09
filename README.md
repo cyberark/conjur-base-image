@@ -14,8 +14,8 @@
 This repo build a docker image contains OpenSSL, Ruby and Postgres client compiled against the FIPS 140-2 compliant OpenSSL module.
  
 Two images included:
-- [Phusion](./conjur-fips-phusion/) 
-- [Ubuntu](./conjur-fips-ubuntu/) 
+- [Phusion](./phusion-ruby-fips/) 
+- [Ubuntu](./ubuntu-ruby-fips/) 
 
 ## Feature
 
@@ -40,12 +40,12 @@ work with Conjur OSS as documented. For more detailed  information on our certif
   
 ## Usage
 
-- [Phusion](./conjur-fips-phusion/) image is the parent image of DAP appliance
-- [Ubuntu](./conjur-fips-ubuntu/) image is the parent image of Conur 
+- [Phusion](./phusion-ruby-fips/) image is the parent image of DAP appliance
+- [Ubuntu](./ubuntu-ruby-fips/) image is the parent image of Conur 
 
 ## What is FIPS 140-2
 
-The Federal Information Processing Standard Publication 140-2, (FIPS PUB 140-2),[1][2] is a U.S. government computer security standard used to approve cryptographic modules.
+The Federal Information Processing Standard Publication 140-2, (FIPS PUB 140-2),is a U.S. government computer security standard used to approve cryptographic modules.
 The title is Security Requirements for Cryptographic Modules. 
 
 For more information, visit the [FIPS 140-2 Wikipedia Page](https://en.wikipedia.org/wiki/FIPS_140-2).
