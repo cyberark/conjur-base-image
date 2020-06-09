@@ -39,16 +39,16 @@ pipeline {
         }
       }
     }
-    stage ('Build fips base images') {
+    stage ('Build and Test fips base images') {
       parallel {
-        stage ('Build phusion-ruby-fips image') {
+        stage ('Build and Test phusion-ruby-fips image') {
           steps {
-            sh "./phusion-ruby-fips/build.sh ${TAG}"
+            buildAndTestImage('phusion-ruby-fips')
           }
         }
-        stage ('Build ubuntu-ruby-fips image') {
+        stage ('Build and Test ubuntu-ruby-fips image') {
           steps {
-            sh "./ubuntu-ruby-fips/build.sh ${TAG}"
+            buildAndTestImage('ubuntu-ruby-fips')
           }
         }
       }
@@ -57,7 +57,15 @@ pipeline {
 
   post {
     always {
+      archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**/*.json', fingerprint: true
       cleanupAndNotify(currentBuild.currentResult, "#development")
     }
   }
+}
+
+def buildAndTestImage(name) {
+  sh "./${name}/build.sh ${TAG}"
+  sh "./test.sh --full-image-name ${name}:${TAG} --test-file-name test.yml"
+  scanAndReport("${name}:${TAG}", "HIGH", false)
+  scanAndReport("${name}:${TAG}", "NONE", true)
 }
