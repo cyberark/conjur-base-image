@@ -2,8 +2,8 @@
 
 - [Table of Contents](#table-of-contents)
 - [Conjur Base Image](#Conjur-Base-Image)
-- [Feature](#Feature)
 - [Certification level](#Certification-level)
+- [Feature](#Feature)
 - [Usage](#Usage)
 - [What is FIPS 140-2](#What-is-FIPS-140-2)
 - [Contributing](#Contributing)
@@ -17,6 +17,15 @@ Two images included:
 - [Phusion](./phusion-ruby-fips/) 
 - [Ubuntu](./ubuntu-ruby-fips/) 
 
+## Certification level
+
+![](https://img.shields.io/badge/Certification%20Level-Trusted-007BFF?link=https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md)
+
+This repo is a **Trusted** level project. It's been reviewed by CyberArk to verify that it will securely
+work with Conjur OSS as documented. For more detailed  information on our certification levels, see
+[our community guidelines](https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md#community).
+
+
 ## Feature
 
 * A minimal base image to reduce attack surface and external dependencies
@@ -28,15 +37,6 @@ Two images included:
 * One OpenSSL version installed in the image
   * OpenSSL version: `openssl-1.0.2u`
   * OpenSSL FIPS Module version: `openssl-fips-2.0.16`
-
-## Certification level
-
-![](https://img.shields.io/badge/Certification%20Level-Trusted-007BFF?link=https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md)
-
-This repo is a **Trusted** level project. It's been reviewed by CyberArk to verify that it will securely
-work with Conjur OSS as documented. For more detailed  information on our certification levels, see
-[our community guidelines](https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md#community).
-
   
 ## Usage
 
