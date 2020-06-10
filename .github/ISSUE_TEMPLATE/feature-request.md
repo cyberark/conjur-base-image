@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: kind/enhancement, component/conjur-base-image
+labels: kind/enhancement, component/conjur
 assignees: ''
 
 ---

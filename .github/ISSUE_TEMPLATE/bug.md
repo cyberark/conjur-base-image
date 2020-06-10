@@ -2,7 +2,7 @@
 name: Bug
 about: Create a bug report to help us improve
 title: ''
-labels: component/conjur-base-image, kind/bug
+labels: component/conjur, kind/bug
 assignees: ''
 
 ---
