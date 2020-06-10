@@ -3,7 +3,7 @@
 
 # Uncomment the appropriate team line to automatically tag the owning team on PRs
 # * @cyberark/community-and-integrations-team @conjurinc/community-and-integrations-team @conjurdemos/community-and-integrations-team
-# * @cyberark/conjur-core-team @conjurinc/conjur-core-team @conjurdemos/conjur-core-team
+* @cyberark/conjur-core-team @conjurinc/conjur-core-team @conjurdemos/conjur-core-team
 
 # Changes to .trivyignore require Security Architect approval
 .trivyignore @cyberark/security-architects @conjurinc/security-architects @conjurdemos/security-architects
