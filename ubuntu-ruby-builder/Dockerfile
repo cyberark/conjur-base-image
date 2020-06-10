@@ -26,8 +26,7 @@ RUN apt-get update && \
                        make \
                        zlib1g-dev \
                        dpkg-dev \
-                       wget && \
-    apt-get source libpq-dev
+                       wget
 
 ## Compile ruby
 RUN wget --quiet https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR_VERSION/ruby-$RUBY_FULL_VERSION.tar.gz && \
