@@ -6,6 +6,10 @@ pipeline {
     booleanParam(name: 'FORCE_RUBY_BUILDERS', defaultValue: false, description: 'Forces build of *-ruby-builder docker image') 
   }
 
+  triggers {
+    cron(getDailyCronString())
+  }
+
   environment {
     TAG = sh(returnStdout: true, script: "git rev-parse --short HEAD | tr -d '\n'")
   }
@@ -54,6 +58,13 @@ pipeline {
       }
     }
     stage ('Push images') {
+      steps {
+        sh "./phusion-ruby-fips/push.sh ${TAG} registry.tld"
+        sh "./ubuntu-ruby-fips/push.sh ${TAG} registry.tld"
+      }
+    }
+    stage ('Publish images') {
+      when { triggeredBy 'TimerTrigger' }
       steps {
         sh "./phusion-ruby-fips/push.sh ${TAG}"
         sh "./ubuntu-ruby-fips/push.sh ${TAG}"
