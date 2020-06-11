@@ -11,8 +11,8 @@
 
 # Conjur Base Image
 
-This repo build a docker image contains OpenSSL, Ruby and Postgres client compiled against the FIPS 140-2 compliant OpenSSL module.
- 
+This repo builds a Docker image that contains OpenSSL, Ruby, and Postgres clients compiled against the FIPS 140-2 compliant OpenSSL module.
+
 Two images included:
 - [Phusion](./phusion-ruby-fips/) 
 - [Ubuntu](./ubuntu-ruby-fips/) 
@@ -21,8 +21,8 @@ Two images included:
 
 ![](https://img.shields.io/badge/Certification%20Level-Trusted-007BFF?link=https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md)
 
-This repo is a **Trusted** level project. It's been reviewed by CyberArk to verify that it will securely
-work with Conjur OSS as documented. For more detailed  information on our certification levels, see
+This repo is a **Trusted** level project. It has been reviewed by CyberArk to verify that it will securely
+work with Conjur OSS as documented. For more detailed information on our certification levels, see
 [our community guidelines](https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md#community).
 
 
@@ -30,11 +30,11 @@ work with Conjur OSS as documented. For more detailed  information on our certif
 
 * A minimal base image to reduce attack surface and external dependencies
 * Vulnerability scanning
-* Builder container for OpenSSL, Ruby and Postgres client 
+* Builder container for OpenSSL, Ruby, and Postgres client 
 * Last security update
 * Jenkins pipeline for building the Docker image
-* Automated tests validate FIPS mode is successfully enabled and all artifacts compiled against the FIPS 140-2 compliant
-* One OpenSSL version installed in the image
+* Automated tests validate FIPS mode is successfully enabled and all artifacts are compiled against the FIPS 140-2 compliant
+* One OpenSSL version installed in the image:
   * OpenSSL version: `openssl-1.0.2u`
   * OpenSSL FIPS Module version: `openssl-fips-2.0.16`
   
@@ -45,7 +45,7 @@ work with Conjur OSS as documented. For more detailed  information on our certif
 
 ## What is FIPS 140-2
 
-The Federal Information Processing Standard Publication 140-2, (FIPS PUB 140-2),is a U.S. government computer security standard used to approve cryptographic modules.
+The Federal Information Processing Standard Publication 140-2, (FIPS PUB 140-2), is a U.S. government computer security standard used to approve cryptographic modules.
 The title is Security Requirements for Cryptographic Modules. 
 
 For more information, visit the [FIPS 140-2 Wikipedia Page](https://en.wikipedia.org/wiki/FIPS_140-2).
