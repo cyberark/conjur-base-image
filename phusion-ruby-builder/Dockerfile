@@ -5,7 +5,7 @@ ARG RUBY_FULL_VERSION
 ARG OPENSSL_BUILDER_TAG
 
 # OpenSSL Builder
-FROM registry.tld/openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
+FROM openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
 
 # Ruby Builder
 FROM phusion/baseimage:$PHUSION_VERSION

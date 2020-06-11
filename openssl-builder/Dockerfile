@@ -12,7 +12,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
     curl \
     perl \
     wget \
-    gnupg
+    gnupg2
 RUN wget --quiet https://www.openssl.org/source/openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
     && openssl sha1 -hmac etaonrishdlcupfm openssl-fips-$OPENSSL_FIPS_VER.tar.gz | grep $OPENSSL_FIPS_HMACSHA1 \
     && wget --quiet https://www.openssl.org/source/openssl-fips-$OPENSSL_FIPS_VER.tar.gz.asc \
@@ -20,20 +20,20 @@ RUN wget --quiet https://www.openssl.org/source/openssl-fips-$OPENSSL_FIPS_VER.t
     || gpg --keyserver hkp://pgp.mit.edu:80 --recv-keys "$OPENSSL_FIPS_PGP_FINGERPRINT" \
     || gpg --keyserver hkp://keyserver.pgp.com:80 --recv-keys "$OPENSSL_FIPS_PGP_FINGERPRINT" \
     && gpg --verify openssl-fips-$OPENSSL_FIPS_VER.tar.gz.asc openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
-    && echo "$OPENSSL_FIPS_HASH openssl-fips-$OPENSSL_FIPS_VER.tar.gz" | sha256sum -c - | grep OK \
-    && tar -xzf openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
-    && cd openssl-fips-$OPENSSL_FIPS_VER \
-    && ./config \
-    && make \
-    && make install \
-    && cd ..
+    && echo "$OPENSSL_FIPS_HASH openssl-fips-$OPENSSL_FIPS_VER.tar.gz" | sha256sum -c - | grep OK
 RUN wget --quiet https://www.openssl.org/source/openssl-$OPENSSL_VER.tar.gz \
     && wget --quiet https://www.openssl.org/source/openssl-$OPENSSL_VER.tar.gz.asc \
     && gpg --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys "$OPENSSL_PGP_FINGERPRINT" \
     || gpg --keyserver hkp://pgp.mit.edu:80 --recv-keys "$OPENSSL_PGP_FINGERPRINT" \
     || gpg --keyserver hkp://keyserver.pgp.com:80 --recv-keys "$OPENSSL_PGP_FINGERPRINT" \
     && gpg --verify openssl-$OPENSSL_VER.tar.gz.asc \
-    && echo "$OPENSSL_HASH openssl-$OPENSSL_VER.tar.gz" | sha256sum -c - | grep OK \
+    && echo "$OPENSSL_HASH openssl-$OPENSSL_VER.tar.gz" | sha256sum -c - | grep OK
+RUN tar -xzf openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
+    && cd openssl-fips-$OPENSSL_FIPS_VER \
+    && ./config \
+    && make \
+    && make install \
+    && cd .. \
     && tar -xzf openssl-$OPENSSL_VER.tar.gz \
     && cd openssl-$OPENSSL_VER \
     && ./config -Wl,-rpath=/usr/local/ssl/lib fips shared --openssldir=/usr/local/ssl --with-fipsdir=/usr/local/ssl/fips-2.0 --with-fipslibdir=/usr/local/ssl/fips-2.0/lib/ \
