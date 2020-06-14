@@ -5,9 +5,9 @@ ARG PG_BUILDER_TAG
 ARG BUNDLER_VERSION=2.1.4
 
 # OpenSSL, ruby and postgres-client Builders
-FROM registry.tld/openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
-FROM registry.tld/phusion-ruby-builder:$RUBY_BUILDER_TAG as phusion-ruby-builder
-FROM registry.tld/postgres-client-builder:$PG_BUILDER_TAG as postgres-client-builder
+FROM openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
+FROM phusion-ruby-builder:$RUBY_BUILDER_TAG as phusion-ruby-builder
+FROM postgres-client-builder:$PG_BUILDER_TAG as postgres-client-builder
 
 # Conjur Base Image (Phusion)
 FROM phusion/baseimage:$PHUSION_VERSION
