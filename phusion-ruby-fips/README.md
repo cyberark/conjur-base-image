@@ -14,7 +14,7 @@ This container image includes Phusion version `0.11` which contains the followin
 1. Docker version is 17.05 or higher
 
 
-Phusion container image will be built with a three-stage process: 
+The Phusion container image will be built by a three-stage process: 
 
 1. The first stage builds the OpenSSL compiled with the FIPS 140-2 compliant OpenSSL module.
 1. The second stage builds the Ruby and Postgres client packages.
