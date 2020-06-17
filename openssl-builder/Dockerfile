@@ -12,7 +12,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
     curl \
     perl \
     wget \
-    gnupg2
+    gnupg2 \
+    ca-certificates
+
 RUN wget --quiet https://www.openssl.org/source/openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
     && openssl sha1 -hmac etaonrishdlcupfm openssl-fips-$OPENSSL_FIPS_VER.tar.gz | grep $OPENSSL_FIPS_HMACSHA1 \
     && wget --quiet https://www.openssl.org/source/openssl-fips-$OPENSSL_FIPS_VER.tar.gz.asc \
@@ -46,4 +48,5 @@ COPY openssl ./
 RUN equivs-build openssl
 COPY libssl ./
 RUN equivs-build libssl
-RUN apt-get install ca-certificates
+COPY ca-certificates ./
+RUN equivs-build ca-certificates
