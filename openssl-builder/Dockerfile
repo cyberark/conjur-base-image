@@ -9,25 +9,21 @@ ARG OPENSSL_PGP_FINGERPRINT=8657ABB260F056B1E5190839D9C4D26D0E604491
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
     build-essential \
-    curl \
+    equivs \
     perl \
     wget \
     gnupg2 \
     ca-certificates
-
-RUN wget --quiet https://www.openssl.org/source/openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
+COPY openssl_fips_pgp.key openssl_pgp.key /
+RUN gpg --import openssl_fips_pgp.key \
+    && gpg --import openssl_pgp.key \
+    && wget --quiet https://www.openssl.org/source/openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
     && openssl sha1 -hmac etaonrishdlcupfm openssl-fips-$OPENSSL_FIPS_VER.tar.gz | grep $OPENSSL_FIPS_HMACSHA1 \
     && wget --quiet https://www.openssl.org/source/openssl-fips-$OPENSSL_FIPS_VER.tar.gz.asc \
-    && gpg --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys "$OPENSSL_FIPS_PGP_FINGERPRINT" \
-    || gpg --keyserver hkp://pgp.mit.edu:80 --recv-keys "$OPENSSL_FIPS_PGP_FINGERPRINT" \
-    || gpg --keyserver hkp://keyserver.pgp.com:80 --recv-keys "$OPENSSL_FIPS_PGP_FINGERPRINT" \
     && gpg --verify openssl-fips-$OPENSSL_FIPS_VER.tar.gz.asc openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
-    && echo "$OPENSSL_FIPS_HASH openssl-fips-$OPENSSL_FIPS_VER.tar.gz" | sha256sum -c - | grep OK
-RUN wget --quiet https://www.openssl.org/source/openssl-$OPENSSL_VER.tar.gz \
+    && echo "$OPENSSL_FIPS_HASH openssl-fips-$OPENSSL_FIPS_VER.tar.gz" | sha256sum -c - | grep OK \
+    && wget --quiet https://www.openssl.org/source/openssl-$OPENSSL_VER.tar.gz \
     && wget --quiet https://www.openssl.org/source/openssl-$OPENSSL_VER.tar.gz.asc \
-    && gpg --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys "$OPENSSL_PGP_FINGERPRINT" \
-    || gpg --keyserver hkp://pgp.mit.edu:80 --recv-keys "$OPENSSL_PGP_FINGERPRINT" \
-    || gpg --keyserver hkp://keyserver.pgp.com:80 --recv-keys "$OPENSSL_PGP_FINGERPRINT" \
     && gpg --verify openssl-$OPENSSL_VER.tar.gz.asc \
     && echo "$OPENSSL_HASH openssl-$OPENSSL_VER.tar.gz" | sha256sum -c - | grep OK
 RUN tar -xzf openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
@@ -43,10 +39,7 @@ RUN tar -xzf openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
     && make \
     && make install
 
-RUN apt-get install -y equivs
-COPY openssl ./
-RUN equivs-build openssl
-COPY libssl ./
-RUN equivs-build libssl
-COPY ca-certificates ./
-RUN equivs-build ca-certificates
+COPY openssl libssl ca-certificates ./
+RUN equivs-build openssl \
+    && equivs-build libssl \
+    && equivs-build ca-certificates
