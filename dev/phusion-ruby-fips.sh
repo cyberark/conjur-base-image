@@ -8,4 +8,6 @@ cd "$(dirname "$0")"
 
 ../postgres-client-builder/build.sh
 
+../phusion-openldap-builder/build.sh
+
 ../phusion-ruby-fips/build.sh dev

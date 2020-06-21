@@ -32,6 +32,11 @@ pipeline {
             sh "./postgres-client-builder/build.sh"
           }
         }
+        stage ('Build and tag openldap-builder image') {
+          steps {
+            sh "./phusion-openldap-builder/build.sh"
+          }
+        }
       }
     }
     stage ('Build and Test fips base images') {
