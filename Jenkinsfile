@@ -1,6 +1,11 @@
 pipeline {
   agent { label 'executor-v2' }
 
+  parameters {
+    booleanParam(name: 'PUBLISH_DOCKERHUB', defaultValue: false,
+                 description: 'Publish images to DockerHub')
+  }
+
   triggers {
     cron(getDailyCronString())
   }
@@ -60,7 +65,13 @@ pipeline {
       }
     }
     stage ('Publish images') {
-      when { triggeredBy 'TimerTrigger' }
+      when { 
+        anyOf {
+          triggeredBy 'TimerTrigger'
+          expression { params.PUBLISH_DOCKERHUB }
+        }
+      }      
+      
       steps {
         sh "./phusion-ruby-fips/push.sh ${TAG}"
         sh "./ubuntu-ruby-fips/push.sh ${TAG}"
