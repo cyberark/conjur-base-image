@@ -89,7 +89,7 @@ pipeline {
 
 def buildAndTestImage(name) {
   sh "./${name}/build.sh ${TAG}"
-  sh "./test.sh --full-image-name ${name}:${TAG} --test-file-name test.yml"
+  sh "./${name}/test.sh ${TAG}"
   scanAndReport("${name}:${TAG}", "HIGH", false)
   scanAndReport("${name}:${TAG}", "NONE", true)
 }
