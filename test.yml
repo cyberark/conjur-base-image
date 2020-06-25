@@ -35,16 +35,16 @@ commandTests:
       - /etc/passwd
     exitCode: 1
     expectedError: [".*disabled for fips.*"]
-  - name: "openssl vertion is on hold"
-    setup: [["apt-get", "update"]]
-    command: "apt-get"
+  # holded packages
+  - name: "packages are on hold"
+    command: "apt-mark"
     args:
-      - "install"
-      - "-y"
-      - "openssl"
-    exitCode: 100
-    expectedOutput: [ ".*libssl.*is not going to be installed.*" ]
-    expectedError: [ ".*you have held broken packages.*" ]
+      - "showhold"
+    expectedOutput:
+      - ".*ca-certificates.*"
+      - ".*libssl1.0.0.*"
+      - ".*libssl1.1.*"
+      - ".*openssl.*"
   # ruby tests
   - name: "Ruby linked with valid libcrypto.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]

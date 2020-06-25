@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+cd "$(dirname "$0")"
+
 FULL_IMAGE_NAME=""
 TEST_FILE_NAME=""
 
@@ -24,7 +26,7 @@ if [ "$TEST_FILE_NAME" == "" ]; then
   exit 1
 fi
 
-REPORT_FILE_NAME="$(echo $FULL_IMAGE_NAME | cut -d':' -f1 | tr '/' '-').json"
+REPORT_FILE_NAME="$(echo $(echo $FULL_IMAGE_NAME | cut -d':' -f1).$(echo $TEST_FILE_NAME | tr -d '.') | tr '/' '-').json"
 
 mkdir -p test-results
 
