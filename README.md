@@ -11,7 +11,7 @@
 
 # Conjur Base Image
 
-This repo builds a Docker image that contains OpenSSL, Ruby, and Postgres clients compiled against the FIPS 140-2 compliant OpenSSL module.
+This repo builds a Docker image that contains OpenSSL, Ruby and PostgreSQL client libraries compiled against the FIPS 140-2 compliant OpenSSL module.
 
 Two images included:
 - [Phusion](./phusion-ruby-fips/) 
@@ -30,7 +30,7 @@ work with Conjur OSS as documented. For more detailed information on our certifi
 
 * A minimal base image to reduce attack surface and external dependencies
 * Vulnerability scanning
-* Builder container for OpenSSL, Ruby, and Postgres client 
+* Builder container for OpenSSL, Ruby, and PostgreSQL client
 * Last security update
 * Jenkins pipeline for building the Docker image
 * Automated tests validate FIPS mode is successfully enabled and all artifacts are compiled against the FIPS 140-2 compliant
