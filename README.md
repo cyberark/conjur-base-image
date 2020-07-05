@@ -30,7 +30,7 @@ work with Conjur OSS as documented. For more detailed information on our certifi
 
 * A minimal base image to reduce attack surface and external dependencies
 * Vulnerability scanning
-* Builder container for OpenSSL, Ruby, and PostgreSQL client
+* Builder container for OpenSSL, Ruby and PostgreSQL client
 * Last security update
 * Jenkins pipeline for building the Docker image
 * Automated tests validate FIPS mode is successfully enabled and all artifacts are compiled against the FIPS 140-2 compliant
@@ -40,8 +40,8 @@ work with Conjur OSS as documented. For more detailed information on our certifi
   
 ## Usage
 
-- [Phusion](./phusion-ruby-fips/) image is the parent image of DAP appliance
-- [Ubuntu](./ubuntu-ruby-fips/) image is the parent image of Conur 
+- [Phusion](./phusion-ruby-fips/) image is the parent image of DAP Server
+- [Ubuntu](./ubuntu-ruby-fips/) image is the parent image of Conur Server
 
 ## What is FIPS 140-2
 
