@@ -1,6 +1,6 @@
 # ubuntu-ruby-fips
  `ubuntu-ruby-fips` combines a [base Ubuntu image](https://hub.docker.com/_/ubuntu) 
- with ruby compiled against the FIPS 140-2 compliant [OpenSSL module](https://www.openssl.org/docs/fips.html).  
+ with Ruby compiled against the FIPS 140-2 compliant [OpenSSL module](https://www.openssl.org/docs/fips.html).  
 This image includes the following packages:
 
 * OpenSSL version: `1.0.2u` build with  FIPS 140-2 compliant OpenSSL module version: `2.0.16`
