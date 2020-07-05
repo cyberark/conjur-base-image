@@ -1,5 +1,5 @@
 # Phusion container image
-This container image includes Phusion version `0.11` contains the following packages:
+This container image includes Phusion version `0.11` which contains the following packages:
 
 * OpenSSL version: `1.0.2u` build with  FIPS 140-2 compliant OpenSSL module version: `2.0.16`
 * Ruby version: `2.5` compiled against the FIPS 140-2 compliant OpenSSL module
@@ -10,22 +10,22 @@ This container image includes Phusion version `0.11` contains the following pack
 ## Build steps
 #### Assumptions
 
-1. Current directory is directory where this repository is cloned
+1. Current directory is the directory where this repository is cloned
 1. Docker version is 17.05 or higher
 
 
-Phusion container image will be built with a three-stage process: 
+The Phusion container image will be built by a three-stage process: 
 
-1. the first stage builds the OpenSSL compiled with the FIPS 140-2 compliant OpenSSL module.
-1. the second stage builds the Ruby and Postgres client packages.
-1. the third stage ship the results of both stages, without the penalty of the build-chain and tooling.
+1. The first stage builds the OpenSSL compiled with the FIPS 140-2 compliant OpenSSL module.
+1. The second stage builds the Ruby and Postgres client packages.
+1. The third stage ships the results of both stages, without the penalty of the build-chain and tooling.
 
 ### Docker images    
 | Image name  | Description |
 |---|---|
-| openssl-builder | Install OpenSSL with the FIPS 140-2 compliant module|
-| postgres-client-builder | Install Postgres client |
-| phusion-ruby-builder | Install Ruby version |
+| openssl-builder | Installs OpenSSL with the FIPS 140-2 compliant module|
+| postgres-client-builder | Installs Postgres client |
+| phusion-ruby-builder | Installs Ruby version |
 | phusion-ruby-fips | Final image |
 
 
