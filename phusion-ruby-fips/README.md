@@ -1,11 +1,11 @@
 # Phusion container image
 This container image includes Phusion version `0.11` which contains the following packages:
 
-* OpenSSL version: `1.0.2u` build with  FIPS 140-2 compliant OpenSSL module version: `2.0.16`
-* Ruby version: `2.5` compiled against the FIPS 140-2 compliant OpenSSL module
-* Postgres client version: `12-12.2` compiled against the FIPS 140-2 compliant OpenSSL module
-* OpenLDAP version: `2.4.46` build using openssl rather than gnutls and compiled against the FIPS 140-2 compliant OpenSSL module 
-* Bundler version: `2.1.4`
+* OpenSSL version `1.0.2u`: built with  FIPS 140-2 compliant OpenSSL module version: `2.0.16`.
+* Ruby version `2.5`: compiled against the FIPS 140-2 compliant OpenSSL module.
+* Postgres client version `12-12.2`: compiled against the FIPS 140-2 compliant OpenSSL module.
+* OpenLDAP version `2.4.46`: built using openssl rather than gnutls and compiled against the FIPS 140-2 compliant OpenSSL module.
+* Bundler version `2.1.4`.
  
 
 ## Build steps
@@ -18,7 +18,7 @@ This container image includes Phusion version `0.11` which contains the followin
 The Phusion container image will be built by a three-stage process: 
 
 1. The first stage builds the OpenSSL compiled with the FIPS 140-2 compliant OpenSSL module.
-1. The second stage builds the Ruby, Postgres client and OpenLDAP packages.
+1. The second stage builds the Ruby, Postgres client, and OpenLDAP packages.
 1. The third stage ships the results of both stages, without the penalty of the build-chain and tooling.
 
 ### Docker images    
@@ -43,7 +43,7 @@ Create images for phusion-ruby-builder and postgres-client-builder:
 ./phusion-ruby-builder/build.sh
 ./phusion-openldap-builder/build.sh
 ```
-Create the final image
+Create the final image:
 
 $IMAGE_NAME is assumed to be the required name of Docker image
 
