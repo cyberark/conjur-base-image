@@ -1,5 +1,5 @@
 pipeline {
-  agent { label 'executor-v2' }
+  agent { label 'executor-v2-rhel-ee-large' }
 
   parameters {
     booleanParam(name: 'PUBLISH_DOCKERHUB', defaultValue: false,
