@@ -1,10 +1,10 @@
 # Ubuntu container image
 This container image includes Ubuntu version `20.04` which contains the following packages:
 
-* OpenSSL version: `1.0.2u` build with  FIPS 140-2 compliant OpenSSL module version: `2.0.16`
-* Ruby version: `2.5` compiled against the FIPS 140-2 compliant OpenSSL module
-* Postgres client version: `12-12.2` compiled against the FIPS 140-2 compliant OpenSSL module
-* Bundler version: `2.1.4`
+* OpenSSL version `1.0.2u`: built with  FIPS 140-2 compliant OpenSSL module version: `2.0.16`.
+* Ruby version `2.5`: compiled against the FIPS 140-2 compliant OpenSSL module.
+* Postgres client version `12-12.2`: compiled against the FIPS 140-2 compliant OpenSSL module.
+* Bundler version `2.1.4`.
  
 
 ## Build steps
@@ -40,7 +40,7 @@ Create images for ubuntu-ruby-builder and postgres-client-builder:
 ./postgres-client-builder/build.sh
 ./ubuntu-ruby-builder/build.sh
 ```
-Create the final image
+Create the final image:
 
 $IMAGE_NAME is assumed to be the required name of Docker image
 
