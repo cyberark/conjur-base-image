@@ -33,6 +33,6 @@ RUN wget --quiet https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR_VERSION/ruby-$
     echo "$RUBY_SHA256 ruby-$RUBY_FULL_VERSION.tar.gz" | sha256sum -c - && \
     tar -xvf ruby-$RUBY_FULL_VERSION.tar.gz && \
     cd ruby-$RUBY_FULL_VERSION && \
-    ./configure --with-openssl-dir=/usr/local/ssl --prefix=/var/lib/ruby && \
+    ./configure --with-openssl-dir=/usr/local/ssl --disable-install-doc --disable-install-rdoc --disable-install-capi --enable-shared --prefix=/var/lib/ruby && \
     make -j4 && \
     make install
