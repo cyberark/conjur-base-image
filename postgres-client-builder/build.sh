@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-PG_VERSION=12-12.2
+PG_VERSION=12-12.4
 OPENSSL_BUILDER_TAG=1.0.2u-fips-2.0.16
 
 docker build -t postgres-client-builder:"$PG_VERSION-fips" \
