@@ -95,7 +95,7 @@ SUCH DAMAGE.
 
 PostgreSQL License is applicable to the following component(s).
 
->>> https://github.com/postgres/postgres v12_2
+>>> https://github.com/postgres/postgres v10_14
 
 PostgreSQL Database Management System
 (formerly known as Postgres, then as Postgres95)

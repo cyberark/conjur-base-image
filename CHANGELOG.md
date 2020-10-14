@@ -11,3 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Use a builder image for OpenLDAP compiled with FIPS-enabled OpenSSL. This is
   included in the Phusion Ruby base image for the DAP appliance
   ([cyberark/conjur-base-image#10](https://github.com/cyberark/conjur-base-image/pull/10))
+
+### Changed
+
+- Downgraded Postgres client version from 12 to 10 so that the server tools match
+  the server version in the DAP appliance. This ensures version-specific CLI
+  arguments and flags are available.
+  [https://github.com/cyberark/conjur-base-image#23](https://github.com/cyberark/conjur-base-image/issues/23)
