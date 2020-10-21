@@ -44,16 +44,16 @@ pipeline {
         }
       }
     }
-    stage ('Build and Test fips base images') {
+    stage ('Build, Test, and Scan fips base images') {
       parallel {
-        stage ('Build and Test phusion-ruby-fips image') {
+        stage ('Build, Test, and Scan phusion-ruby-fips image') {
           steps {
-            buildAndTestImage('phusion-ruby-fips')
+            buildTestAndScanImage('phusion-ruby-fips')
           }
         }
-        stage ('Build and Test ubuntu-ruby-fips image') {
+        stage ('Build, Test, and Scan ubuntu-ruby-fips image') {
           steps {
-            buildAndTestImage('ubuntu-ruby-fips')
+            buildTestAndScanImage('ubuntu-ruby-fips')
           }
         }
       }
@@ -87,7 +87,7 @@ pipeline {
   }
 }
 
-def buildAndTestImage(name) {
+def buildTestAndScanImage(name) {
   sh "./${name}/build.sh ${TAG}"
   sh "./${name}/test.sh ${TAG}"
   scanAndReport("${name}:${TAG}", "HIGH", false)
