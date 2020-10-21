@@ -58,6 +58,16 @@ pipeline {
         }
       }
     }
+    stage('Scan fips base images') {
+      parallel {
+        stage('Scan phusion-ruby-fips for fixable vulns') {
+          steps { scanAndReport("phusion-ruby-fips", "HIGH", false) }
+        }
+        stage('Scan ubuntu-ruby-fips for fixable vulns') {
+          steps { scanAndReport("ubuntu-ruby-fips", "HIGH", false) }
+        }
+      }
+    }
     stage ('Push images') {
       steps {
         sh "./phusion-ruby-fips/push.sh ${TAG} registry.tld"
