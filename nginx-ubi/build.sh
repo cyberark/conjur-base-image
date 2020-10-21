@@ -2,6 +2,7 @@
 
 cd "$(dirname "$0")"
 
+# Needs to be kept as close as possible to appliance's NGINX version.
 NGINX_VERSION=1.14
 
 docker build -t nginx-ubi:"$NGINX_VERSION" \

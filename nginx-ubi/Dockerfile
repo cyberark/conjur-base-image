@@ -1,4 +1,4 @@
-FROM registry.redhat.io/ubi8/ubi
+FROM registry.access.redhat.com/ubi8/ubi
 
 ARG WWWDATA_UID=888
 ARG NGINX_VERSION
@@ -19,13 +19,13 @@ LABEL name="nginx-ubi" \
 
 # Install nginx version and
 RUN yum -y module enable nginx:$NGINX_VERSION && \
-    INSTALL_PKGS="nss_wrapper \
-                  bind-utils \
+    INSTALL_PKGS="bind-utils \
                   gettext \
                   hostname \
                   nginx \
                   nginx-mod-stream \
-                  nginx-mod-http-perl" && \
+                  nginx-mod-http-perl \
+                  nss_wrapper" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*' && \
