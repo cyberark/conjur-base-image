@@ -1,0 +1,109 @@
+#!/bin/bash -e
+
+CERT_WAIT_TIME=1
+SSL_KEY="/tmp/tls.key"
+SSL_FILES=( "/opt/conjur/etc/ssl/ca/tls.crt"
+            "/opt/conjur/etc/ssl/cert/tls.crt"
+            "$SSL_KEY" )
+
+# Enable Ctrl + C from container during while loop that checks for certs.
+trap "echo signal; exit 0" SIGINT
+
+main() {
+  generate_passwd_file
+  fix_tls_key_permissions
+  verify_certs
+  verify_dhparams
+  verify_nginx_config
+  activate_debug
+  start_nginx
+}
+
+function generate_passwd_file() {
+  # Built in /etc/passwd does not include user running container, so create new
+  # passwd file and add entry for www-data user with current uid and gid.
+  export USER_ID=$(id -u)
+  export GROUP_ID=$(id -g)
+  grep -v ^www-data /etc/passwd > "$HOME/passwd"
+  echo "www-data:x:${USER_ID}:${GROUP_ID}:WWW Data:${HOME}:/bin/bash" >> "$HOME/passwd"
+
+  # Linux configuration to load lib-nss and enable custom passwd.
+  export LD_PRELOAD=libnss_wrapper.so
+
+  # lib-nss configuration to provide custom passwd + group files.
+  export NSS_WRAPPER_PASSWD=${HOME}/passwd
+  export NSS_WRAPPER_GROUP=/etc/group
+}
+
+fix_tls_key_permissions() {
+  # SSL library requires that TLS key is owned by current user and has 600 Linux
+  # permissions, but the original key file comes from a shared volume owned by
+  # the seedfetcher user and may be read-only. We create a copy that the current
+  # user owns in /tmp and use this copy when configuring nginx in conjur.conf.
+  cp "/opt/conjur/etc/ssl/cert/tls.key" "$SSL_KEY"
+  chmod 600 "$SSL_KEY"
+}
+
+verify_certs() {
+  echo "Verifying that all certs are in place..."
+  all_certs_available="false"
+
+  while [ "$all_certs_available" != "true" ]; do
+    all_certs_available="true"
+
+    for ssl_file in ${SSL_FILES[@]}; do
+      echo "Checking existence of $ssl_file..."
+      
+      cert_dir=$(dirname "$ssl_file")
+      
+      if [ ! -f "${ssl_file}" ] && [ ! -L "${ssl_file}" ]; then
+        echo "SSL file $ssl_file is not a regular file and not a link to one! Aborting!"
+        echo "Content of $cert_dir:"
+        ls -la "${cert_dir}"
+        all_certs_available="false"
+      elif [ ! -r "${ssl_file}" ]; then
+        echo "SSL file $ssl_file is present but is not readable! Aborting!"
+        echo "Content of $cert_dir:"
+        ls -la "${cert_dir}"
+        all_certs_available="false"
+      fi
+    done
+    
+    if [ "$all_certs_available" != "true" ]; then
+      echo "Certs are not configured properly yet. Sleeping $CERT_WAIT_TIME second..."
+      sleep "$CERT_WAIT_TIME"
+    fi
+  done
+}
+
+verify_dhparams() {
+  # TLS may perform Diffie-Hellman algorithm using constants from dhparams.pem.
+  # We generate our own because the default openssl key size is only 1024 bits,
+  # but only if one is not provided since it's an expensive operation.
+  if [ ! -f /etc/nginx/dhparams.pem ]; then
+    echo "Cannot find dhparams. Current state:"
+    ls -la /etc/nginx
+
+    echo "Rebuilding dhparams..."
+    openssl dhparam -out /etc/nginx/dhparams.pem 2048
+  fi
+}
+
+verify_nginx_config() {
+  echo "Checking NGINX config..."
+  nginx -t
+}
+
+activate_debug() {
+  if [ "$DEBUG_CONTAINER" != "" ] && [ "$DEBUG_CONTAINER" != "false" ]; then
+    echo "Container debugging activated... Waiting..."
+    sleep 999d
+  fi
+}
+
+start_nginx() {
+  echo "Starting NGINX..."
+  exec nginx -g 'daemon off;'
+}
+
+main
