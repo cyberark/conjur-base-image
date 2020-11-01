@@ -32,6 +32,11 @@ pipeline {
             sh "./ubuntu-ruby-builder/build.sh"
           }
         }
+        stage ('Build and push ubi-ruby-builder image') {
+          steps {
+            sh "./ubi-ruby-builder/build.sh"
+          }
+        }
         stage ('Build and tag postgres-client-builder image') {
           steps {
             sh "./postgres-client-builder/build.sh"
@@ -56,12 +61,18 @@ pipeline {
             buildTestAndScanImage('ubuntu-ruby-fips')
           }
         }
+        stage ('Build, Test, and Scan ubi-ruby-fips image') {
+          steps {
+            buildTestAndScanImage('ubi-ruby-fips')
+          }
+        }
       }
     }
     stage ('Push images') {
       steps {
         sh "./phusion-ruby-fips/push.sh ${TAG} registry.tld"
         sh "./ubuntu-ruby-fips/push.sh ${TAG} registry.tld"
+        sh "./ubi-ruby-fips/push.sh ${TAG} registry.tld"
       }
     }
     stage ('Publish images') {
@@ -75,6 +86,7 @@ pipeline {
       steps {
         sh "./phusion-ruby-fips/push.sh ${TAG}"
         sh "./ubuntu-ruby-fips/push.sh ${TAG}"
+        sh "./ubi-ruby-fips/push.sh ${TAG}"
       }
     }
   }
