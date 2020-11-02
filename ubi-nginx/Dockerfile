@@ -10,12 +10,12 @@ EXPOSE 9000 9443
 ENV HOME=/var/www \
     SSL_CERT_DIRECTORY=/opt/conjur/etc/ssl
 
-LABEL name="nginx-ubi" \
+LABEL name="ubi-nginx" \
       vendor="CyberArk" \
       version="$NGINX_VERSION" \
       release="$NGINX_VERSION" \
-      summary="Nginx UBI based container for use with Conjur" \
-      description="Nginx UBI based container for use with Conjur"
+      summary="UBI-based Nginx image for use with Conjur" \
+      description="UBI-based Nginx image for use with Conjur"
 
 # Install nginx version and
 RUN yum -y module enable nginx:$NGINX_VERSION && \
