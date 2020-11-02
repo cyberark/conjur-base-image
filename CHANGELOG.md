@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- UBI-based image to support Conjur server running on OpenShift. Uses a builder image to install Ruby 
+  compiled with FIPS-enabled OpenSSL.
+  ([cyberark/conjur-base-image#34](https://github.com/cyberark/conjur-base-image/pull/34))
+
 - Use a builder image for OpenLDAP compiled with FIPS-enabled OpenSSL. This is
   included in the Phusion Ruby base image for the DAP appliance
   ([cyberark/conjur-base-image#10](https://github.com/cyberark/conjur-base-image/pull/10))

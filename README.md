@@ -13,9 +13,10 @@
 
 This repo builds a Docker image that contains OpenSSL, Ruby and PostgreSQL client libraries compiled against the FIPS 140-2 compliant OpenSSL module.
 
-Two images included:
+Three images included:
 - [Phusion](./phusion-ruby-fips/) 
 - [Ubuntu](./ubuntu-ruby-fips/) 
+- [UBI](./ubi-ruby-fips/)
 
 ## Certification level
 
@@ -34,14 +35,17 @@ work with Conjur OSS as documented. For more detailed information on our certifi
 * Last security update
 * Jenkins pipeline for building the Docker image
 * Automated tests validate FIPS mode is successfully enabled and all artifacts are compiled against the FIPS 140-2 compliant
-* One OpenSSL version installed in the image:
+* OpenSSL version installed in the Phusion and Ubuntu images:
   * OpenSSL version: `openssl-1.0.2u`
   * OpenSSL FIPS Module version: `openssl-fips-2.0.16`
+* OpenSSL version installed in the UBI image:
+  * OpenSSL version: `openssl-1.1.1c`
   
 ## Usage
 
 - [Phusion](./phusion-ruby-fips/) image is the parent image of DAP Server
-- [Ubuntu](./ubuntu-ruby-fips/) image is the parent image of Conur Server
+- [Ubuntu](./ubuntu-ruby-fips/) image is the parent image of Conjur Server
+- [UBI](./ubi-ruby-fips/) image is the parent image of Conjur Server for OpenShift
 
 ## What is FIPS 140-2
 
