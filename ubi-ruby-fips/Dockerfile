@@ -14,12 +14,13 @@ RUN yum install -y --setopt=tsflags=nodocs http://mirror.centos.org/centos/8/Bas
 ### Install openssl, postgresql client
     yum install -y openssl && \
     yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
-    yum install -y postgresql10
+    yum install -y postgresql10 \
+                   postgresql10-devel
 
 ## Copy ruby binaries from ubi-ruby-builder
 RUN mkdir -p /var/lib/ruby/
 COPY --from=ubi-ruby-builder /var/lib/ruby/ /var/lib/ruby/
-ENV PATH="/var/lib/ruby/bin:${PATH}"
+ENV PATH="/usr/pgsql-10/bin:/var/lib/ruby/bin:${PATH}"
 
 ## Install Ruby tools
 RUN gem install --no-document bundler:$BUNDLER_VERSION
