@@ -49,7 +49,7 @@ pipeline {
         }
       }
     }
-    stage ('Build, Test, and Scan fips base images') {
+    stage ('Build, Test, and Scan images') {
       parallel {
         stage ('Build, Test, and Scan phusion-ruby-fips image') {
           steps {
@@ -66,27 +66,35 @@ pipeline {
             buildTestAndScanImage('ubi-ruby-fips')
           }
         }
+        stage ('Build, Test, and Scan ubi-nginx image') {
+          steps {
+            buildTestAndScanImage('ubi-nginx')
+          }
+        }
       }
     }
-    stage ('Push images') {
+    stage ('Push internal images') {
       steps {
         sh "./phusion-ruby-fips/push.sh ${TAG} registry.tld"
         sh "./ubuntu-ruby-fips/push.sh ${TAG} registry.tld"
         sh "./ubi-ruby-fips/push.sh ${TAG} registry.tld"
+        sh "./ubi-nginx/push.sh ${TAG} registry.tld"
       }
     }
     stage ('Publish images') {
-      when { 
+      when {
+        branch "master"
         anyOf {
           triggeredBy 'TimerTrigger'
           expression { params.PUBLISH_DOCKERHUB }
         }
-      }      
-      
+      }
+
       steps {
         sh "./phusion-ruby-fips/push.sh ${TAG}"
         sh "./ubuntu-ruby-fips/push.sh ${TAG}"
         sh "./ubi-ruby-fips/push.sh ${TAG}"
+        sh "./ubi-nginx/push.sh ${TAG}"
       }
     }
   }
