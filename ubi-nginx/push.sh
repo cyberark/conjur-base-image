@@ -15,7 +15,7 @@ tag_and_push "ubi-nginx:${tag}" "registry.tld/cyberark/ubi-nginx:${NGINX_VERSION
 
 if [ -z "${repo_name}" ]; then
   # Publish production images
-  if summon bash -c 'docker login scan.connect.redhat.com -u unused -p "${REDHAT_API_KEY}"'; then
+  if summon -f ../secrets.yml bash -c 'docker login scan.connect.redhat.com -u unused -p "${REDHAT_API_KEY}"'; then
     master_tag_and_push "ubi-nginx:${tag}" "${REDHAT_IMAGE}" "${NGINX_VERSION}"
   else
     echo 'Failed to log in to scan.connect.redhat.com'
