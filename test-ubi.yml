@@ -82,7 +82,7 @@ commandTests:
   - name: "Postgres version"
     command: "pg_dump"
     args: ["--version"]
-    expectedOutput: ["^pg_dump \\(PostgreSQL\\) 10.14\n$"]
+    expectedOutput: ["^pg_dump \\(PostgreSQL\\) 10.15\n$"]
   # bundler tests
   - name: "bundler version"
     command: "bundler"

@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 UBUNTU_VERSION=20.04
 OPENSSL_BUILDER_TAG=1.0.2u-fips-2.0.16
 RUBY_BUILDER_TAG=2.5.8-fips
-PG_BUILDER_TAG=10-10.14-fips
+PG_BUILDER_TAG=10-10.15-fips
 IMAGE_TAG=$1
 
 docker build -t ubuntu-ruby-fips:"$IMAGE_TAG" \
