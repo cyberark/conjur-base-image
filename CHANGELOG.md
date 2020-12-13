@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   included in the Phusion Ruby base image for the DAP appliance
   [cyberark/conjur-base-image#10](https://github.com/cyberark/conjur-base-image/pull/10)
 
+- ARM64 image build is added
+
 ### Changed
 
 - Downgraded Postgres client version from 12 to 10 so that the server tools match
