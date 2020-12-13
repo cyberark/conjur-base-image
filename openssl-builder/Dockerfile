@@ -28,7 +28,7 @@ RUN gpg --import openssl_fips_pgp.key \
     && echo "$OPENSSL_HASH openssl-$OPENSSL_VER.tar.gz" | sha256sum -c - | grep OK
 RUN tar -xzf openssl-fips-$OPENSSL_FIPS_VER.tar.gz \
     && cd openssl-fips-$OPENSSL_FIPS_VER \
-    && ./config \
+    && ./config -DPOINTER_TO_FUNCTION_IS_POINTER_TO_1ST_INSTRUCTION -DFIPS_REF_POINT_IS_CROSS_COMPILER_AWARE \
     && make \
     && make install \
     && cd .. \

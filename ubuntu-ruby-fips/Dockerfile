@@ -4,10 +4,12 @@ ARG RUBY_BUILDER_TAG
 ARG PG_BUILDER_TAG
 ARG BUNDLER_VERSION=2.1.4
 
+ARG DOCKER_USER
+
 # OpenSSL, ruby and postgres-client Builders
-FROM openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
-FROM ubuntu-ruby-builder:$RUBY_BUILDER_TAG as ubuntu-ruby-builder
-FROM postgres-client-builder:$PG_BUILDER_TAG as postgres-client-builder
+FROM $DOCKER_USER/openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
+FROM $DOCKER_USER/ubuntu-ruby-builder:$RUBY_BUILDER_TAG as ubuntu-ruby-builder
+FROM $DOCKER_USER/postgres-client-builder:$PG_BUILDER_TAG as postgres-client-builder
 
 # Conjur Base Image (Ubuntu)
 FROM ubuntu:$UBUNTU_VERSION
