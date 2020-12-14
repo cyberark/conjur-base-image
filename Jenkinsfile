@@ -20,7 +20,7 @@ pipeline {
         sh "./openssl-builder/build.sh"
       }
     }
-    stage ('Build and push subsequent builder images') {
+    stage ('Build and push builder images') {
       parallel {
         stage ('Build and push phusion-ruby-builder image') {
           steps {
@@ -74,8 +74,10 @@ pipeline {
       }
     }
     stage ('Push internal images') {
+      when { branch "master" }
+
       steps {
-        sh "./phusion-ruby-fips/push.sh ${TAG} registry.tld"
+        sh "./phusion-ruby-fips/push.sh registry.tld"
         sh "./ubuntu-ruby-fips/push.sh ${TAG} registry.tld"
         sh "./ubi-ruby-fips/push.sh ${TAG} registry.tld"
         sh "./ubi-nginx/push.sh ${TAG} registry.tld"
@@ -85,7 +87,7 @@ pipeline {
       when { tag "v*" }
 
       steps {
-        sh "./phusion-ruby-fips/push.sh ${TAG}"
+        sh "./phusion-ruby-fips/push.sh"
         sh "./ubuntu-ruby-fips/push.sh ${TAG}"
         sh "./ubi-ruby-fips/push.sh ${TAG}"
         sh "./ubi-nginx/push.sh ${TAG}"
