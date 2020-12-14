@@ -79,7 +79,7 @@ pipeline {
       steps {
         sh "./phusion-ruby-fips/push.sh registry.tld"
         sh "./ubuntu-ruby-fips/push.sh registry.tld"
-        sh "./ubi-ruby-fips/push.sh ${TAG} registry.tld"
+        sh "./ubi-ruby-fips/push.sh registry.tld"
         sh "./ubi-nginx/push.sh ${TAG} registry.tld"
       }
     }
@@ -89,7 +89,7 @@ pipeline {
       steps {
         sh "./phusion-ruby-fips/push.sh"
         sh "./ubuntu-ruby-fips/push.sh"
-        sh "./ubi-ruby-fips/push.sh ${TAG}"
+        sh "./ubi-ruby-fips/push.sh"
         sh "./ubi-nginx/push.sh ${TAG}"
       }
     }
