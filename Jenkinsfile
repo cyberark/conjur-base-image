@@ -82,13 +82,7 @@ pipeline {
       }
     }
     stage ('Publish images') {
-      when {
-        branch "master"
-        anyOf {
-          triggeredBy 'TimerTrigger'
-          expression { params.PUBLISH_DOCKERHUB }
-        }
-      }
+      when { tag "v*" }
 
       steps {
         sh "./phusion-ruby-fips/push.sh ${TAG}"
