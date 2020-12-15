@@ -5,12 +5,22 @@ cd "$(dirname "$0")"
 . ../push.sh
 
 UBI_VERSION=ubi8
+LOCAL_IMAGE="ubi-ruby-fips:latest"
+IMAGE="cyberark/ubi-ruby-fips"
 
-if [ "$BRANCH_NAME" = "master" ]; then
-  tag_and_push "ubi-ruby-fips:$1" "registry.tld/cyberark/ubi-ruby-fips:$UBI_VERSION-$1"
-  
-  repoName="$(normalize_repo_name $2)cyberark"
-  master_tag_and_push "ubi-ruby-fips:$1" "$repoName/ubi-ruby-fips" "$UBI_VERSION"
+if [[ -z "${TAG_NAME:-}" ]]; then
+  # This script is NOT being run as part of a tag-triggered build
+  # It will publish only to the internal registry on this run
+  TAG="$(git rev-parse --short HEAD | tr -d '\n')"
+  REGISTRY="$(normalize_repo_name $1)"
+
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBI_VERSION}-${TAG}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBI_VERSION}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${TAG}"
 else
-  tag_and_push "ubi-ruby-fips:$1" "registry.tld/cyberark/ubi-ruby-fips:$UBI_VERSION-$1"
+  # The script is being run as part of a tag-triggered build
+  # It will only publish to DockerHub on this run
+  TAG="${TAG_NAME//"v"}"
+
+  master_tag_and_push "${LOCAL_IMAGE}" "${IMAGE}" "${TAG}"
 fi

@@ -11,26 +11,34 @@ function normalize_repo_name() {
 function tag_and_push() {
   local sourceImage="$1"
   local targetImage="$2"
-  
+
   echo Tagging and pushing $targetImage...
   docker tag "$sourceImage" $targetImage
   docker push $targetImage
 }
 
 function master_tag_and_push() {
-
   local sourceImage="$1"
   local targetImageName="$2"
   local imageBaseVersion="$3"
 
-  TAGS=(
-    "$imageBaseVersion-latest"
+  readonly TAGS=(
+    "${imageBaseVersion}"
     "latest"
   )
 
-  for t in "${TAGS[@]}"
-  do
-    tag_and_push $sourceImage "$targetImageName:$t"
+  for tag in "${TAGS[@]}" $(gen_versions "${imageBaseVersion}"); do
+    tag_and_push "${sourceImage}" "${targetImageName}:${tag}"
   done
 
+}
+
+# generate less specific versions, eg. given 1.2.3 will print 1.2 and 1
+# (note: the argument itself is not printed, append it explicitly if needed)
+function gen_versions() {
+  local version=$1
+  while [[ $version = *.* ]]; do
+    version=${version%.*}
+    echo $version
+  done
 }

@@ -10,17 +10,14 @@ pipeline {
     cron(getDailyCronString())
   }
 
-  environment {
-    TAG = sh(returnStdout: true, script: "git rev-parse --short HEAD | tr -d '\n'")
-  }
-
   stages {
     stage ('Build and push openssl-builder image') {
       steps {
         sh "./openssl-builder/build.sh"
       }
     }
-    stage ('Build and push subsequent builder images') {
+
+    stage ('Build and push builder images') {
       parallel {
         stage ('Build and push phusion-ruby-builder image') {
           steps {
@@ -49,6 +46,7 @@ pipeline {
         }
       }
     }
+
     stage ('Build, Test, and Scan images') {
       parallel {
         stage ('Build, Test, and Scan phusion-ruby-fips image') {
@@ -73,28 +71,26 @@ pipeline {
         }
       }
     }
+
     stage ('Push internal images') {
-      steps {
-        sh "./phusion-ruby-fips/push.sh ${TAG} registry.tld"
-        sh "./ubuntu-ruby-fips/push.sh ${TAG} registry.tld"
-        sh "./ubi-ruby-fips/push.sh ${TAG} registry.tld"
-        sh "./ubi-nginx/push.sh ${TAG} registry.tld"
-      }
-    }
-    stage ('Publish images') {
-      when {
-        branch "master"
-        anyOf {
-          triggeredBy 'TimerTrigger'
-          expression { params.PUBLISH_DOCKERHUB }
-        }
-      }
+      when { branch "master" }
 
       steps {
-        sh "./phusion-ruby-fips/push.sh ${TAG}"
-        sh "./ubuntu-ruby-fips/push.sh ${TAG}"
-        sh "./ubi-ruby-fips/push.sh ${TAG}"
-        sh "./ubi-nginx/push.sh ${TAG}"
+        sh "./phusion-ruby-fips/push.sh registry.tld"
+        sh "./ubuntu-ruby-fips/push.sh registry.tld"
+        sh "./ubi-ruby-fips/push.sh registry.tld"
+        sh "./ubi-nginx/push.sh registry.tld"
+      }
+    }
+
+    stage ('Publish images') {
+      when { tag "v*" }
+
+      steps {
+        sh "./phusion-ruby-fips/push.sh"
+        sh "./ubuntu-ruby-fips/push.sh"
+        sh "./ubi-ruby-fips/push.sh"
+        sh "./ubi-nginx/push.sh"
       }
     }
   }
@@ -108,8 +104,8 @@ pipeline {
 }
 
 def buildTestAndScanImage(name) {
-  sh "./${name}/build.sh ${TAG}"
-  sh "./${name}/test.sh ${TAG}"
-  scanAndReport("${name}:${TAG}", "HIGH", false)
-  scanAndReport("${name}:${TAG}", "NONE", true)
+  sh "./${name}/build.sh"
+  sh "./${name}/test.sh"
+  scanAndReport("${name}:latest", "HIGH", false)
+  scanAndReport("${name}:latest", "NONE", true)
 }

@@ -77,6 +77,10 @@ docker run --rm \
   gcr.io/gcp-runtimes/container-structure-test:latest \
   test --image "image:tag" --config "/workspace/test.yml" --test-report "/workspace/test-results/report.json"
    ```
+
+Alternatively, you can run the `./{image-name}/test.sh` script after building
+the image and view the results in the `./test-results/` folder.
+
 ### Security testing 
 To run vulnerability scanning using [trivy](https://github.com/aquasecurity/trivy) execute
    
@@ -90,4 +94,33 @@ To run vulnerability scanning using [trivy](https://github.com/aquasecurity/triv
 
 ## Releasing
 
-Every night Jenkins job is triggered, and both images `ubuntu-ruby-fips:20.04-latest` and `phusion-ruby-fips:0.11-latest` updated and been delivered to Docker Hub.
+When the images have been updated and new versions should be released, you can
+follow the standard [release process](https://github.com/cyberark/community/blob/master/Conjur/CONTRIBUTING.md#release-process)
+to publish new versions of the image to public registries:
+
+1. Create a new branch for the version bump.
+   - Increment the [VERSION](./VERSION) following semantic versioning.
+   - Review the git history and ensure the [changelog](./CHANGELOG.md) includes
+     all recent relevant changes with references to GitHub issues / PRs.
+   - Review the changes since the last release, and if the dependencies have
+     changed revise the [NOTICES.txt](./NOTICES.txt) to correctly capture the
+     included dependencies and their licenses / copyrights.
+   - Commit these changes- `Bump version to x.y.z` is an acceptable commit
+     message - and open a PR for review.
+1. Merge the version bump PR, and tag the repo with the new version.
+   - Ensure you are working from a current clone of the master branch
+   - Tag the version using `git tag -s "v$(cat VERSION)" -m "v$(cat VERSION)"`.
+   - Push the tag: `git push origin "v1.x.y"`.
+1. Create a release from the new tag from the GitHub UI.
+   - Copy the changelog from the new version into the GitHub release description.
+   - The pipeline will automatically publish images to public image registries
+     in the tag-triggered build.
+   - Visit the [Red Hat project page](https://connect.redhat.com/project/5899501/view)
+     once the images have been pushed and manually choose to publish the latest
+     release.
+1. Update the Dockerfiles in the Conjur project to point to the new base image
+   versions. Images that needs updates include:
+   - gems/policy-parser/Dockerfile.test
+   - dev/Dockerfile.dev
+   - Dockerfile
+   - Dockerfile.ubi
