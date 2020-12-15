@@ -10,16 +10,13 @@ pipeline {
     cron(getDailyCronString())
   }
 
-  environment {
-    TAG = sh(returnStdout: true, script: "git rev-parse --short HEAD | tr -d '\n'")
-  }
-
   stages {
     stage ('Build and push openssl-builder image') {
       steps {
         sh "./openssl-builder/build.sh"
       }
     }
+
     stage ('Build and push builder images') {
       parallel {
         stage ('Build and push phusion-ruby-builder image') {
@@ -49,6 +46,7 @@ pipeline {
         }
       }
     }
+
     stage ('Build, Test, and Scan images') {
       parallel {
         stage ('Build, Test, and Scan phusion-ruby-fips image') {
@@ -73,6 +71,7 @@ pipeline {
         }
       }
     }
+
     stage ('Push internal images') {
       when { branch "master" }
 
@@ -83,6 +82,7 @@ pipeline {
         sh "./ubi-nginx/push.sh registry.tld"
       }
     }
+
     stage ('Publish images') {
       when { tag "v*" }
 
@@ -104,8 +104,8 @@ pipeline {
 }
 
 def buildTestAndScanImage(name) {
-  sh "./${name}/build.sh ${TAG}"
-  sh "./${name}/test.sh ${TAG}"
-  scanAndReport("${name}:${TAG}", "HIGH", false)
-  scanAndReport("${name}:${TAG}", "NONE", true)
+  sh "./${name}/build.sh"
+  sh "./${name}/test.sh"
+  scanAndReport("${name}:latest", "HIGH", false)
+  scanAndReport("${name}:latest", "NONE", true)
 }
