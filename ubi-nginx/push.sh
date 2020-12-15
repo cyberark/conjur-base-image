@@ -5,20 +5,27 @@ cd "$(dirname "$0")"
 . ../push.sh
 
 NGINX_VERSION=1.14
-REDHAT_IMAGE="scan.connect.redhat.com/ospid-9a3dab9b-64c4-4384-882c-80f26ce98607/conjur-nginx"
+LOCAL_IMAGE="ubi-nginx:latest"
+IMAGE="conjur-nginx"
+REDHAT_IMAGE="scan.connect.redhat.com/ospid-9a3dab9b-64c4-4384-882c-80f26ce98607/${IMAGE}"
 
-tag=$1
-repo_name=$2
+if [[ -z "${TAG_NAME:-}" ]]; then
+  # This script is NOT being run as part of a tag-triggered build
+  # It will publish only to the internal registry on this run
+  TAG="$(git rev-parse --short HEAD | tr -d '\n')"
+  REGISTRY="$(normalize_repo_name $1)"
 
-# No matter what, publish to the internal registry
-tag_and_push "ubi-nginx:${tag}" "registry.tld/cyberark/ubi-nginx:${NGINX_VERSION}-${tag}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}-${TAG}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}"
+else
+  # The script is being run as part of a tag-triggered build
+  # It will only publish to DockerHub on this run
+  TAG="${TAG_NAME//"v"}"
 
-if [ -z "${repo_name}" ]; then
-  # Publish production images
   if summon -f ../secrets.yml bash -c 'docker login scan.connect.redhat.com -u unused -p "${REDHAT_API_KEY}"'; then
-    master_tag_and_push "ubi-nginx:${tag}" "${REDHAT_IMAGE}" "${NGINX_VERSION}"
+    tag_and_push "${LOCAL_IMAGE}" "${REDHAT_IMAGE}:${TAG}"
   else
     echo 'Failed to log in to scan.connect.redhat.com'
     exit 1
   fi
-fi
+fi  
