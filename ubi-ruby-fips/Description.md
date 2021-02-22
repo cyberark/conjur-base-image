@@ -6,6 +6,6 @@ This image includes the following packages:
 * OpenSSL version `1.1.1c`: with FIPS 140-2 compliant OpenSSL module from RedHat UBI 8.
 * Ruby version `2.5`: compiled against the FIPS 140-2 compliant OpenSSL module.
 * Postgres client version `10-10.15`: compiled against the FIPS 140-2 compliant OpenSSL module.
-* Bundler version `2.1.4`.
+* Bundler version `2.2.11`.
  
 Source code: https://github.com/cyberark/conjur-base-image
