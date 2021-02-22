@@ -4,6 +4,7 @@ cd "$(dirname "$0")"
 
 FULL_IMAGE_NAME=""
 TEST_FILE_NAME=""
+CONTAINER_STRUCTURE_TEST_TAG="v1.9.1"
 
 while [ "$1" != "" ]; do
   case $1 in
@@ -33,5 +34,5 @@ mkdir -p test-results
 docker run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v $(pwd):/workspace \
-  gcr.io/gcp-runtimes/container-structure-test:latest \
+  "gcr.io/gcp-runtimes/container-structure-test:$CONTAINER_STRUCTURE_TEST_TAG" \
   test --image "$FULL_IMAGE_NAME" --config "/workspace/$TEST_FILE_NAME" --test-report "/workspace/test-results/$REPORT_FILE_NAME"
