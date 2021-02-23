@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-02-22
+
+### Security
+- Upgraded Bundler version to `2.2.11` to include improved
+  [gem source priorities](https://bundler.io/blog/2021/02/15/a-more-secure-bundler-we-fixed-our-source-priorities.html).
+
 ## [1.0.0] - 2020-12-15
 
 ### Added
