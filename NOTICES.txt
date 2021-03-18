@@ -15,7 +15,7 @@ Section 2: BSD-2-Clause
 >>> https://github.com/ruby/ruby v2.5.8
 
 Section 3: PostgreSQL License
->>> https://github.com/postgres/postgres v10_15
+>>> https://github.com/postgres/postgres v10_16
 
 APPENDIX: Standard License Files and Templates
 
@@ -124,7 +124,7 @@ SUCH DAMAGE.
 
 PostgreSQL License is applicable to the following component(s).
 
->>> https://github.com/postgres/postgres v10_15
+>>> https://github.com/postgres/postgres v10_16
 
 PostgreSQL Database Management System
 (formerly known as Postgres, then as Postgres95)
