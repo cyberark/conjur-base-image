@@ -115,7 +115,7 @@ to publish new versions of the image to public registries:
    - Copy the changelog from the new version into the GitHub release description.
    - The pipeline will automatically publish images to public image registries
      in the tag-triggered build.
-   - Visit the [Red Hat project page](https://connect.redhat.com/project/5899501/view)
+   - Visit the [Nginx Red Hat project page](https://connect.redhat.com/project/5899451/view)
      once the images have been pushed and manually choose to publish the latest
      release.
 1. Update the Dockerfiles in the Conjur project to point to the new base image
