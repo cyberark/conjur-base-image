@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.1] - 2021-03-29
+
 ### Changed
 - Postgres version is incremented to 10.16 from 10.15.
   [cyberark/conjur-base-image#48](https://github.com/cyberark/conjur-base-image/issues/48)
@@ -35,4 +37,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - Bumped Ruby version from 2.5.1 to 2.5.8 to address [CVE-2020-10663](https://nvd.nist.gov/vuln/detail/CVE-2020-10663).
 
-[Unreleased]: https://github.com/cyberark/conjur-base-image/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/cyberark/conjur-base-image/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/cyberark/conjur-base-image/compare/v1.0.0...v1.0.1
