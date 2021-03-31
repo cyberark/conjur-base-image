@@ -124,3 +124,4 @@ to publish new versions of the image to public registries:
    - dev/Dockerfile.dev
    - Dockerfile
    - Dockerfile.ubi
+1. Update the Conjur Enterprise Dockerfile to point to the new base image version.
