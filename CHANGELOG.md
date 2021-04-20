@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Security
+- Bump nettle from 3.4.1-2 to 3.4.1-4 and gnutls from 3.6.14-7 to 3.6.14-8 to resolve CVE-2021-20305.
+  [cyberark/conjur-base-image#53](https://github.com/cyberark/conjur-base-image/issues/53)
+
 ## [1.0.1] - 2021-03-29
 
 ### Changed

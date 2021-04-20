@@ -9,6 +9,9 @@ FROM ubi-ruby-builder:$RUBY_BUILDER_TAG as ubi-ruby-builder
 FROM registry.access.redhat.com/$UBI_VERSION/ubi
 ARG BUNDLER_VERSION
 
+# Upgrade packages to resolve CVE-2021-20305
+RUN yum -y update-to nettle-3.4.1-4.el8_3.x86_64 gnutls-3.6.14-8.el8_3.x86_64 
+
 ### We need libreadline-dev for its readline capabilities
 RUN yum install -y --setopt=tsflags=nodocs http://mirror.centos.org/centos/8/BaseOS/x86_64/os/Packages/readline-devel-7.0-10.el8.x86_64.rpm && \
 ### Install openssl, postgresql client
