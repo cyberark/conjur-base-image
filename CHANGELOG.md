@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+- Postgres version is incremented to 10.17 from 10.16.
+  [PR cyberark/conjur-base-image#57](https://github.com/cyberark/conjur-base-image/pull/57)
+
 ## [1.0.2] - 2021-04-20
 
 ### Security
