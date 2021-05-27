@@ -17,7 +17,7 @@ function tag_and_push() {
   docker push $targetImage
 }
 
-function master_tag_and_push() {
+function main_tag_and_push() {
   local sourceImage="$1"
   local targetImageName="$2"
   local imageBaseVersion="$3"

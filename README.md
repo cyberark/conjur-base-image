@@ -20,11 +20,11 @@ Three images included:
 
 ## Certification level
 
-![](https://img.shields.io/badge/Certification%20Level-Trusted-007BFF?link=https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md)
+![](https://img.shields.io/badge/Certification%20Level-Trusted-007BFF?link=https://github.com/cyberark/community/blob/main/Conjur/conventions/certification-levels.md)
 
 This repo is a **Trusted** level project. It has been reviewed by CyberArk to verify that it will securely
 work with Conjur OSS as documented. For more detailed information on our certification levels, see
-[our community guidelines](https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md#community).
+[our community guidelines](https://github.com/cyberark/community/blob/main/Conjur/conventions/certification-levels.md#community).
 
 
 ## Feature
@@ -57,7 +57,7 @@ For more information, visit the [FIPS 140-2 Wikipedia Page](https://en.wikipedia
 ## Contributing
 
 We welcome contributions of all kinds to this repository. For instructions on how to get started and descriptions
-of our development workflows, please see our [contributing guide](https://github.com/cyberark/conjur-base-image/blob/master/CONTRIBUTING.md).
+of our development workflows, please see our [contributing guide](https://github.com/cyberark/conjur-base-image/blob/main/CONTRIBUTING.md).
 
 ## License
 

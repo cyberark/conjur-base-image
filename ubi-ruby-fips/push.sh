@@ -22,5 +22,5 @@ else
   # It will only publish to DockerHub on this run
   TAG="${TAG_NAME//"v"}"
 
-  master_tag_and_push "${LOCAL_IMAGE}" "${IMAGE}" "${TAG}"
+  main_tag_and_push "${LOCAL_IMAGE}" "${IMAGE}" "${TAG}"
 fi
