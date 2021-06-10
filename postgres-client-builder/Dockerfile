@@ -28,9 +28,9 @@ RUN apt-get update && \
 # Postgres for Ubuntu 20.04 comes from a external repository
 RUN wget https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
     apt-key add ACCC4CF8.asc && \
-    echo "deb-src http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" >> /etc/apt/sources.list.d/pgdg.list && \
+    echo "deb-src https://apt-archive.postgresql.org/pub/repos/apt focal-pgdg-archive main" >> /etc/apt/sources.list.d/pgdg.list && \
     apt-get update && \
-    apt-get source postgresql-10
+    apt-get source postgresql-10=10.16-1.pgdg20.04+1
 
 ## Compile postgres client
 #
