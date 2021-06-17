@@ -23,7 +23,7 @@ Three images included:
 ![](https://img.shields.io/badge/Certification%20Level-Trusted-007BFF?link=https://github.com/cyberark/community/blob/main/Conjur/conventions/certification-levels.md)
 
 This repo is a **Trusted** level project. It has been reviewed by CyberArk to verify that it will securely
-work with Conjur OSS as documented. For more detailed information on our certification levels, see
+work with Conjur Open Source as documented. For more detailed information on our certification levels, see
 [our community guidelines](https://github.com/cyberark/community/blob/main/Conjur/conventions/certification-levels.md#community).
 
 
@@ -43,7 +43,7 @@ work with Conjur OSS as documented. For more detailed information on our certifi
   
 ## Usage
 
-- [Phusion](./phusion-ruby-fips/) image is the parent image of DAP Server
+- [Phusion](./phusion-ruby-fips/) image is the parent image of Conjur Enterprise Server
 - [Ubuntu](./ubuntu-ruby-fips/) image is the parent image of Conjur Server
 - [UBI](./ubi-ruby-fips/) image is the parent image of Conjur Server for OpenShift
 
