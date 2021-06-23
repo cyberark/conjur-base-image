@@ -3,8 +3,10 @@ ARG UBUNTU_VERSION=20.04
 ARG PG_VERSION
 ARG OPENSSL_BUILDER_TAG
 
+ARG DOCKER_USER
+
 # OpenSSL Builder
-FROM openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
+FROM $DOCKER_USER/openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
 
 # Postgres Builder
 FROM ubuntu:$UBUNTU_VERSION
