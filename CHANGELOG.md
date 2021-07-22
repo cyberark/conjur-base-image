@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.4] - 2021-07-22
+
+- Upgraded ubi8 base image to resolve [CVE-2021-33910](https://nvd.nist.gov/vuln/detail/CVE-2021-33910)
+  (no specific PR, as the build automatically picked up the new ubi8 image from RedHat)
+- Rolled Postgres version back to 10.16 to match Conjur 
+  cyberark/conjur-base-image#59](https://github.com/cyberark/conjur-base-image/pull/59)
+
 ## [1.0.3] - 2021-06-07
 
 - Postgres version is incremented to 10.17 from 10.16.
@@ -48,7 +55,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - Bumped Ruby version from 2.5.1 to 2.5.8 to address [CVE-2020-10663](https://nvd.nist.gov/vuln/detail/CVE-2020-10663).
 
-[Unreleased]: https://github.com/cyberark/conjur-base-image/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/cyberark/conjur-base-image/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/cyberark/conjur-base-image/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/cyberark/conjur-base-image/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/cyberark/conjur-base-image/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/cyberark/conjur-base-image/compare/v1.0.0...v1.0.1
