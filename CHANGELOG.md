@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Rolled back Postgres client version, in UBI-based image, back to 10.16 to match Conjur 
+  [cyberark/conjur-base-image#62](https://github.com/cyberark/conjur-base-image/pull/62)
+
 ## [1.0.4] - 2021-07-22
 
 - Upgraded ubi8 base image to resolve [CVE-2021-33910](https://nvd.nist.gov/vuln/detail/CVE-2021-33910)

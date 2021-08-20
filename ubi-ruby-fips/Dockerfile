@@ -16,9 +16,9 @@ RUN yum -y update-to nettle-3.4.1-4.el8_3.x86_64 gnutls-3.6.14-8.el8_3.x86_64
 RUN yum install -y --setopt=tsflags=nodocs http://mirror.centos.org/centos/8/BaseOS/x86_64/os/Packages/readline-devel-7.0-10.el8.x86_64.rpm && \
 ### Install openssl, postgresql client
     yum install -y openssl && \
-    yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
-    yum install -y postgresql10 \
-                   postgresql10-devel
+    yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-8-x86_64/postgresql10-libs-10.16-1PGDG.rhel8.x86_64.rpm \
+                   https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-8-x86_64/postgresql10-10.16-1PGDG.rhel8.x86_64.rpm \
+                   https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-8-x86_64/postgresql10-devel-10.16-1PGDG.rhel8.x86_64.rpm
 
 ## Copy ruby binaries from ubi-ruby-builder
 RUN mkdir -p /var/lib/ruby/
