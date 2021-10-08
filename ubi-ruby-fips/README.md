@@ -25,7 +25,7 @@ This container image includes UBI version `8` which contains the following packa
 
 Create image for ubi-ruby-builder:
 ```
-./ubi-ruby-builder/build.sh
+./ubi-ruby-builder/build
 ```
 Create the final image:
 

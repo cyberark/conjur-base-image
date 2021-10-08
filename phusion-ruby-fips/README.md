@@ -35,13 +35,13 @@ The Phusion container image will be built by a three-stage process:
 
 Create image for openssl-builder: 
 ```
-./openssl-builder/build.sh
+./openssl-builder/build
 ```
 Create images for phusion-ruby-builder and postgres-client-builder:
 ```
-./postgres-client-builder/build.sh
-./phusion-ruby-builder/build.sh
-./phusion-openldap-builder/build.sh
+./postgres-client-builder/build
+./phusion-ruby-builder/build
+./phusion-openldap-builder/build
 ```
 Create the final image:
 

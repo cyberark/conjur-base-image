@@ -1,0 +1,19 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"
+
+. ../build.env
+
+(cd .. && ./build openssl-builder "${OPENSSL_BUILDER_TAG}" OPENSSL_VER OPENSSL_FIPS_VER)
+
+(cd .. && ./build phusion-ruby-builder "${RUBY_BUILDER_TAG}" \
+  PHUSION_VERSION RUBY_MAJOR_VERSION RUBY_FULL_VERSION OPENSSL_BUILDER_TAG)
+
+(cd .. && ./build postgres-client-builder "${PG_BUILDER_TAG}" PG_VERSION \
+  OPENSSL_BUILDER_TAG)
+
+(cd .. && ./build phusion-openldap-builder "${OPENLDAP_BUILDER_TAG}" \
+  PHUSION_VERSION OPENLDAP_VERSION OPENSSL_BUILDER_TAG)
+
+(cd .. && ./build phusion-ruby-fips latest PHUSION_VERSION OPENSSL_BUILDER_TAG \
+  RUBY_BUILDER_TAG PG_BUILDER_TAG OPENLDAP_BUILDER_TAG)

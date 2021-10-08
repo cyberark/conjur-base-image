@@ -33,12 +33,12 @@ The Ubuntu container image will be built by a three-stage process:
 
 Create image for openssl-builder: 
 ```
-./openssl-builder/build.sh
+./openssl-builder/build
 ```
 Create images for ubuntu-ruby-builder and postgres-client-builder:
 ```
-./postgres-client-builder/build.sh
-./ubuntu-ruby-builder/build.sh
+./postgres-client-builder/build
+./ubuntu-ruby-builder/build
 ```
 Create the final image:
 

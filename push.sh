@@ -17,6 +17,20 @@ function tag_and_push() {
   docker push $targetImage
 }
 
+function tag_and_push_channels() {
+  local sourceImage="$1"
+  local targetImage="$2"
+  local buildTag="$3"
+
+  CHANNEL_TAGS=${CHANNEL_TAGS:-""}
+
+  tag_and_push "${sourceImage}" "${targetImage}:${buildTag}"
+
+  for tag in ${CHANNEL_TAGS}; do
+    tag_and_push "${sourceImage}" "${targetImage}:${tag}"
+  done
+}
+
 function main_tag_and_push() {
   local sourceImage="$1"
   local targetImageName="$2"

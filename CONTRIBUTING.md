@@ -58,12 +58,12 @@ It's easy to get started with Conjur base image
 To build Ubuntu base image:
    ```sh-session
    $ cd dev
-   $ ./ubuntu-ruby-fips.sh
+   $ ./ubuntu-ruby-fips
    ```
 To build Phusion base image:
    ```sh-session
    $ cd dev
-   $ ./phusion-ruby-fips.sh
+   $ ./phusion-ruby-fips
    ```
 ## Testing
 
@@ -78,7 +78,7 @@ docker run --rm \
   test --image "image:tag" --config "/workspace/test.yml" --test-report "/workspace/test-results/report.json"
    ```
 
-Alternatively, you can run the `./{image-name}/test.sh` script after building
+Alternatively, you can run the `./{image-name}/test` script after building
 the image and view the results in the `./test-results/` folder.
 
 ### Security testing 

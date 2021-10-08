@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -eux
+
+# shellcheck disable=SC1091
+. build.env
+
+function usage() {
+  echo "Usage:"
+  echo "$0 <image> <tag> <build arg variable 1> <build arg variable 2> ... <build arg variable n>"
+  echo ""
+  echo "Builds a docker image with the tag <image>:<tag> using the Dockerfile and directory named"
+  echo "<image> as the build context.  With the supplied build arg variables passed as build args."
+}
+
+# Usage:
+# build <image> <tag> <build arg variable 1> <build arg variable 2> ... <build arg variable n>
+# Builds a docker image with the tag <image>:<tag> using the Dockerfile and directory named
+# <image> as the build context.  With the supplied build arg variables passed as build args.
+function main() {
+  if [ $# -lt 2 ]; then
+    echo "Not enough parameters"
+    usage
+    exit 1
+  fi
+
+  image=$1
+  tag=$2
+  shift 2
+
+  # Dynamically build the docker params needed
+  params=("build" "-t ${image}:${tag}" "-f ${image}/Dockerfile")
+  # Add a build-arg for each variable specified
+  while (($#)); do
+    # Retrieves the value of the variable identified in $1
+    val=${!1}
+    # Disable shellcheck, word splitting is desired here
+    # shellcheck disable=SC2206
+    params=(${params[@]} "--build-arg $1=${val}")
+    shift
+  done
+  # Add the final build context directory to the parameters
+  # Disable shellcheck, word splitting is desired here
+  # shellcheck disable=SC2206
+  params=(${params[@]} "${image}")
+  # Disable shellcheck, re-splitting elements is desired
+  # shellcheck disable=SC2068
+  docker ${params[@]}
+}
+
+main "$@"
