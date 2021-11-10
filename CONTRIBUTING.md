@@ -108,7 +108,8 @@ to publish new versions of the image to public registries:
    - Commit these changes- `Bump version to x.y.z` is an acceptable commit
      message - and open a PR for review.
 1. Merge the version bump PR, and tag the repo with the new version.
-   - Ensure you are working from a current clone of the main branch
+   - Merge PR into main branch
+   - Ensure you are working from the up to date main branch
    - Tag the version using `git tag -s "v$(cat VERSION)" -m "v$(cat VERSION)"`.
    - Push the tag: `git push origin "v1.x.y"`.
 1. Create a release from the new tag from the GitHub UI.
