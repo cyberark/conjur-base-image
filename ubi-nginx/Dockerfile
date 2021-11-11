@@ -17,11 +17,9 @@ LABEL name="ubi-nginx" \
       summary="UBI-based Nginx image for use with Conjur" \
       description="UBI-based Nginx image for use with Conjur"
 
-# Upgrade packages to resolve CVE-2021-20305
-RUN yum -y update-to nettle-3.4.1-4.el8_3.x86_64 gnutls-3.6.14-8.el8_3.x86_64 
-
 # Install nginx version and
-RUN yum -y module enable nginx:$NGINX_VERSION && \
+RUN yum -y update && \
+    yum -y module enable nginx:$NGINX_VERSION && \
     INSTALL_PKGS="bind-utils \
                   gettext \
                   hostname \
