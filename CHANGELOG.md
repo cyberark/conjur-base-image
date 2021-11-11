@@ -6,9 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.6] - 2021-11-11
+
 ### Security
 - Bump nginx from 1.14 to 1.20 to resolve CVE-2021-23017.
   [cyberark/conjur-base-image#69](https://github.com/cyberark/conjur-base-image/pull/69)
+- Upgrade ubi8 base image to recently released ubi:8.5
+  [cyberark/conjur-base-image#70](https://github.com/cyberark/conjur-base-image/pull/70)
 
 ## [1.0.5] - 2021-11-09
 
@@ -66,7 +70,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - Bumped Ruby version from 2.5.1 to 2.5.8 to address [CVE-2020-10663](https://nvd.nist.gov/vuln/detail/CVE-2020-10663).
 
-[Unreleased]: https://github.com/cyberark/conjur-base-image/compare/v1.0.5...HEAD
+[Unreleased]: https://github.com/cyberark/conjur-base-image/compare/v1.0.6...HEAD
+[1.0.6]: https://github.com/cyberark/conjur-base-image/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/cyberark/conjur-base-image/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/cyberark/conjur-base-image/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/cyberark/conjur-base-image/compare/v1.0.2...v1.0.3
