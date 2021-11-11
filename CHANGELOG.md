@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Security
+- Bump nginx from 1.14 to 1.20 to resolve CVE-2021-23017.
+  [cyberark/conjur-base-image#69](https://github.com/cyberark/conjur-base-image/pull/69)
+
 ## [1.0.5] - 2021-11-09
 
 ### Changed

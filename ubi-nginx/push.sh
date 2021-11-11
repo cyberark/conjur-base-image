@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 
 . ../push.sh
 
-NGINX_VERSION=1.14
+NGINX_VERSION=1.20
 LOCAL_IMAGE="ubi-nginx:latest"
 IMAGE="conjur-nginx"
 REDHAT_IMAGE="scan.connect.redhat.com/ospid-9a3dab9b-64c4-4384-882c-80f26ce98607/${IMAGE}"
