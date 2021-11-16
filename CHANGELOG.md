@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [cyberark/conjur-base-image#69](https://github.com/cyberark/conjur-base-image/pull/69)
 - Upgrade ubi8 base image to recently released ubi:8.5
   [cyberark/conjur-base-image#70](https://github.com/cyberark/conjur-base-image/pull/70)
+- Bump bundler from 2.1.4 to 2.2.30 as a prerequisite to ruby 3.0.2.
+  [cyberark/conjur-base-image#72](https://github.com/cyberark/conjur-base-image/pull/72)
 
 ## [1.0.5] - 2021-11-09
 

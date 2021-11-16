@@ -108,4 +108,4 @@ commandTests:
   - name: "bundler version"
     command: "bundler"
     args: ["--version"]
-    expectedOutput: ["^Bundler version 2.1.4\n$"]
+    expectedOutput: ["^Bundler version 2.2.30\n$"]

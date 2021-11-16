@@ -5,7 +5,7 @@ This container image includes Phusion version `0.11` which contains the followin
 * Ruby version `2.5`: compiled against the FIPS 140-2 compliant OpenSSL module.
 * Postgres client version `10-10.16`: compiled against the FIPS 140-2 compliant OpenSSL module.
 * OpenLDAP version `2.4.46`: built using openssl rather than gnutls and compiled against the FIPS 140-2 compliant OpenSSL module.
-* Bundler version `2.1.4`.
+* Bundler version `2.2.30`.
  
 
 ## Build steps
