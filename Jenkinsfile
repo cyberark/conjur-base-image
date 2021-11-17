@@ -74,7 +74,7 @@ pipeline {
 
     stage ('Push internal images') {
       when { branch "main" }
-      
+
       steps {
         sh "./phusion-ruby-fips/push.sh registry.tld"
         sh "./ubuntu-ruby-fips/push.sh registry.tld"
