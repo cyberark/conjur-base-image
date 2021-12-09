@@ -2,8 +2,19 @@ pipeline {
   agent { label 'executor-v2' }
 
   parameters {
-    booleanParam(name: 'PUBLISH_DOCKERHUB', defaultValue: false,
-                 description: 'Publish images to DockerHub')
+    choice(name: 'MODE',
+           choices: ["", "BUILD", "RELEASE", "PROMOTE"],
+           description: '''Build mode to use:
+For default behavior, leave blank.
+To only build, select BUILD.
+To build and release, choose RELEASE.
+To promote an existing release, select PROMOTE''')
+    string(name: 'VERSION_TO_PROMOTE', defaultValue: "",
+           description: 'Tag version to promote from release to customer release')
+  }
+
+  environment {
+    MODE = release.canonicalizeMode()
   }
 
   triggers {
@@ -11,6 +22,12 @@ pipeline {
   }
 
   stages {
+    stage ('Prepare pipeline') {
+      steps {
+        updateVersion("CHANGELOG.md", "${BUILD_NUMBER}")
+      }
+    }
+
     stage ('Build and push openssl-builder image') {
       steps {
         sh "./openssl-builder/build.sh"
@@ -72,25 +89,32 @@ pipeline {
       }
     }
 
-    stage ('Push internal images') {
-      when { branch "main" }
-
-      steps {
-        sh "./phusion-ruby-fips/push.sh registry.tld"
-        sh "./ubuntu-ruby-fips/push.sh registry.tld"
-        sh "./ubi-ruby-fips/push.sh registry.tld"
-        sh "./ubi-nginx/push.sh registry.tld"
-      }
-    }
-
     stage ('Publish images') {
-      when { tag "v*" }
+      when {
+        expression {
+          MODE == "RELEASE"
+        }
+      }
 
       steps {
-        sh "./phusion-ruby-fips/push.sh"
-        sh "./ubuntu-ruby-fips/push.sh"
-        sh "./ubi-ruby-fips/push.sh"
-        sh "./ubi-nginx/push.sh"
+        release { tag ->
+          // Push internal images
+          sh "./phusion-ruby-fips/push.sh registry.tld"
+          sh "./ubuntu-ruby-fips/push.sh registry.tld"
+          sh "./ubi-ruby-fips/push.sh registry.tld"
+          sh "./ubi-nginx/push.sh registry.tld"
+
+          // Push Dockerhub images
+          sh "./phusion-ruby-fips/push.sh"
+          sh "./ubuntu-ruby-fips/push.sh"
+          sh "./ubi-ruby-fips/push.sh"
+          sh "./ubi-nginx/push.sh"
+
+          // Create BOM for docker images
+          sh "mkdir bom/"
+          sh """docker-bom -repository "${GIT_URL}" -version "\$(cat VERSION)" > bom/docker.bom.json"""
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'bom/*.json', fingerprint: true
+        }
       }
     }
   }

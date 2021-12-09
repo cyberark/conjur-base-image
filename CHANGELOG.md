@@ -4,12 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.7] - 2021-12-09
 
 ### Changed
 
 - Bump bundler from 2.1.4 to 2.2.30 as a prerequisite to ruby 3.0.2.
   [cyberark/conjur-base-image#72](https://github.com/cyberark/conjur-base-image/pull/72)
+- Change release process for automatic releasing [ONYX-14105](https://ca-il-jira.il.cyber-ark.com:8443/browse/ONYX-14105)
 
 ## [1.0.6] - 2021-11-11
 
