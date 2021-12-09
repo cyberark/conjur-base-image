@@ -9,7 +9,7 @@ LOCAL_IMAGE="ubi-nginx:latest"
 IMAGE="conjur-nginx"
 REDHAT_IMAGE="scan.connect.redhat.com/ospid-9a3dab9b-64c4-4384-882c-80f26ce98607/${IMAGE}"
 REGISTRY="$(normalize_repo_name "$1")"
-TAG=$(<VERSION)
+TAG=$(<../VERSION)
 
 if [[ -z "${REGISTRY:-}" ]]; then
   # Push to public registry with VERSION

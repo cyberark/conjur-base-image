@@ -8,7 +8,7 @@ UBI_VERSION=ubi8
 LOCAL_IMAGE="ubi-ruby-fips:latest"
 IMAGE="cyberark/ubi-ruby-fips"
 REGISTRY="$(normalize_repo_name "$1")"
-TAG=$(<VERSION)
+TAG=$(<../VERSION)
 
 if [[ -z "${REGISTRY:-}" ]]; then
   # Push to public registry with VERSION
