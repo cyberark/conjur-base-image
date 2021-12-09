@@ -8,7 +8,7 @@ PHUSION_VERSION=0.11
 LOCAL_IMAGE="phusion-ruby-fips:latest"
 IMAGE="cyberark/phusion-ruby-fips"
 REGISTRY="$(normalize_repo_name "$1")"
-TAG=$(<VERSION)
+TAG=$(<../VERSION)
 
 if [[ -z "${REGISTRY:-}" ]]; then
   # Push to public registry with VERSION
