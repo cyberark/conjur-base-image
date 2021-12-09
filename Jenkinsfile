@@ -4,11 +4,11 @@ pipeline {
   parameters {
     choice(name: 'MODE',
            choices: ["", "BUILD", "RELEASE", "PROMOTE"],
-           description: '''Build mode to use:
-For default behavior, leave blank.
-To only build, select BUILD.
-To build and release, choose RELEASE.
-To promote an existing release, select PROMOTE''')
+           description: '''Build mode to use:<br>
+                           For default behavior, leave blank.<br>
+                           To only build, select BUILD.<br>
+                           To build and release, choose RELEASE.<br>
+                           To promote an existing release, select PROMOTE.''')
     string(name: 'VERSION_TO_PROMOTE', defaultValue: "",
            description: 'Tag version to promote from release to customer release')
   }
