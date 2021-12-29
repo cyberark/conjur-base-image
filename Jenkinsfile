@@ -1,17 +1,17 @@
+// Automated release, promotion and dependencies
+properties([
+  release.addParams()
+])
+
+if (params.MODE == "PROMOTE") {
+  release.promote(params.VERSION_TO_PROMOTE) { sourceVersion, targetVersion, assetDirectory ->
+    // Nothing to do here except the promote() automation itself
+  }
+  return
+}
+
 pipeline {
   agent { label 'executor-v2' }
-
-  parameters {
-    choice(name: 'MODE',
-           choices: ["", "BUILD", "RELEASE", "PROMOTE"],
-           description: '''Build mode to use:<br>
-                           For default behavior, leave blank.<br>
-                           To only build, select BUILD.<br>
-                           To build and release, choose RELEASE.<br>
-                           To promote an existing release, select PROMOTE.''')
-    string(name: 'VERSION_TO_PROMOTE', defaultValue: "",
-           description: 'Tag version to promote from release to customer release')
-  }
 
   environment {
     MODE = release.canonicalizeMode()
@@ -22,6 +22,19 @@ pipeline {
   }
 
   stages {
+    stage ("Skip build if triggering job didn't create a release") {
+      when {
+        expression {
+          MODE == "SKIP"
+        }
+      }
+      steps {
+        script {
+          currentBuild.result = 'ABORTED'
+          error("Aborting build because this build was triggered from upstream, but no release was built")
+        }
+      }
+    }
     stage ('Prepare pipeline') {
       steps {
         updateVersion("CHANGELOG.md", "${BUILD_NUMBER}")
@@ -97,7 +110,7 @@ pipeline {
       }
 
       steps {
-        release { tag ->
+        release {
           // Push internal images
           sh "./phusion-ruby-fips/push.sh registry.tld"
           sh "./ubuntu-ruby-fips/push.sh registry.tld"
@@ -109,11 +122,6 @@ pipeline {
           sh "./ubuntu-ruby-fips/push.sh"
           sh "./ubi-ruby-fips/push.sh"
           sh "./ubi-nginx/push.sh"
-
-          // Create BOM for docker images
-          sh "mkdir bom/"
-          sh """docker-bom -repository "${GIT_URL}" -version "\$(cat VERSION)" > bom/docker.bom.json"""
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'bom/*.json', fingerprint: true
         }
       }
     }
