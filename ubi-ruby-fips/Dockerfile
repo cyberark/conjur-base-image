@@ -11,7 +11,7 @@ ARG BUNDLER_VERSION
 
 RUN yum -y update && \
 ### We need libreadline-dev for its readline capabilities
-    yum install -y --setopt=tsflags=nodocs http://mirror.centos.org/centos/8/BaseOS/x86_64/os/Packages/readline-devel-7.0-10.el8.x86_64.rpm && \
+    yum install -y --setopt=tsflags=nodocs http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/readline-devel-7.0-10.el8.x86_64.rpm && \
 ### Install openssl, postgresql client
     yum install -y openssl && \
     yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-8-x86_64/postgresql10-libs-10.16-1PGDG.rhel8.x86_64.rpm \
