@@ -3,8 +3,8 @@
 cd "$(dirname "$0")"
 
 UBI_VERSION=ubi8
-RUBY_MAJOR_VERSION=2.5
-RUBY_FULL_VERSION=2.5.8
+RUBY_MAJOR_VERSION=3.0
+RUBY_FULL_VERSION=3.0.2
 
 docker build -t ubi-ruby-builder:"$RUBY_FULL_VERSION-fips" \
   --build-arg UBI_VERSION="$UBI_VERSION" \
