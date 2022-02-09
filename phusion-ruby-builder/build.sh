@@ -3,8 +3,8 @@
 cd "$(dirname "$0")"
 
 PHUSION_VERSION=0.11
-RUBY_MAJOR_VERSION=2.5
-RUBY_FULL_VERSION=2.5.8
+RUBY_MAJOR_VERSION=3.0
+RUBY_FULL_VERSION=3.0.2
 OPENSSL_BUILDER_TAG=1.0.2u-fips-2.0.16
 
 docker build -t phusion-ruby-builder:"$RUBY_FULL_VERSION-fips" \
