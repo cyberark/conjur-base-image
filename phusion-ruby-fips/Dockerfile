@@ -30,13 +30,13 @@ RUN rm -rf /usr/local/ssl/certs
 RUN ln -sf /etc/ssl/certs/ /usr/local/ssl/
 
 ## Mock openssl and libssl
-COPY --from=openSSL-builder /ca-certificates_20190110ubuntu1.1_all.deb /
-COPY --from=openSSL-builder /openssl_1.0.2u_all.deb /
-COPY --from=openSSL-builder /libssl1.0.0_1.0.2u_all.deb /
+COPY --from=openSSL-builder /ca-certificates_*_all.deb /
+COPY --from=openSSL-builder /openssl_*_all.deb /
+COPY --from=openSSL-builder /libssl1.0.0_*_all.deb /
 
-RUN dpkg -i ca-certificates_20190110ubuntu1.1_all.deb
-RUN dpkg -i openssl_1.0.2u_all.deb
-RUN dpkg -i libssl1.0.0_1.0.2u_all.deb
+RUN dpkg -i ca-certificates_*_all.deb
+RUN dpkg -i openssl_*_all.deb
+RUN dpkg -i libssl1.0.0_*_all.deb
 
 ## Prevent openssl and libssl package from being automatically installed, upgraded or removed
 RUN apt-mark hold ca-certificates
@@ -44,7 +44,7 @@ RUN apt-mark hold openssl
 RUN apt-mark hold libssl1.0.0
 RUN apt-mark hold libssl1.1
 
-# Install SASL dependency for OpenLDAP  
+# Install SASL dependency for OpenLDAP
 RUN apt-get install -y libsasl2-dev && \
     apt-mark hold libssl1.1
 

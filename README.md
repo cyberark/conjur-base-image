@@ -1,21 +1,21 @@
 # Table of Contents
 
 - [Table of Contents](#table-of-contents)
-- [Conjur Base Image](#Conjur-Base-Image)
-- [Certification level](#Certification-level)
-- [Feature](#Feature)
-- [Usage](#Usage)
-- [What is FIPS 140-2](#What-is-FIPS-140-2)
-- [Contributing](#Contributing)
-- [License](#license)
+- [Conjur Base Image](#conjur-base-image)
+  - [Certification level](#certification-level)
+  - [Feature](#feature)
+  - [Usage](#usage)
+  - [What is FIPS 140-2](#what-is-fips-140-2)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 # Conjur Base Image
 
 This repo builds a Docker image that contains OpenSSL, Ruby and PostgreSQL client libraries compiled against the FIPS 140-2 compliant OpenSSL module.
 
 Three images included:
-- [Phusion](./phusion-ruby-fips/) 
-- [Ubuntu](./ubuntu-ruby-fips/) 
+- [Phusion](./phusion-ruby-fips/)
+- [Ubuntu](./ubuntu-ruby-fips/)
 - [UBI](./ubi-ruby-fips/)
 
 ## Certification level
@@ -36,11 +36,11 @@ work with Conjur Open Source as documented. For more detailed information on our
 * Jenkins pipeline for building the Docker image
 * Automated tests validate FIPS mode is successfully enabled and all artifacts are compiled against the FIPS 140-2 compliant
 * OpenSSL version installed in the Phusion and Ubuntu images:
-  * OpenSSL version: `openssl-1.0.2u`
+  * OpenSSL version: `openssl-1.0.2zd`
   * OpenSSL FIPS Module version: `openssl-fips-2.0.16`
 * OpenSSL version installed in the UBI image:
   * OpenSSL version: `openssl-1.1.1c`
-  
+
 ## Usage
 
 - [Phusion](./phusion-ruby-fips/) image is the parent image of Conjur Enterprise Server
@@ -50,7 +50,7 @@ work with Conjur Open Source as documented. For more detailed information on our
 ## What is FIPS 140-2
 
 The Federal Information Processing Standard Publication 140-2, (FIPS PUB 140-2), is a U.S. government computer security standard used to approve cryptographic modules.
-The title is Security Requirements for Cryptographic Modules. 
+The title is Security Requirements for Cryptographic Modules.
 
 For more information, visit the [FIPS 140-2 Wikipedia Page](https://en.wikipedia.org/wiki/FIPS_140-2).
 

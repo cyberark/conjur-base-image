@@ -1,2 +1,6 @@
 # tests
 test-results
+.vscode
+openssl-builder/openssl
+openssl-builder/OPENSSL_BUILDER_TAG
+
