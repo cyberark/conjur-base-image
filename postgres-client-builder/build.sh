@@ -2,10 +2,10 @@
 
 cd "$(dirname "$0")"
 
+REPO_ROOT="$(git rev-parse --show-toplevel)"
 PG_VERSION=10-10.16
-OPENSSL_BUILDER_TAG=1.0.2u-fips-2.0.16
 
 docker build -t postgres-client-builder:"$PG_VERSION-fips" \
   --build-arg PG_VERSION="$PG_VERSION" \
-  --build-arg OPENSSL_BUILDER_TAG="$OPENSSL_BUILDER_TAG" \
+  --build-arg OPENSSL_BUILDER_TAG="$(< "${REPO_ROOT}"/openssl-builder/OPENSSL_BUILDER_TAG)" \
   .

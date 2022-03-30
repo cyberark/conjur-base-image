@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2022-03-30
+
+### Changed
+
+- Upgrade OpenSSL version from 1.0.2u to 1.0.2zd.
+  [cyberark/conjur-base-image#71](https://github.com/cyberark/conjur-base-image/pull/79)
+
 ## [2.0.0] - 2022-02-01
 
 ### Changed

@@ -33,7 +33,7 @@ The Phusion container image will be built by a three-stage process:
 
 ### Steps
 
-Create image for openssl-builder: 
+Create image for openssl-builder:
 ```
 ./openssl-builder/build.sh
 ```
@@ -49,5 +49,6 @@ $IMAGE_NAME is assumed to be the required name of Docker image
 
 $IMAGE_TAG is assumed to be the required tag of Docker image
 ```
-docker build --build-arg "OPENSSL_BUILDER_TAG=1.0.2u-fips-2.0.16" -t "$IMAGE_NAME":"$IMAGE_TAG" phusion-ruby-fips
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+docker build --build-arg "OPENSSL_BUILDER_TAG=$(< "${REPO_ROOT}"/openssl-builder/OPENSSL_BUILDER_TAG)" -t "$IMAGE_NAME":"$IMAGE_TAG" phusion-ruby-fips
 ```
