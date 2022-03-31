@@ -1,13 +1,23 @@
+# CVE-2022-0778
+#
+# In order to support FIPS with OpenSSL we are required to use OpenSSL version
+# 1.0.2 until OpenSSL supports the FIPS module in newer versions. The latest
+# available version to us is 1.0.2zd, which includes this fix. Trivy does not
+# recognize 1.0.2zd as a valid fixed version, hence the need for this ignore.
+#
+# Performed by @samirshetty, approved by @andytinkham
+CVE-2022-0778
+
 # CVE-2021-3711
- # OpenSSL statement https://www.openssl.org/news/secadv/20210824.txt
- # SM2 explanation https://www.openssl.org/docs/manmaster/man7/SM2.html
- # The vulnerability is not affected Conjur's version of OpenSSL 1.0.2u
- # Conjur does not use SM2 algorithm
- # The vulnerability does affect nignx, postgres, syslog-ng version of OpenSSL 1.1.1
- # nignx, postgres, syslog-ng does not use SM2 algorithm
- # if there will be a need in the SM* algorithms OpenSSL 1.1.1 Ubuntu package should be updated to the last version
- # There's a test in the appliance build that validates that the algs are not in list 
- # features/tls_min_version_verification.feature
+# OpenSSL statement https://www.openssl.org/news/secadv/20210824.txt
+# SM2 explanation https://www.openssl.org/docs/manmaster/man7/SM2.html
+# The vulnerability is not affected Conjur's version of OpenSSL 1.0.2u
+# Conjur does not use SM2 algorithm
+# The vulnerability does affect nignx, postgres, syslog-ng version of OpenSSL 1.1.1
+# nignx, postgres, syslog-ng does not use SM2 algorithm
+# if there will be a need in the SM* algorithms OpenSSL 1.1.1 Ubuntu package should be updated to the last version
+# There's a test in the appliance build that validates that the algs are not in list 
+# features/tls_min_version_verification.feature
 CVE-2021-3711
 
 # CVE-2020-1967
