@@ -1,5 +1,5 @@
 # Phusion container image
-This container image includes Phusion version `0.11` which contains the following packages:
+This container image includes Phusion version `focal-1.2.0` which contains the following packages:
 
 * OpenSSL version `1.0.2u`: built with  FIPS 140-2 compliant OpenSSL module version: `2.0.16`.
 * Ruby version `3.0.4`: compiled against the FIPS 140-2 compliant OpenSSL module.
