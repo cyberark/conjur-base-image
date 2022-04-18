@@ -4,12 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [2.0.1] - 2022-03-31
+## [2.0.1] - 2022-04-14
 
 ### Changed
 
+- Upgrade Ruby to 3.0.4
+  [cyberark/conjur-base-image#81](https://github.com/cyberark/conjur-base-image/pull/81)
 - Upgrade OpenSSL version from 1.0.2u to 1.0.2zd.
-  [cyberark/conjur-base-image#71](https://github.com/cyberark/conjur-base-image/pull/79)
+  [cyberark/conjur-base-image#79](https://github.com/cyberark/conjur-base-image/pull/79)
 
 ## [2.0.0] - 2022-02-01
 

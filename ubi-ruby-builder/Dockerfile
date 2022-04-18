@@ -7,7 +7,7 @@ ARG RUBY_FULL_VERSION
 FROM registry.access.redhat.com/$UBI_VERSION/ubi
 ARG RUBY_MAJOR_VERSION
 ARG RUBY_FULL_VERSION
-ARG RUBY_SHA256=5085dee0ad9f06996a8acec7ebea4a8735e6fac22f22e2d98c3f2bc3bef7e6f1
+ARG RUBY_SHA256=70b47c207af04bce9acea262308fb42893d3e244f39a4abc586920a1c723722b
 
 RUN yum install -y --setopt=tsflags=nodocs gcc \
                                            gcc-c++ \
