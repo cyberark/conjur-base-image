@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-PHUSION_VERSION=0.11
+PHUSION_VERSION=focal-1.2.0
 RUBY_MAJOR_VERSION=3.0
 RUBY_FULL_VERSION=3.0.4
 

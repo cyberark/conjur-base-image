@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 
 . ../push.sh
 
-PHUSION_VERSION=0.11
+PHUSION_VERSION=focal-1.2.0
 LOCAL_IMAGE="phusion-ruby-fips:latest"
 IMAGE="cyberark/phusion-ruby-fips"
 REGISTRY="$(normalize_repo_name "$1")"
