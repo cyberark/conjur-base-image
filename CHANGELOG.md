@@ -8,8 +8,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Upgrade Phusion to focal-1.2.0
-  [cyberark/conjur-base-image#82](https://github.com/cyberark/conjur-base-image/pull/82)
 - Upgrade Ruby to 3.0.4
   [cyberark/conjur-base-image#81](https://github.com/cyberark/conjur-base-image/pull/81)
 - Upgrade OpenSSL version from 1.0.2u to 1.0.2zd.
