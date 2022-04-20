@@ -20,7 +20,9 @@ RUN apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get install -y libreadline-dev
 
-RUN apt-get purge -y --auto-remove openssl libssl1.1 libldap-2.4-2
+RUN apt-get purge -y --auto-remove openssl && \
+    apt-get purge -y --auto-remove libssl1.1 && \
+    apt-get purge -y --auto-remove libldap-2.4.2 libldap-common
 # Install the FIPS compliant OpenSSL
 ## Copy to binary from openssl builder
 COPY --from=OpenSSL-builder /usr/local/ssl/ /usr/local/ssl/
