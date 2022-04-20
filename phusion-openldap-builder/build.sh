@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-PHUSION_VERSION=focal-1.2.0
+PHUSION_VERSION=0.11
 OPENLDAP_VERSION=2.4.46
 
 docker build -t phusion-openldap-builder:"$OPENLDAP_VERSION-fips" \
