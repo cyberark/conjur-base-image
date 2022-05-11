@@ -19,8 +19,8 @@ if [[ -z "${REGISTRY:-}" ]]; then
     echo 'Failed to log in to scan.connect.redhat.com'
     exit 1
   fi
-else
-  # Push to internal locations with VERSION and image versions
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}-${TAG}"
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}"
 fi
+
+# Push to internal locations with VERSION and image versions
+tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}-${TAG}"
+tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}"
