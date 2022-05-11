@@ -17,6 +17,8 @@ LABEL name="ubi-nginx" \
       summary="UBI-based Nginx image for use with Conjur" \
       description="UBI-based Nginx image for use with Conjur"
 
+RUN yum -y clean all && yum -y makecache
+
 # Install nginx version and
 RUN yum -y update && \
     yum -y module enable nginx:$NGINX_VERSION && \

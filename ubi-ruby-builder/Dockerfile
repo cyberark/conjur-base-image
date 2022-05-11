@@ -9,6 +9,8 @@ ARG RUBY_MAJOR_VERSION
 ARG RUBY_FULL_VERSION
 ARG RUBY_SHA256=70b47c207af04bce9acea262308fb42893d3e244f39a4abc586920a1c723722b
 
+RUN yum -y clean all && yum -y makecache && yum -y update
+
 RUN yum install -y --setopt=tsflags=nodocs gcc \
                                            gcc-c++ \
                                            make \
