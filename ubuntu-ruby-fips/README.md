@@ -1,7 +1,7 @@
 # Ubuntu container image
 This container image includes Ubuntu version `20.04` which contains the following packages:
 
-* OpenSSL version `1.0.2u`: built with  FIPS 140-2 compliant OpenSSL module version: `2.0.16`.
+* OpenSSL version `1.0.2zd`: built with  FIPS 140-2 compliant OpenSSL module version: `2.0.16`.
 * Ruby version `3.0.4`: compiled against the FIPS 140-2 compliant OpenSSL module.
 * Postgres client version `10-10.16`: compiled against the FIPS 140-2 compliant OpenSSL module.
 * Bundler version `2.2.30`.

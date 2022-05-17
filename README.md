@@ -36,10 +36,10 @@ work with Conjur Open Source as documented. For more detailed information on our
 * Jenkins pipeline for building the Docker image
 * Automated tests validate FIPS mode is successfully enabled and all artifacts are compiled against the FIPS 140-2 compliant
 * OpenSSL version installed in the Phusion and Ubuntu images:
-  * OpenSSL version: `openssl-1.0.2zd`
+  * OpenSSL version: `openssl-1.0.2ze`
   * OpenSSL FIPS Module version: `openssl-fips-2.0.16`
 * OpenSSL version installed in the UBI image:
-  * OpenSSL version: `openssl-1.1.1c`
+  * OpenSSL version: `openssl-1.1.1-1ubuntu2.1-18.04.17`
 
 ## Usage
 
