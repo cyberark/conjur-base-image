@@ -1,7 +1,7 @@
 # ubuntu-openssl-builder
 An openssl FIPS 140-2 builder
 
-* OpenSSL: `openssl-1.0.2ze`
+* OpenSSL: `openssl-1.0.2zf`
 * OpenSSL FIPS Module: `openssl-fips-2.0.16`
 
 ## Build steps
