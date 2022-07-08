@@ -7,12 +7,15 @@ For general contribution and community guidelines, please see the [community rep
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
-- [Contributing](#contributing)
-- [Development](#development)
-- [Testing](#testing)
-  - [Security testing ](#security-testing )
-- [Releasing](#releasing)
+- [Contributing to the Conjur base image](#contributing-to-the-conjur-base-image)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Contributing](#contributing)
+    - [Contributing workflow](#contributing-workflow)
+  - [Development](#development)
+  - [Testing](#testing)
+    - [Security testing](#security-testing)
+  - [Releasing](#releasing)
 
 
 ## Prerequisites
@@ -94,34 +97,12 @@ To run vulnerability scanning using [trivy](https://github.com/aquasecurity/triv
 
 ## Releasing
 
-When the images have been updated and new versions should be released, you can
-follow the standard [release process](https://github.com/cyberark/community/blob/main/Conjur/CONTRIBUTING.md#release-process)
-to publish new versions of the image to public registries:
+Our base images use our automated release process to propagate out everywhere
+they're used. To make a new release:
 
-1. Create a new branch for the version bump.
-   - Increment the [VERSION](./VERSION) following semantic versioning.
-   - Review the git history and ensure the [changelog](./CHANGELOG.md) includes
-     all recent relevant changes with references to GitHub issues / PRs.
-   - Review the changes since the last release, and if the dependencies have
-     changed revise the [NOTICES.txt](./NOTICES.txt) to correctly capture the
-     included dependencies and their licenses / copyrights.
-   - Commit these changes- `Bump version to x.y.z` is an acceptable commit
-     message - and open a PR for review.
-1. Merge the version bump PR, and tag the repo with the new version.
-   - Ensure you are working from a current clone of the main branch
-   - Tag the version using `git tag -s "v$(cat VERSION)" -m "v$(cat VERSION)"`.
-   - Push the tag: `git push origin "v1.x.y"`.
-1. Create a release from the new tag from the GitHub UI.
-   - Copy the changelog from the new version into the GitHub release description.
-   - The pipeline will automatically publish images to public image registries
-     in the tag-triggered build.
-   - Visit the [Nginx Red Hat project page](https://connect.redhat.com/project/5899451/view)
-     once the images have been pushed and manually choose to publish the latest
-     release.
-1. Update the Dockerfiles in the Conjur project to point to the new base image
-   versions. Images that needs updates include:
-   - gems/policy-parser/Dockerfile.test
-   - dev/Dockerfile.dev
-   - Dockerfile
-   - Dockerfile.ubi
-1. Update the Conjur Enterprise Dockerfile to point to the new base image version.
+1. Create a new branch for your changes.
+2. When the build passes with your changes in the branch, make the PR, get it approved, and merge it.
+3. Merging to main will automatically trigger a release build.
+4. The release build will automatically trigger downstream builds to update them. Look at the very
+   end of the Jenkins log for links to those builds if you want to see what was triggered.
+5. That's it. There is no more, even though this feels too easy.
