@@ -16,4 +16,4 @@ commandTests:
        xargs strings |
        grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" |
        sort | uniq | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2ze-fips  3 May 2022$"]
+    expectedOutput: ["^OpenSSL 1.0.2zf-fips"]
