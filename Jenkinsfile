@@ -41,25 +41,25 @@ pipeline {
       }
     }
 
-    stage ('Build and push openssl-builder image') {
+    stage ('Build and tag openssl-builder image') {
       steps {
         sh "./openssl-builder/build.sh"
       }
     }
 
-    stage ('Build and push builder images') {
+    stage ('Build and tag builder images') {
       parallel {
-        stage ('Build and push phusion-ruby-builder image') {
+        stage ('Build and tag phusion-ruby-builder image') {
           steps {
             sh "./phusion-ruby-builder/build.sh"
           }
         }
-        stage ('Build and push ubuntu-ruby-builder image') {
+        stage ('Build and tag ubuntu-ruby-builder image') {
           steps {
             sh "./ubuntu-ruby-builder/build.sh"
           }
         }
-        stage ('Build and push ubi-ruby-builder image') {
+        stage ('Build and tag ubi-ruby-builder image') {
           steps {
             sh "./ubi-ruby-builder/build.sh"
           }
