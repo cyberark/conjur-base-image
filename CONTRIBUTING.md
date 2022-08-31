@@ -16,11 +16,12 @@ For general contribution and community guidelines, please see the [community rep
   - [Testing](#testing)
     - [Security testing](#security-testing)
   - [Releasing](#releasing)
+    - [Pulling Upstream Image Changes](#pulling-upstream-image-changes)
 
 
 ## Prerequisites
 
-Before getting started, you should install some developer tools. 
+Before getting started, you should install some developer tools.
 
 1. [git][get-git] to manage source code
 1. [Docker][get-docker] to manage dependencies and runtime environments
@@ -71,7 +72,7 @@ To build Phusion base image:
 ## Testing
 
 Tests are defined in `test.yaml` using [GoogleContainerTools/container-structure-test](https://github.com/GoogleContainerTools/container-structure-test).
-To run tests, [build image](#Development) and execute 
+To run tests, [build image](#Development) and execute
 
    ```sh-session
 docker run --rm \
@@ -84,9 +85,9 @@ docker run --rm \
 Alternatively, you can run the `./{image-name}/test.sh` script after building
 the image and view the results in the `./test-results/` folder.
 
-### Security testing 
+### Security testing
 To run vulnerability scanning using [trivy](https://github.com/aquasecurity/trivy) execute
-   
+
    ```sh-session
  docker run --rm \
    -v /var/run/docker.sock:/var/run/docker.sock \
@@ -106,3 +107,16 @@ they're used. To make a new release:
 4. The release build will automatically trigger downstream builds to update them. Look at the very
    end of the Jenkins log for links to those builds if you want to see what was triggered.
 5. That's it. There is no more, even though this feels too easy.
+
+### Pulling Upstream Image Changes
+
+On occasion, our security scans will fail due to security issues detected in upstream images. When this happens, a new release needs to be created to pull upstream changes (and rebuild our images based on the new upstream base image(s)).
+
+To trigger a new release with upstream changes:
+
+1. From the [Jenkins Conjur Base Image](https://jenkins.conjur.net/job/cyberark--conjur-base-image/) page, create a build with parameters.
+
+   ![Create Build with Parameters](resources/create-build-with-parameter.png)
+2. Select "Release" from the "Mode" dropdown and click the "Build" button:
+
+   ![Trigger Release](resources/create-a-release.png)
