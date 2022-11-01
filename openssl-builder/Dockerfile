@@ -1,7 +1,12 @@
 FROM ubuntu:18.04
 ARG OPENSSL_VER
 
-ADD  openssl/openssl$OPENSSL_VER/openssl$OPENSSL_VER.tgz /usr/local/ssl
+ADD openssl/openssl$OPENSSL_VER/openssl$OPENSSL_VER.tgz /usr/local/ssl
+
+# Temporarily add the missing binaries in misc. These are taken from
+# our non-FIPS-compliant build and are present only to avoid breaking
+# downstream builds until we get the missing files from SafeLogic.
+ADD miscExes.tgz /usr/local/ssl
 
 # Temporarily, we need to add in the config file from when we built 
 # OpenSSL ourselves. We have a request in to SafeLoogic to have this
