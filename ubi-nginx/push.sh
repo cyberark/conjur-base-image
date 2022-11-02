@@ -15,7 +15,7 @@ echo "DEBUG: prefixless (without ospid): ${prefixless}"
 echo "DEBUG: Login to red hat with user: ${user}"
 echo "DEBUG: ${REDHAT_REGISTRY}"
 
-REDHAT_IMAGE="${REDHAT_REGISTRY}/redhat-isv-containers/${prefixless}/${IMAGE}"
+REDHAT_IMAGE="${REDHAT_REGISTRY}/redhat-isv-containers/${prefixless}"
 REGISTRY="$(normalize_repo_name "$1")"
 TAG=$(<../VERSION)
 
