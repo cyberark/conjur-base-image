@@ -9,7 +9,7 @@ LOCAL_IMAGE="ubi-nginx:latest"
 IMAGE="conjur-nginx"
 readonly REDHAT_REGISTRY="quay.io"
 
-prefixless='9a3dab9b-64c4-4384-882c-80f26ce98607'
+prefixless='5f9052d3796c8e8debd8ee29'
 user="redhat-isv-containers+${prefixless}-robot"
 echo "DEBUG: prefixless (without ospid): ${prefixless}"
 echo "DEBUG: Login to red hat with user: ${user}"
