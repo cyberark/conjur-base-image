@@ -9,7 +9,9 @@ LOCAL_IMAGE="ubi-nginx:latest"
 IMAGE="conjur-nginx"
 readonly REDHAT_REGISTRY="quay.io"
 
+# This ID is the one shown in the URL for the project, not the PID/OSPID
 prefixless='5f9052d3796c8e8debd8ee29'
+
 user="redhat-isv-containers+${prefixless}-robot"
 echo "DEBUG: prefixless (without ospid): ${prefixless}"
 echo "DEBUG: Login to red hat with user: ${user}"
@@ -21,7 +23,7 @@ TAG=$(<../VERSION)
 
 if [[ -z "${REGISTRY:-}" ]]; then
   # Push to public registry with VERSION
-  if summon -f ../secrets.yml bash -c "docker login ${REDHAT_REGISTRY} -u ${user} -p ${REDHAT_API_KEY}"; then
+  if summon -f ../secrets.yml bash -c 'docker login ${REDHAT_REGISTRY} -u ${user} -p ${REDHAT_API_KEY}'; then
     tag_and_push "${LOCAL_IMAGE}" "${REDHAT_IMAGE}:${TAG}"
   else
     echo 'Failed to log in to quay.io'
