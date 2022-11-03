@@ -21,10 +21,10 @@ TAG=$(<../VERSION)
 
 if [[ -z "${REGISTRY:-}" ]]; then
   # Push to public registry with VERSION
-  if summon -f ../secrets.yml bash -c 'docker login "${REDHAT_REGISTRY}" -u "${user}" -p "${REDHAT_API_KEY}"'; then
+  if summon -f ../secrets.yml bash -c "docker login -u ${user} -p ${REDHAT_API_KEY} ${REDHAT_REGISTRY}"; then
     tag_and_push "${LOCAL_IMAGE}" "${REDHAT_IMAGE}:${TAG}"
   else
-    echo 'Failed to log in to scan.connect.redhat.com'
+    echo 'Failed to log in to quay.io'
     exit 1
   fi
 else
