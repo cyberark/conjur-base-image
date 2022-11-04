@@ -25,6 +25,7 @@ if [[ -z "${REGISTRY:-}" ]]; then
   # Push to public registry with VERSION
   if summon -f ../secrets.yml bash -c "docker login ${REDHAT_REGISTRY} -u ${user} -p \${REDHAT_API_KEY}"; then
     tag_and_push "${LOCAL_IMAGE}" "${REDHAT_IMAGE}:${TAG}"
+    "./bin/scan_redhat_image" "${REDHAT_IMAGE}:${TAG}" "${prefixless}"
   else
     echo 'Failed to log in to quay.io'
     exit 1

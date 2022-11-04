@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+ # Script to scan a container image that has been pushed to Red Hat's registry using the Red Hat Preflight tool
+ # which is a required step for OpenShift certified projects.
+ # The first parameter is the URL to the image on Red Hat's registry including the tag.
+ # The second parameter is the certification project ID from the Red Hat portal. You can find this ID in the URL of
+ # the project's Red Hat portal page: https://connect.redhat.com/projects/{CERT_PID}/images
+ #
+ # Example: scan_redhat_image "scan.connect.redhat.com/ospid-{myProjectId}/{myProjectName}:latest" "{myCertPid}"
+
+ mkdir preflight-linux-amd64
+ curl -o preflight-linux-amd64/preflight -L https://github.com/redhat-openshift-ecosystem/openshift-preflight/releases/download/1.4.2/preflight-linux-amd64
+ chmod a+x preflight-linux-amd64/preflight
+
+ IMAGE_URL=$1
+ CERT_PID=$2
+
+ summon --yaml 'PYXIS_API_KEY: !var redhat/access/pyxis/api-key' \
+     docker run --rm \
+     -v "$HOME/.docker":/docker \
+     -v "$(pwd)"/preflight-linux-amd64:/workdir \
+     -e PYXIS_API_KEY \
+     --workdir /workdir \
+     registry.access.redhat.com/ubi8/ubi \
+     bash -c "/workdir/preflight \
+     check container \"$IMAGE_URL\" \
+     --submit \
+     --certification-project-id=\"$CERT_PID\" \
+     --pyxis-api-token=\"\$PYXIS_API_KEY\" \
+     --docker-config /docker/config.json"
+     # will need to be prod at some point?
