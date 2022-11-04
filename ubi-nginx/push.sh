@@ -23,14 +23,17 @@ TAG=$(<../VERSION)
 
 if [[ -z "${REGISTRY:-}" ]]; then
   # Push to public registry with VERSION
-  if summon -f ../secrets.yml bash -c 'echo ${REDHAT_API_KEY} | docker login ${REDHAT_REGISTRY} -u ${user} --password-stdin'; then
-    tag_and_push "${LOCAL_IMAGE}" "${REDHAT_IMAGE}:${TAG}"
+
+  if summon -f ../secrets.yml bash -c 'echo -n "==="; echo -n ${user}; echo -n ${REDHAT_REGISTRY}; echo -n "==="'; then
+  # if summon -f ../secrets.yml bash -c 'echo ${REDHAT_API_KEY}| tr -d '\n' | docker login ${REDHAT_REGISTRY} -u ${user} --password-stdin'; then
+    # tag_and_push "${LOCAL_IMAGE}" "${REDHAT_IMAGE}:${TAG}"
+    echo "success"
   else
     echo 'Failed to log in to quay.io'
     exit 1
   fi
 else
   # Push to internal locations with VERSION and image versions
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}-${TAG}"
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}"
+  # tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}-${TAG}"
+  # tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}"
 fi
