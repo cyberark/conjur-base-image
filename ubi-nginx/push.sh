@@ -33,6 +33,7 @@ if [[ -z "${REGISTRY:-}" ]]; then
     exit 1
   fi
 else
+  echo "foo"
   # Push to internal locations with VERSION and image versions
   # tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}-${TAG}"
   # tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}"
