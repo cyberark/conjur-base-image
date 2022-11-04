@@ -25,7 +25,6 @@
      bash -c "/workdir/preflight \
      check container \"$IMAGE_URL\" \
      --submit \
-     --pyxis-env=uat \
      --certification-project-id=\"$CERT_PID\" \
      --pyxis-api-token=\"\$PYXIS_API_KEY\" \
      --docker-config /docker/config.json"
