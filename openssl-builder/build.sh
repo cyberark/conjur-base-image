@@ -4,7 +4,7 @@ set -euxo pipefail
 
 cd "$(dirname "$0")"
 
-OPENSSL_VER="1.0.2zf-50"
+OPENSSL_VER="1.0.2zf-53"
 
 if ! git clone git@github.com:conjurinc/openssl.git; then
   echo "Could not clone conjurinc/openssl repo"
