@@ -3,17 +3,6 @@ ARG OPENSSL_VER
 
 ADD openssl/openssl$OPENSSL_VER/openssl$OPENSSL_VER.tgz /usr/local/ssl
 
-# Temporarily add the missing binaries in misc. These are taken from
-# our non-FIPS-compliant build and are present only to avoid breaking
-# downstream builds until we get the missing files from SafeLogic.
-ADD miscExes.tgz /usr/local/ssl
-
-# Temporarily, we need to add in the config file from when we built 
-# OpenSSL ourselves. We have a request in to SafeLoogic to have this
-# file included in their deliverables and should use that long term
-# to make sure the config file stays up to date with the build.
-COPY openssl.cnf /usr/local/ssl
-
 # The next 3 RUN statements are because the structure in the tgz file 
 # doesn't match the structure created by the OpenSSL build. The DV team
 # sets the structure for the executable, but can't change it right now due
