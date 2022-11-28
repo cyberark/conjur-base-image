@@ -7,7 +7,7 @@ ARG RUBY_FULL_VERSION
 FROM registry.access.redhat.com/$UBI_VERSION/ubi
 ARG RUBY_MAJOR_VERSION
 ARG RUBY_FULL_VERSION
-ARG RUBY_SHA256=70b47c207af04bce9acea262308fb42893d3e244f39a4abc586920a1c723722b
+ARG RUBY_SHA256=9afc6380a027a4fe1ae1a3e2eccb6b497b9c5ac0631c12ca56f9b7beb4848776
 
 RUN yum -y clean all && yum -y makecache && yum -y update
 
