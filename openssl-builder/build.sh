@@ -4,7 +4,14 @@ set -euxo pipefail
 
 cd "$(dirname "$0")"
 
-OPENSSL_VER="1.0.2zf-53"
+OPENSSL_VER="1.0.2zf-55"
+
+# This isn't an issue in the Jenkins build since we use fresh executors
+# but for local development, remove any previously cloned repos so we
+# don't get errors about the directory already existing.
+if [[ -d openssl ]]; then
+  rm -rf openssl
+fi
 
 if ! git clone git@github.com:conjurinc/openssl.git; then
   echo "Could not clone conjurinc/openssl repo"
