@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2/0/5] - 2022-12-9
+
+### Changed
+- Added processing in openssl-builder to handle the new format of openssl tgz files
+  where the DV team put all the extra files we needed in the Extension folder to 
+  stop breaking all the teams that relied on the absence of those failes to get
+  static linking of the libraries. This .tgz file format is used from SafeLogic
+  release 1.0.2zf-55 onwards.
+  [cyberark/conjur-base-image#105](https://github.com/cyberark/conjur-base-image/pull/105)
+
 ## [2.0.4] - 2022-11-28
 
 ### Security
