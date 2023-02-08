@@ -16,7 +16,7 @@ CVE-2022-0778
 # The vulnerability does affect nignx, postgres, syslog-ng version of OpenSSL 1.1.1
 # nignx, postgres, syslog-ng does not use SM2 algorithm
 # if there will be a need in the SM* algorithms OpenSSL 1.1.1 Ubuntu package should be updated to the last version
-# There's a test in the appliance build that validates that the algs are not in list 
+# There's a test in the appliance build that validates that the algs are not in list
 # features/tls_min_version_verification.feature
 CVE-2021-3711
 
@@ -43,7 +43,7 @@ CVE-2020-1967
 # function GENERAL_NAME_cmp which compares different instances of a GENERAL_NAME
 # to see if they are equal or not. This function behaves incorrectly when both
 # GENERAL_NAMEs contain an EDIPARTYNAME. A NULL pointer dereference and a crash
-# may occur leading to a possible denial of service attack. 
+# may occur leading to a possible denial of service attack.
 # OpenSSL itself uses the GENERAL_NAME_cmp function for two purposes:
 #
 # 1) Comparing CRL distribution point names between an available CRL and a CRL
@@ -87,3 +87,6 @@ CVE-2020-1971
 #
 # Performed by @jtuttle, approved by @andytinkham
 CVE-2021-3449
+
+# Temporarily ignore CVE-2023-0286 until OpenSSL is updated in the base image
+CVE-2023-0286
