@@ -8,21 +8,21 @@ commandTests:
   - name: "OpenSSL version"
     command: "openssl"
     args: ["version"]
-    expectedOutput: ["^OpenSSL 1.0.2zf-fips "]
+    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "libssl.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
     args:
       - -c
       - find / -type f -name libssl.so* -exec strings {} \; | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zf-fips "]
+    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "libcrypto.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
     args:
       - -c
       - find / -type f -name libcrypto.so* -exec strings {} \; | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zf-fips "]
+    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "OpenSSL accepts FIPS compliant algorithms"
     command: "openssl"
     args:
@@ -52,21 +52,21 @@ commandTests:
     args:
       - -c
       - find / -name *ssl*.*so* | grep ruby | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zf-fips "]
+    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "Ruby linked with valid libssl.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
     args:
       - -c
       - find / -name *ssl*.*so* | grep ruby | xargs ldd | grep "libssl.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zf-fips "]
+    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "Ruby sees valid OpenSSL version"
     command: "ruby"
     args:
       - -ropenssl
       - -e
       - 'puts OpenSSL::OPENSSL_LIBRARY_VERSION'
-    expectedOutput: ["^OpenSSL 1.0.2zf-fips "]
+    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "Ruby accepts FIPS compliant algorithms"
     command: "ruby"
     args:
@@ -92,14 +92,14 @@ commandTests:
     args:
       - -c
       - find / -type f -name libpq.so* | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zf-fips "]
+    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "libpq linked with valid libssl.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
     args:
       - -c
       - find / -type f -name libpq.so* | xargs ldd | grep "libssl.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zf-fips "]
+    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "Postgres version"
     command: "pg_dump"
     args: ["--version"]

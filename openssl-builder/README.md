@@ -1,8 +1,7 @@
 # ubuntu-openssl-builder
 An openssl FIPS 140-2 builder
 
-* OpenSSL: `openssl-1.0.2zf`
-* OpenSSL FIPS Module: `openssl-fips-2.0.16`
+* OpenSSL: `openssl-1.0.2zg` (built by SafeLogic to be FIPS-compliant)
 
 ## Build steps
 The Dockerfile builds the FIPS canister per the requirements in "OpenSSL FIPS 140-2 Security Policy Version 2.0.16." It also verifies the SHA256 hash and PGP signature of the OpenSSL source based on OpenSSL's best practices recommendations.
