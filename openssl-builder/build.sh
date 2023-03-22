@@ -4,7 +4,7 @@ set -euxo pipefail
 
 cd "$(dirname "$0")"
 
-OPENSSL_VER="1.0.2zg-18"
+OPENSSL_VER="1.0.2zg-34"
 
 # This isn't an issue in the Jenkins build since we use fresh executors
 # but for local development, remove any previously cloned repos so we
