@@ -87,6 +87,3 @@ CVE-2020-1971
 #
 # Performed by @jtuttle, approved by @andytinkham
 CVE-2021-3449
-
-# Temporarily ignore CVE-2023-0286 until OpenSSL is updated in the base image
-CVE-2023-0286
