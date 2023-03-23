@@ -87,3 +87,8 @@ CVE-2020-1971
 #
 # Performed by @jtuttle, approved by @andytinkham
 CVE-2021-3449
+
+# We have the fix for this CVE in place. However, trivy still detects
+# it because it doesn't handle the 1.0.2 line available only by premium 
+# support and thus thinks we're still vulnerable. 
+CVE-2023-0286
