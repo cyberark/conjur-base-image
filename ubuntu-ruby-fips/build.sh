@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 UBUNTU_VERSION=20.04
-RUBY_BUILDER_TAG=3.0.5-fips
+RUBY_BUILDER_TAG=3.0.6-fips
 PG_BUILDER_TAG=10-10.16-fips
 
 docker build -t ubuntu-ruby-fips:latest \

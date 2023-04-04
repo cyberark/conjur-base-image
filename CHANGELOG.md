@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - Update OpenSSL to 1.0.2zg to remove CVE-2023-0286
   [cyberark/conjur-base-image#106](https://github.com/cyberark/conjur-base-image/pull/106)
+- Upgrade Ruby to 3.0.6 to resolve CVE-2021-33621
+  [cyberark/conjur-base-image#107](https://github.com/cyberark/conjur-base-image/pull/107)
 
 ## [2.0.5] - 2022-12-9
 
