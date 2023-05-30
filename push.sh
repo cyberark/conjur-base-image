@@ -12,7 +12,7 @@ function tag_and_push() {
   local sourceImage="$1"
   local targetImage="$2"
 
-  echo Tagging and pushing $targetImage...
-  docker tag "$sourceImage" $targetImage
-  docker push $targetImage
+  echo Tagging and pushing "$targetImage"...
+  docker tag "$sourceImage" "$targetImage"
+  docker push "$targetImage"
 }

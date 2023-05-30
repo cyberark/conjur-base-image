@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -e
+
+if ! command -v openssl &>/dev/null; then
+  echo "openssl could not be found"
+  exit 1
+fi
+
+OPENSSL_DIR=$(openssl version -d | sed -n 's/.*"\(.*\)"/\1/p')
+
+fips-mode-setup --enable --no-bootcfg
+
+# We should be using openssl fipsinstall but it is disabled on UBI9
+cat <<EOF >>"${OPENSSL_DIR}/fipsmodule.cnf"
+[fips_sect]
+activate = 1
+install-version = 1
+conditional-errors = 1
+security-checks = 1
+module-mac = E6:10:90:D6:F0:E5:03:21:A7:03:B1:E2:3D:CA:3C:C2:C2:0F:53:C7:68:AC:05:0B:45:2F:2D:FC:C1:6F:2F:43
+EOF
+
+# Prepare additional configuration file for FIPS mode (selectable by OPENSSL_CONF env variable)
+OPENSSL_CONF=$(realpath "${OPENSSL_DIR}"/openssl.cnf)
+OPENSSL_FIPS_CONF=$(realpath "${OPENSSL_DIR}"/openssl_fips.cnf)
+cp "${OPENSSL_CONF}" "${OPENSSL_FIPS_CONF}"
+
+patch --quiet "${OPENSSL_FIPS_CONF}" <<EOF
+44a45
+> .include /etc/pki/tls/fipsmodule.cnf
+48a50
+> alg_section = algorithm_sect
+60a63
+> fips = fips_sect
+394a398,399
+> [algorithm_sect]
+> default_properties = "fips=yes"
+EOF
+
+set +e

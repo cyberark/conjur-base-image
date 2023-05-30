@@ -105,11 +105,14 @@ they're used. To make a new release:
 
 ### Pulling Upstream Image Changes
 
-On occasion, our security scans will fail due to security issues detected in upstream images. When this happens, a new release needs to be created to pull upstream changes (and rebuild our images based on the new upstream base image(s)).
+On occasion, our security scans will fail due to security issues detected in upstream images.
+When this happens, a new release needs to be created to pull upstream changes
+(and rebuild our images based on the new upstream base image(s)).
 
 To trigger a new release with upstream changes:
 
-1. From the [Jenkins Conjur Base Image](https://jenkins.conjur.net/job/cyberark--conjur-base-image/) page, create a build with parameters.
+1. From the [Jenkins Conjur Base Image](https://jenkins.conjur.net/job/cyberark--conjur-base-image/) page,
+create a build with parameters.
 
    ![Create Build with Parameters](resources/create-build-with-parameter.png)
 2. Select "Release" from the "Mode" dropdown and click the "Build" button:

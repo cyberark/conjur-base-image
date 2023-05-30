@@ -1,0 +1,96 @@
+schemaVersion: 2.0.0
+commandTests:
+  # OS version test
+  - name: "Operating system version"
+    command: "bash"
+    args:
+      - -c
+      - cat /etc/os-release | grep 'VERSION_ID='
+    expectedOutput: [ "^VERSION_ID=\"9.[0-9]+\"\n$" ]
+  - name: "FIPS toggle disabled by default"
+    command: "bash"
+    args: ["fips_mode"]
+    expectedOutput: [ "^FIPS mode is disabled\n$" ]
+  # OpenSSL tests
+  - name: "OpenSSL version"
+    command: "openssl"
+    args: ["version"]
+    expectedOutput: ["^OpenSSL 3.[0-9].[0-9] [0-9A-Za-z ]+ \\(Library: OpenSSL 3.[0-9].[0-9] [0-9A-Za-z ]+\\)\n$"]
+  - name: "libssl.so version"
+    command: "bash"
+    args:
+      - -c
+      - find / -type f -name libssl.so* | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3 | tr -d '\n'
+    expectedOutput: ["^/lib64/libcrypto.so.3$"]
+  - name: "libcrypto.so version"
+    setup: [["dnf", "install", "-y", "binutils"]]
+    command: "bash"
+    args:
+      - -c
+      - find / -type f -name libcrypto.so* -exec strings {} \; | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
+    expectedOutput: ["^OpenSSL 3.[0-9].[0-9] [0-9A-Za-z ]+$"]
+  - name: "OpenSSL accepts FIPS compliant algorithms"
+    command: "openssl"
+    args:
+      - sha256
+      - /etc/passwd
+  # ruby tests
+  - name: "Ruby version"
+    command: "ruby"
+    args: ["--version"]
+    expectedOutput: ["^ruby 3.2.2 \\(2023-03-30 revision e51014f9c0\\) \\[x86_64-linux\\]\n$"]
+  - name: "Ruby linked with valid libcrypto.so version"
+    setup: [["dnf", "install", "-y", "binutils"]]
+    command: "bash"
+    args:
+      - -c
+      - find / -name *ssl*.*so* | grep ruby | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
+    expectedOutput: [".*OpenSSL 3.[0-9].[0-9] [0-9A-Za-z ]+.*"]
+  - name: "Ruby linked with valid libssl.so version"
+    command: "bash"
+    args:
+      - -c
+      - find / -name *ssl*.*so* | grep ruby | xargs ldd | grep "libssl.so" | cut -d' ' -f3 | tr -d '\n'
+    expectedOutput: ["^/lib64/libssl.so.3$"]
+  - name: "Ruby sees valid OpenSSL version"
+    command: "ruby"
+    args:
+      - -ropenssl
+      - -e
+      - 'puts OpenSSL::OPENSSL_LIBRARY_VERSION'
+    expectedOutput: ["^OpenSSL 3.[0-9].[0-9] [0-9A-Za-z ]+\n$"]
+  - name: "Ruby accepts FIPS compliant algorithms"
+    command: "ruby"
+    args:
+      - -ropenssl
+      - -e
+      - 'puts(OpenSSL::Digest::SHA256.new)'
+  - name: "Ruby denies non FIPS compliant algorithms when FIPS mode enabled"
+    envVars:
+      - key: OPENSSL_CONF
+        value: '/etc/pki/tls/openssl_fips.cnf'
+    command: "ruby"
+    args:
+      - -ropenssl
+      - -e
+      - 'puts(OpenSSL::Digest::MD5.new)'
+    exitCode: 1
+    expectedError: [".*Digest initialization failed.*"]
+  # postgres lib tests
+  - name: "libpq linked with valid libcrypto.so version"
+    command: "bash"
+    args:
+      - -c
+      - find / -type f -name libpq.so* | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3 | head -1 | tr -d '\n'
+    expectedOutput: ["^/lib64/libcrypto.so.3$"]
+  - name: "libpq linked with valid libssl.so version"
+    command: "bash"
+    args:
+      - -c
+      - find / -type f -name libpq.so* | xargs ldd | grep "libssl.so" | cut -d' ' -f3 | head -1 | tr -d '\n'
+    expectedOutput: ["^/lib64/libssl.so.3$"]
+  # bundler tests
+  - name: "bundler version"
+    command: "bundler"
+    args: ["--version"]
+    expectedOutput: ["^Bundler version 2.4.14\n$"]

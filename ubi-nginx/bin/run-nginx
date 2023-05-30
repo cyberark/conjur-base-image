@@ -2,9 +2,9 @@
 
 CERT_WAIT_TIME=1
 SSL_KEY="/tmp/tls.key"
-SSL_FILES=( "/opt/conjur/etc/ssl/ca/tls.crt"
-            "/opt/conjur/etc/ssl/cert/tls.crt"
-            "$SSL_KEY" )
+SSL_FILES=("/opt/conjur/etc/ssl/ca/tls.crt"
+  "/opt/conjur/etc/ssl/cert/tls.crt"
+  "$SSL_KEY")
 
 # Enable Ctrl + C from container during while loop that checks for certs.
 trap "echo signal; exit 0" SIGINT
@@ -22,10 +22,12 @@ main() {
 function generate_passwd_file() {
   # Built in /etc/passwd does not include user running container, so create new
   # passwd file and add entry for www-data user with current uid and gid.
-  export USER_ID=$(id -u)
-  export GROUP_ID=$(id -g)
-  grep -v ^www-data /etc/passwd > "$HOME/passwd"
-  echo "www-data:x:${USER_ID}:${GROUP_ID}:WWW Data:${HOME}:/bin/bash" >> "$HOME/passwd"
+  USER_ID=$(id -u)
+  export USER_ID
+  GROUP_ID=$(id -g)
+  export GROUP_ID
+  grep -v ^www-data /etc/passwd >"$HOME/passwd"
+  echo "www-data:x:${USER_ID}:${GROUP_ID}:WWW Data:${HOME}:/bin/bash" >>"$HOME/passwd"
 
   # Linux configuration to load lib-nss and enable custom passwd.
   export LD_PRELOAD=libnss_wrapper.so
@@ -51,11 +53,11 @@ verify_certs() {
   while [ "$all_certs_available" != "true" ]; do
     all_certs_available="true"
 
-    for ssl_file in ${SSL_FILES[@]}; do
+    for ssl_file in "${SSL_FILES[@]}"; do
       echo "Checking existence of $ssl_file..."
-      
+
       cert_dir=$(dirname "$ssl_file")
-      
+
       if [ ! -f "${ssl_file}" ] && [ ! -L "${ssl_file}" ]; then
         echo "SSL file $ssl_file is not a regular file and not a link to one! Aborting!"
         echo "Content of $cert_dir:"
@@ -68,7 +70,7 @@ verify_certs() {
         all_certs_available="false"
       fi
     done
-    
+
     if [ "$all_certs_available" != "true" ]; then
       echo "Certs are not configured properly yet. Sleeping $CERT_WAIT_TIME second..."
       sleep "$CERT_WAIT_TIME"

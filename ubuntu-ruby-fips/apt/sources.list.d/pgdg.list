@@ -1,0 +1,1 @@
+deb [arch=amd64,arm64 signed-by=/etc/apt/keyrings/postgres.gpg] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main

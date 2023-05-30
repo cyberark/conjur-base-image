@@ -36,7 +36,7 @@ if [[ -z "${REGISTRY:-}" ]]; then
     exit 1
   fi
 else
-  # Push to internal locations with VERSION and image versions
+  # Push to internal locations with UBI version and and image versions
   tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBI_VERSION}-${TAG}"
   tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBI_VERSION}"
   tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${TAG}"
