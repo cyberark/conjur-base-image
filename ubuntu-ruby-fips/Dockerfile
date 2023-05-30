@@ -1,56 +1,56 @@
-ARG UBUNTU_VERSION
-ARG OPENSSL_BUILDER_TAG
-ARG RUBY_BUILDER_TAG
-ARG PG_BUILDER_TAG
-ARG BUNDLER_VERSION=2.2.33
+ARG UBUNTU_VERSION=22.04
+# ARG OPENSSL_BUILDER_TAG
+# ARG PG_BUILDER_TAG
+# ARG BUNDLER_VERSION=2.2.33
 
-# OpenSSL, ruby and postgres-client Builders
-FROM openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
-FROM ubuntu-ruby-builder:$RUBY_BUILDER_TAG as ubuntu-ruby-builder
-FROM postgres-client-builder:$PG_BUILDER_TAG as postgres-client-builder
+FROM ubuntu:${UBUNTU_VERSION} as fips-provider-builder
 
-# Conjur Base Image (Ubuntu)
-FROM ubuntu:$UBUNTU_VERSION
-ARG BUNDLER_VERSION
+ARG OPEN_SSL_FIPS_PROVIDER_VERSION=3.0.0
 
-### We need libreadline-dev for its readline capabilities
 RUN apt-get update && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y libreadline-dev
+	apt-get install -y curl build-essential checkinstall zlib1g-dev
 
-RUN apt-get purge -y --auto-remove openssl libssl1.1
+RUN curl https://www.openssl.org/source/openssl-${OPEN_SSL_FIPS_PROVIDER_VERSION}.tar.gz --output /tmp/openssl.tar.gz && \
+	cd /tmp && \
+	tar -xf openssl.tar.gz && \
+	cd openssl-${OPEN_SSL_FIPS_PROVIDER_VERSION} && \
+	./config enable-fips --openssldir=/usr/lib/ssl --prefix=/usr/lib/ssl && \
+	make -j 4 -s
 
-# Install the FIPS compliant OpenSSL
-## Copy to binary from openssl builder
-COPY --from=OpenSSL-builder /usr/local/ssl/ /usr/local/ssl/
-COPY --from=OpenSSL-builder /usr/share/ca-certificates/ /usr/share/ca-certificates/
-COPY --from=OpenSSL-builder /etc/ssl/certs/ /etc/ssl/certs/
-RUN rm -rf /usr/local/ssl/certs
-RUN ln -sf /etc/ssl/certs/ /usr/local/ssl/
+ENV OPENSSL_CONF=/etc/ssl/openssl.cnf
 
-## Mock openssl and libssl
-COPY --from=openSSL-builder /ca-certificates_*_all.deb /
-COPY --from=openSSL-builder /openssl_*_all.deb /
-COPY --from=openSSL-builder /libssl1.0.0_*_all.deb /
+RUN	cd /tmp/openssl-${OPEN_SSL_FIPS_PROVIDER_VERSION} && \
+	make install_fips && \
+    cp /usr/lib/ssl/lib/ossl-modules/fips.so /tmp/fips.so
 
-RUN dpkg -i ca-certificates_*_all.deb
-RUN dpkg -i openssl_*_all.deb
-RUN dpkg -i libssl1.0.0_*_all.deb
 
-## Prevent openssl and libssl package from being automatically installed, upgraded or remove
-RUN apt-mark hold ca-certificates
-RUN apt-mark hold openssl
-RUN apt-mark hold libssl1.0.0
-RUN apt-mark hold libssl1.1
+FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-builder
+ARG RUBY_FULL_VERSION=3.0.6
+ARG RUBY_MAJOR_VERSION=3.0
+ARG RUBY_SHA256=6e6cbd490030d7910c0ff20edefab4294dfcd1046f0f8f47f78b597987ac683e
 
-## Copy postgres and ruby binaries from fips-artifacts
-RUN mkdir -p /var/lib/pgsql/ /var/lib/ruby/
-COPY --from=postgres-client-builder /usr/local/pgsql/ /usr/local/pgsql/
-COPY --from=ubuntu-ruby-builder /var/lib/ruby/ /var/lib/ruby/
+COPY build_ruby.sh .
+RUN ./build_ruby.sh
 
-ENV PATH="/usr/local/pgsql/bin:/var/lib/ruby/bin:/usr/local/ssl/bin:${PATH}" \
-    LD_LIBRARY_PATH="/usr/local/ssl/lib" \
-    OPENSSL_FIPS=1
+FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-fips-slim
+ARG RUBY_FULL_VERSION=3.0.6
 
-## Install Ruby tools
-RUN gem install --no-document bundler:$BUNDLER_VERSION
+RUN apt-get update && \
+  apt-get upgrade -y && \
+	apt-get install -y openssl curl && \
+	apt-get clean
+
+COPY --from=ubuntu-ruby-builder /usr/bin/* /usr/bin/
+
+COPY --from=fips-provider-builder /tmp/fips.so /tmp/fips.so
+
+COPY enable_fips.sh /tmp/enable_fips.sh
+RUN /tmp/enable_fips.sh
+
+FROM ubuntu-ruby-fips-slim as ubuntu-ruby-fips-dev
+
+RUN apt-get update && \
+	apt-get install -y postgresql-client && \
+	apt-get clean
+
+CMD ruby --version && openssl list --digest-commands -provider fips && openssl list --digest-commands && sleep infinity
