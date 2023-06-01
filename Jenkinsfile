@@ -41,37 +41,11 @@ pipeline {
       }
     }
 
-    stage ('Build and tag openssl-builder image') {
-      steps {
-        sh "./openssl-builder/build.sh"
-      }
-    }
-
     stage ('Build and tag builder images') {
       parallel {
-        stage ('Build and tag phusion-ruby-builder image') {
-          steps {
-            sh "./phusion-ruby-builder/build.sh"
-          }
-        }
-        stage ('Build and tag ubuntu-ruby-builder image') {
-          steps {
-            sh "./ubuntu-ruby-builder/build.sh"
-          }
-        }
         stage ('Build and tag ubi-ruby-builder image') {
           steps {
             sh "./ubi-ruby-builder/build.sh"
-          }
-        }
-        stage ('Build and tag postgres-client-builder image') {
-          steps {
-            sh "./postgres-client-builder/build.sh"
-          }
-        }
-        stage ('Build and tag openldap-builder image') {
-          steps {
-            sh "./phusion-openldap-builder/build.sh"
           }
         }
       }
@@ -79,11 +53,6 @@ pipeline {
 
     stage ('Build, Test, and Scan images') {
       parallel {
-        stage ('Build, Test, and Scan phusion-ruby-fips image') {
-          steps {
-            buildTestAndScanImage('phusion-ruby-fips')
-          }
-        }
         stage ('Build, Test, and Scan ubuntu-ruby-fips image') {
           steps {
             buildTestAndScanImage('ubuntu-ruby-fips')
@@ -118,13 +87,11 @@ pipeline {
       steps {
         release {
           // Push internal images
-          sh "./phusion-ruby-fips/push.sh registry.tld"
           sh "./ubuntu-ruby-fips/push.sh registry.tld"
           sh "./ubi-ruby-fips/push.sh registry.tld"
           sh "./ubi-nginx/push.sh registry.tld"
 
           // Push Dockerhub images
-          sh "./phusion-ruby-fips/push.sh"
           sh "./ubuntu-ruby-fips/push.sh"
           sh "./ubi-ruby-fips/push.sh"
           sh "./ubi-nginx/push.sh"
