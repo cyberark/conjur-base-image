@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 
 . ../push.sh
 
-UBI_VERSION=ubi8
+UBI_VERSION=ubi9
 LOCAL_IMAGE="ubi-ruby-fips:latest"
 IMAGE="cyberark/ubi-ruby-fips"
 REGISTRY="$(normalize_repo_name "$1")"

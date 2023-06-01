@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-UBI_VERSION=ubi8
+UBI_VERSION=ubi9
 RUBY_MAJOR_VERSION=3.0
 RUBY_FULL_VERSION=3.0.6
 

@@ -16,14 +16,17 @@ RUN yum install -y --setopt=tsflags=nodocs gcc \
                                            make \
                                            openssl-devel \
                                            wget \
-                                           zlib-devel
-RUN yum install -y --setopt=tsflags=nodocs http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/readline-devel-7.0-10.el8.x86_64.rpm
+                                           zlib-devel \
+                                           readline
 
 ## Compile ruby
 RUN wget --quiet https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR_VERSION/ruby-$RUBY_FULL_VERSION.tar.gz && \
     echo "$RUBY_SHA256 ruby-$RUBY_FULL_VERSION.tar.gz" | sha256sum -c - && \
     tar -xvf ruby-$RUBY_FULL_VERSION.tar.gz && \
     cd ruby-$RUBY_FULL_VERSION && \
-    ./configure --prefix=/var/lib/ruby && \
+    ./configure --prefix=/var/lib/ruby --without-openssl --with-openssl-dir=/etc/pki/tls && \
     make -j4 && \
-    make install
+    make install && \
+    wget https://rubygems.org/downloads/openssl-3.0.0.gem && \
+    /var/lib/ruby/bin/gem install openssl-3.0.0.gem
+

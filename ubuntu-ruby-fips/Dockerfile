@@ -24,7 +24,7 @@ FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-fips-slim
 ARG RUBY_FULL_VERSION=3.0.6
 
 RUN apt-get update && \
-  apt-get upgrade -y && \
+    apt-get upgrade -y && \
 	apt-get install -y openssl curl && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
