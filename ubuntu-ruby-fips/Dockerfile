@@ -9,20 +9,8 @@ ARG OPEN_SSL_FIPS_PROVIDER_VERSION=3.0.0
 
 RUN apt-get update && \
 	apt-get install -y curl build-essential checkinstall zlib1g-dev
-
-RUN curl https://www.openssl.org/source/openssl-${OPEN_SSL_FIPS_PROVIDER_VERSION}.tar.gz --output /tmp/openssl.tar.gz && \
-	cd /tmp && \
-	tar -xf openssl.tar.gz && \
-	cd openssl-${OPEN_SSL_FIPS_PROVIDER_VERSION} && \
-	./config enable-fips --openssldir=/usr/lib/ssl --prefix=/usr/lib/ssl && \
-	make -j 4 -s
-
-ENV OPENSSL_CONF=/etc/ssl/openssl.cnf
-
-RUN	cd /tmp/openssl-${OPEN_SSL_FIPS_PROVIDER_VERSION} && \
-	make install_fips && \
-    cp /usr/lib/ssl/lib/ossl-modules/fips.so /tmp/fips.so
-
+COPY build_openssl_fips_provider.sh .
+RUN ./build_openssl_fips_provider.sh
 
 FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-builder
 ARG RUBY_FULL_VERSION=3.0.6
@@ -38,11 +26,12 @@ ARG RUBY_FULL_VERSION=3.0.6
 RUN apt-get update && \
   apt-get upgrade -y && \
 	apt-get install -y openssl curl && \
-	apt-get clean
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/*
 
 COPY --from=ubuntu-ruby-builder /usr/bin/* /usr/bin/
 
-COPY --from=fips-provider-builder /tmp/fips.so /tmp/fips.so
+COPY --from=fips-provider-builder /usr/local/lib/fips.so /usr/local/lib/fips.so
 
 COPY enable_fips.sh /tmp/enable_fips.sh
 RUN /tmp/enable_fips.sh
@@ -51,6 +40,8 @@ FROM ubuntu-ruby-fips-slim as ubuntu-ruby-fips-dev
 
 RUN apt-get update && \
 	apt-get install -y postgresql-client && \
-	apt-get clean
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/*
+
 
 CMD ruby --version && openssl list --digest-commands -provider fips && openssl list --digest-commands && sleep infinity
