@@ -1,9 +1,13 @@
 ARG UBI_VERSION
-ARG RUBY_BUILDER_TAG
-ARG BUNDLER_VERSION=2.2.33
 
 # Ruby Builder
-FROM ubi-ruby-builder:$RUBY_BUILDER_TAG as ubi-ruby-builder
+FROM registry.access.redhat.com/$UBI_VERSION/ubi as ubi-ruby-builder
+ARG RUBY_MAJOR_VERSION
+ARG RUBY_FULL_VERSION
+ARG RUBY_SHA256
+
+COPY build_ruby.sh .
+RUN ./build_ruby.sh
 
 # Conjur Base Image (UBI)
 FROM registry.access.redhat.com/$UBI_VERSION/ubi as ubi-ruby-fips-slim
@@ -46,3 +50,5 @@ ENV PATH="/usr/pgsql-10/bin:/var/lib/ruby/bin:${PATH}"
 
 ## Install Ruby tools
 RUN gem install --no-document bundler:$BUNDLER_VERSION
+
+CMD ruby --version && openssl list --digest-commands -provider fips && openssl list --digest-commands && sleep infinity

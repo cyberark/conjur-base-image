@@ -18,7 +18,7 @@ RUN ./build_ruby.sh
 FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-fips-slim
 
 RUN apt-get update && \
-  apt-get upgrade -y && \
+    apt-get upgrade -y && \
 	apt-get install -y openssl curl ca-certificates && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*

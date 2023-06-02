@@ -1,18 +1,31 @@
 #!/bin/bash
 
+set -e
+
 cd "$(dirname "$0")"
 
-UBI_VERSION=ubi9
-RUBY_BUILDER_TAG=3.0.6-fips
+set -a
+source ../versions.env
+set +a
 
-docker build -t ubi-ruby-fips:ubi9 \
+docker build -t ubi-ruby-fips:"${UBI_VERSION}" \
 	--target=ubi-ruby-fips-dev \
-  --build-arg UBI_VERSION="$UBI_VERSION" \
-  --build-arg RUBY_BUILDER_TAG="$RUBY_BUILDER_TAG" \
+	--pull \
+  --build-arg UBI_VERSION \
+  --build-arg RUBY_FULL_VERSION \
+  --build-arg RUBY_MAJOR_VERSION \
+	--build-arg RUBY_SHA256 \
+	--build-arg BUNDLER_VERSION \
   .
 
-docker build -t ubi-ruby-fips:ubi9-slim \
+docker build -t ubi-ruby-fips:"${UBI_VERSION}"-slim \
 	--target=ubi-ruby-fips-slim \
-  --build-arg UBI_VERSION="$UBI_VERSION" \
-  --build-arg RUBY_BUILDER_TAG="$RUBY_BUILDER_TAG" \
+	--pull \
+  --build-arg UBI_VERSION \
+  --build-arg RUBY_FULL_VERSION \
+  --build-arg RUBY_MAJOR_VERSION \
+	--build-arg RUBY_SHA256 \
+	--build-arg BUNDLER_VERSION \
   .
+
+set +e
