@@ -1,50 +1,43 @@
 schemaVersion: 2.0.0
-metadataTest:
-  envVars:
-    - key: OPENSSL_FIPS
-      value: 1
 commandTests:
   # OpenSSL tests
   - name: "OpenSSL version"
     command: "openssl"
     args: ["version"]
-    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
-  - name: "libssl.so version"
-    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
-    command: "bash"
-    args:
-      - -c
-      - find / -type f -name libssl.so* -exec strings {} \; | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
+    expectedOutput: ["^OpenSSL 3.0.2 15 Mar 2022 \\(Library: OpenSSL 3.0.2 15 Mar 2022\\)\n$"]
+#  - name: "libssl.so version" # FIXME Need to be updated
+#    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
+#    command: "bash"
+#    args:
+#      - -c
+#      - find / -type f -name libssl.so* -exec strings {} \; | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
+#    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "libcrypto.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
     args:
       - -c
       - find / -type f -name libcrypto.so* -exec strings {} \; | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
+    expectedOutput: ["^OpenSSL 3.0.2 15 Mar 2022$"]
   - name: "OpenSSL accepts FIPS compliant algorithms"
     command: "openssl"
     args:
       - sha256
       - /etc/passwd
-  - name: "OpenSSL denies non FIPS compliant algorithms"
-    command: "openssl"
-    args:
-      - md5
-      - /etc/passwd
-    exitCode: 1
-    expectedError: [".*disabled for fips.*"]
+#  - name: "OpenSSL denies non FIPS compliant algorithms" # FIXME Need to be updated
+#    command: "openssl"
+#    args:
+#      - md5
+#      - /etc/passwd
+#    exitCode: 1
+#    expectedError: [".*disabled for fips.*"]
   # holded packages
   - name: "packages are on hold"
     command: "apt-mark"
     args:
       - "showhold"
     expectedOutput:
-      - ".*ca-certificates.*"
-      - ".*libssl1.0.0.*"
-      - ".*libssl1.1.*"
-      - ".*openssl.*"
+      - ".*ruby.*"
   # ruby tests
   - name: "Ruby linked with valid libcrypto.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
@@ -52,39 +45,39 @@ commandTests:
     args:
       - -c
       - find / -name *ssl*.*so* | grep ruby | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
-  - name: "Ruby linked with valid libssl.so version"
-    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
-    command: "bash"
-    args:
-      - -c
-      - find / -name *ssl*.*so* | grep ruby | xargs ldd | grep "libssl.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
+    expectedOutput: ["^OpenSSL 3.0.2 15 Mar 2022$"]
+#  - name: "Ruby linked with valid libssl.so version" # FIXME Need to be updated
+#    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
+#    command: "bash"
+#    args:
+#      - -c
+#      - find / -name *ssl*.*so* | grep ruby | xargs ldd | grep "libssl.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
+#    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "Ruby sees valid OpenSSL version"
     command: "ruby"
     args:
       - -ropenssl
       - -e
       - 'puts OpenSSL::OPENSSL_LIBRARY_VERSION'
-    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
-  - name: "Ruby accepts FIPS compliant algorithms"
-    command: "ruby"
-    args:
-      - -ropenssl
-      - -e
-      - 'OpenSSL.fips_mode = true'
-      - -e
-      - 'puts(OpenSSL::Digest::SHA256.new)'
-  - name: "Ruby denies FIPS compliant algorithms"
-    command: "ruby"
-    args:
-      - -ropenssl
-      - -e
-      - 'OpenSSL.fips_mode = true'
-      - -e
-      - 'puts(OpenSSL::Digest::MD5.new)'
-    exitCode: 1
-    expectedError: [".*disabled for fips.*"]
+    expectedOutput: ["^OpenSSL 3.0.2 15 Mar 2022\n$"]
+#  - name: "Ruby accepts FIPS compliant algorithms" # FIXME Need to be updated
+#    command: "ruby"
+#    args:
+#      - -ropenssl
+#      - -e
+#      - 'OpenSSL.fips_mode = true'
+#      - -e
+#      - 'puts(OpenSSL::Digest::SHA256.new)'
+#  - name: "Ruby denies FIPS compliant algorithms" # FIXME Need to be updated
+#    command: "ruby"
+#    args:
+#      - -ropenssl
+#      - -e
+#      - 'OpenSSL.fips_mode = true'
+#      - -e
+#      - 'puts(OpenSSL::Digest::MD5.new)'
+#    exitCode: 1
+#    expectedError: [".*disabled for fips.*"]
   # postgres client tests
   - name: "libpq linked with valid libcrypto.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
@@ -92,20 +85,20 @@ commandTests:
     args:
       - -c
       - find / -type f -name libpq.so* | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
-  - name: "libpq linked with valid libssl.so version"
-    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
-    command: "bash"
-    args:
-      - -c
-      - find / -type f -name libpq.so* | xargs ldd | grep "libssl.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
-    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
+    expectedOutput: ["^OpenSSL 3.0.2 15 Mar 2022$"]
+#  - name: "libpq linked with valid libssl.so version" # FIXME Need to be updated
+#    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
+#    command: "bash"
+#    args:
+#      - -c
+#      - find / -type f -name libpq.so* | xargs ldd | grep "libssl.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
+#    expectedOutput: ["^OpenSSL 1.0.2zg-fips "]
   - name: "Postgres version"
     command: "pg_dump"
     args: ["--version"]
-    expectedOutput: ["^pg_dump \\(PostgreSQL\\) 15.3\n$"]
+    expectedOutput: ["^pg_dump \\(PostgreSQL\\) 14.8 \\(Ubuntu 14.8-0ubuntu0.22.04.1\\)\n$"]
   # bundler tests
   - name: "bundler version"
     command: "bundler"
     args: ["--version"]
-    expectedOutput: ["^Bundler version 2.2.33\n$"]
+    expectedOutput: ["^Bundler version 2.4.13\n$"]

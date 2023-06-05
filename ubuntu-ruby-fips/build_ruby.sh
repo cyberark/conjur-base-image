@@ -25,7 +25,7 @@ echo "$RUBY_SHA256 ruby-$RUBY_FULL_VERSION.tar.gz" | sha256sum -c -
 tar -xvf ruby-"${RUBY_FULL_VERSION}".tar.gz
 cd ruby-"${RUBY_FULL_VERSION}"
 
-./configure --prefix=/var/lib/ruby --disable-install-doc
+./configure --prefix=/var/lib/ruby --enable-shared --disable-install-doc
 make -j4
 make install
 
