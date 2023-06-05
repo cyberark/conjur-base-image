@@ -41,31 +41,21 @@ pipeline {
       }
     }
 
-    stage ('Build and tag builder images') {
-      parallel {
-        stage ('Build and tag ubi-ruby-builder image') {
-          steps {
-            sh "./ubi-ruby-builder/build.sh"
-          }
-        }
-      }
-    }
-
     stage ('Build, Test, and Scan images') {
       parallel {
         stage ('Build, Test, and Scan ubuntu-ruby-fips image') {
           steps {
-            buildTestAndScanImage('ubuntu-ruby-fips')
+            buildTestAndScanImage('ubuntu-ruby-fips', '22.04')
           }
         }
         stage ('Build, Test, and Scan ubi-ruby-fips image') {
           steps {
-            buildTestAndScanImage('ubi-ruby-fips')
+            buildTestAndScanImage('ubi-ruby-fips', 'ubi9')
           }
         }
         stage ('Build, Test, and Scan ubi-nginx image') {
           steps {
-            buildTestAndScanImage('ubi-nginx')
+            buildTestAndScanImage('ubi-nginx', 'latest')
           }
         }
       }
@@ -74,6 +64,7 @@ pipeline {
     stage ('Publish experimental images to internal repository') {
       steps {
         sh "./ubuntu-ruby-fips/push_experimental.sh registry.tld"
+        sh "./ubi-ruby-fips/push_experimental.sh registry.tld"
       }
     }
 
@@ -108,9 +99,9 @@ pipeline {
   }
 }
 
-def buildTestAndScanImage(name) {
+def buildTestAndScanImage(name, tag) {
   sh "./${name}/build.sh"
   sh "./${name}/test.sh"
-  scanAndReport("${name}:latest", "HIGH", false)
-  scanAndReport("${name}:latest", "NONE", true)
+  scanAndReport("${name}:${tag}", "HIGH", false)
+  scanAndReport("${name}:${tag}", "NONE", true)
 }
