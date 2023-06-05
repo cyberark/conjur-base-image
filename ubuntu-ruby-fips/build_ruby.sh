@@ -11,6 +11,7 @@ apt-get install -y build-essential \
 	make \
 	zlib1g-dev \
 	libssl-dev \
+	libyaml-dev \
 	openssl \
 	ca-certificates \
 	dpkg-dev \
@@ -24,9 +25,10 @@ echo "$RUBY_SHA256 ruby-$RUBY_FULL_VERSION.tar.gz" | sha256sum -c -
 tar -xvf ruby-"${RUBY_FULL_VERSION}".tar.gz
 cd ruby-"${RUBY_FULL_VERSION}"
 
-OPENSSL_DIR=$(openssl version -d | sed -n 's/.*"\(.*\)"/\1/p')
-./configure --prefix=/usr/local --without-openssl --with-openssl-dir="${OPENSSL_DIR}"
+./configure --prefix=/var/lib/ruby --disable-install-doc
 make -j4
 make install
+
+/var/lib/ruby/bin/gem install bundler -v "${BUNDLER_VERSION}" --no-document
 
 set -e
