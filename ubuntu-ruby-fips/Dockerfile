@@ -26,6 +26,7 @@ RUN apt-get update && \
 	apt-get install -y \
     openssl \
     curl \
+    patch \
     ca-certificates  \
     libyaml-0-2 && \
 	apt-get clean && \
@@ -34,15 +35,18 @@ RUN apt-get update && \
 
 COPY --from=ubuntu-ruby-builder /var/lib/ruby /var/lib/ruby
 COPY --from=fips-provider-builder /usr/local/lib/fips.so /usr/local/lib/fips.so
-COPY enable_fips.sh /tmp/enable_fips.sh
-# we cannot enable the FIPS mod yet due to: https://github.com/openssl/openssl/issues/20657
-#RUN /tmp/enable_fips.sh
-ENV PATH="/var/lib/ruby/bin:${PATH}"
-#    OPENSSL_FIPS=1
-RUN ruby --version && \
-    gem --version && \
-    bundler --version
+COPY fips_mode.sh /usr/local/bin/fips_mode.sh
 
+RUN /usr/local/bin/fips_mode.sh -a enable
+ENV PATH="/var/lib/ruby/bin:${PATH}" \
+    OPENSSL_FIPS=1
+RUN ruby --version && \
+    irb --version && \
+    gem --version && \
+    bundler --version && \
+    ruby -ropenssl -e 'puts OpenSSL::OPENSSL_VERSION'
+
+CMD irb
 
 FROM ubuntu-ruby-fips-slim as ubuntu-ruby-fips-dev
 
@@ -50,8 +54,3 @@ RUN apt-get update && \
 	apt-get install -y postgresql-client && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
-
-RUN ruby -ropenssl -e 'puts OpenSSL::OPENSSL_VERSION'
-
-#CMD ruby --version && openssl list --digest-commands -provider fips && openssl list --digest-commands && sleep infinity
-CMD ruby --version && openssl list --digest-commands && sleep infinity

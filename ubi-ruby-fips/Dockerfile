@@ -32,6 +32,8 @@ ENV PATH="/usr/pgsql-10/bin:/var/lib/ruby/bin:${PATH}"
 ## Install Ruby tools
 RUN gem install --no-document bundler:$BUNDLER_VERSION
 
+CMD irb
+
 # Conjur Base Image (UBI)
 FROM ubi-ruby-fips-slim as ubi-ruby-fips-dev
 
@@ -42,5 +44,3 @@ RUN yum -y update && \
   yum install -y jq && \
   yum --disableplugin=subscription-manager clean all
 #  rm -rf /var/cache/yum
-
-CMD ruby --version && openssl list --digest-commands -provider fips && openssl list --digest-commands && sleep infinity
