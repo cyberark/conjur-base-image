@@ -5,6 +5,7 @@ FROM ubuntu:${UBUNTU_VERSION} as fips-provider-builder
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG OPEN_SSL_FIPS_PROVIDER_VERSION
+ARG OPEN_SSL_FIPS_PROVIDER_SHA256
 
 COPY build_openssl_fips_provider.sh .
 RUN ./build_openssl_fips_provider.sh
@@ -21,8 +22,12 @@ RUN ./build_ruby.sh
 FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-fips-slim
 
 RUN apt-get update && \
-    apt-get upgrade -y && \
-	apt-get install -y openssl curl ca-certificates && \
+  apt-get upgrade -y && \
+	apt-get install -y \
+    openssl \
+    curl \
+    ca-certificates  \
+    libyaml-0-2 && \
 	apt-get clean && \
   apt-mark hold ruby && \
 	rm -rf /var/lib/apt/lists/*
@@ -34,6 +39,9 @@ COPY enable_fips.sh /tmp/enable_fips.sh
 #RUN /tmp/enable_fips.sh
 ENV PATH="/var/lib/ruby/bin:${PATH}"
 #    OPENSSL_FIPS=1
+RUN ruby --version && \
+    gem --version && \
+    bundler --version
 
 
 FROM ubuntu-ruby-fips-slim as ubuntu-ruby-fips-dev
@@ -43,7 +51,7 @@ RUN apt-get update && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN /var/lib/ruby/bin/ruby -ropenssl -e 'puts OpenSSL::OPENSSL_VERSION'
+RUN ruby -ropenssl -e 'puts OpenSSL::OPENSSL_VERSION'
 
 #CMD ruby --version && openssl list --digest-commands -provider fips && openssl list --digest-commands && sleep infinity
 CMD ruby --version && openssl list --digest-commands && sleep infinity

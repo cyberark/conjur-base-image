@@ -20,6 +20,7 @@ docker build -t ubuntu-ruby-fips:"${UBUNTU_VERSION}" \
 	--build-arg BUNDLER_VERSION \
 	--build-arg PG_VERSION \
 	--build-arg OPEN_SSL_FIPS_PROVIDER_VERSION \
+	--build-arg OPEN_SSL_FIPS_PROVIDER_SHA256 \
 	.
 
 docker build -t ubuntu-ruby-fips:"${UBUNTU_VERSION}"-slim \
@@ -32,6 +33,7 @@ docker build -t ubuntu-ruby-fips:"${UBUNTU_VERSION}"-slim \
 	--build-arg BUNDLER_VERSION \
 	--build-arg PG_VERSION \
 	--build-arg OPEN_SSL_FIPS_PROVIDER_VERSION \
+	--build-arg OPEN_SSL_FIPS_PROVIDER_SHA256 \
 	.
 
 set +e
