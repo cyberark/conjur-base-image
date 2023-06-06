@@ -1,12 +1,12 @@
 # UBI container image
-This container image includes UBI version `8` which contains the following packages:
+This container image includes UBI version `9` which contains the following packages:
 
-* OpenSSL version `1.1.1k`: with FIPS 140-2 compliant OpenSSL module from RedHat UBI 8.
-* Ruby version `3.0.6`: compiled against the FIPS 140-2 compliant OpenSSL module.
-* Postgres client version `10-10.16`: compiled against the FIPS 140-2 compliant OpenSSL module.
-* Bundler version `2.2.33`.
- 
+* OpenSSL: with FIPS 140-2 compliant OpenSSL module from RedHat UBI 9.
+* Ruby: compiled against the FIPS 140-2 compliant OpenSSL module.
+* Postgres client: compiled against the FIPS 140-2 compliant OpenSSL module.
+* Bundler.
 
+The exact versions of packages mentioned above can be found in [Description.md](./Description.md).
 ## Build steps
 #### Assumptions
 

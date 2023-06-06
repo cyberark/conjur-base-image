@@ -35,6 +35,9 @@ RUN gem install --no-document bundler:$BUNDLER_VERSION
 # Conjur Base Image (UBI)
 FROM ubi-ruby-fips-slim as ubi-ruby-fips-dev
 
+RUN mkdir docs
+COPY generate-description.sh ./docs/generate-description.sh
+
 RUN yum -y update && \
   yum install -y jq && \
   yum --disableplugin=subscription-manager clean all
