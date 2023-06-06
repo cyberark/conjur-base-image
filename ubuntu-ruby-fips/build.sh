@@ -36,4 +36,15 @@ docker build -t ubuntu-ruby-fips:"${UBUNTU_VERSION}"-slim \
 	--build-arg OPEN_SSL_FIPS_PROVIDER_SHA256 \
 	.
 
+echo "Running docker container to generate description..."
+docker run --rm \
+  --env BUNDLER_VERSION="$BUNDLER_VERSION" \
+  --env RUBY_FULL_VERSION="$RUBY_FULL_VERSION" \
+  --env PG_VERSION="$PG_VERSION" \
+  --volume "$(pwd):/docs" \
+  --workdir "/docs" \
+  ubuntu-ruby-fips:"${UBUNTU_VERSION}" \
+  ./generate-description.sh
+echo "Description generated and can be found in Description.md file"
+
 set +e

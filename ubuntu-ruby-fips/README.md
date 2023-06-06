@@ -1,11 +1,12 @@
 # Ubuntu container image
 This container image includes Ubuntu version `20.04` which contains the following packages:
 
-* OpenSSL version `1.0.2zg`: built by SafeLogic to be FIPS compliant.
-* Ruby version `3.0.6`: compiled against the FIPS 140-2 compliant OpenSSL module.
-* Postgres client version `10-10.16`: compiled against the FIPS 140-2 compliant OpenSSL module.
-* Bundler version `2.2.33`.
- 
+* OpenSSL: built by SafeLogic to be FIPS compliant.
+* Ruby: compiled against the FIPS 140-2 compliant OpenSSL module.
+* Postgres client: compiled against the FIPS 140-2 compliant OpenSSL module.
+* Bundler.
+
+The exact versions of packages mentioned above can be found in [Description.md](./Description.md).
 
 ## Build steps
 #### Assumptions
