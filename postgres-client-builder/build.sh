@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-PG_VERSION=10-10.16
+PG_VERSION=15-15.3
 
 docker build -t postgres-client-builder:"$PG_VERSION-fips" \
   --build-arg PG_VERSION="$PG_VERSION" \

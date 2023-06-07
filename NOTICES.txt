@@ -15,7 +15,7 @@ Section 2: BSD-2-Clause
 >>> https://github.com/ruby/ruby v3.0.6
 
 Section 3: PostgreSQL License
->>> https://github.com/postgres/postgres v10_16
+>>> https://github.com/postgres/postgres v15_3
 
 APPENDIX: Standard License Files and Templates
 
@@ -123,12 +123,12 @@ SUCH DAMAGE.
 
 PostgreSQL License is applicable to the following component(s).
 
->>> https://github.com/postgres/postgres v10_16
+>>> https://github.com/postgres/postgres v15_3
 
 PostgreSQL Database Management System
 (formerly known as Postgres, then as Postgres95)
 
-Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
+Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
 
 Portions Copyright (c) 1994, The Regents of the University of California
 
