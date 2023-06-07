@@ -20,6 +20,7 @@ COPY build_ruby.sh .
 RUN ./build_ruby.sh
 
 FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-fips-slim
+ARG PG_VERSION
 
 RUN apt-get update && \
   apt-get upgrade -y && \
@@ -27,10 +28,16 @@ RUN apt-get update && \
     openssl \
     curl \
     patch \
+    gnupg \
     ca-certificates  \
     libyaml-0-2 && \
+  echo "deb http://apt.postgresql.org/pub/repos/apt $(grep -oP '(?<=UBUNTU_CODENAME\=)(.*)' /etc/os-release)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+  curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+  apt-get --purge autoremove -y gnupg && \
+  apt-get update && \
+  apt-get install -y "postgresql-client-${PG_VERSION%%.*}=${PG_VERSION}*" && \
 	apt-get clean && \
-  apt-mark hold ruby && \
+  apt-mark hold ruby postgresql-client && \
 	rm -rf /var/lib/apt/lists/*
 
 COPY --from=ubuntu-ruby-builder /var/lib/ruby /var/lib/ruby
@@ -39,7 +46,7 @@ COPY fips_mode.sh /usr/local/bin/fips_mode.sh
 
 RUN /usr/local/bin/fips_mode.sh -a enable
 ENV PATH="/var/lib/ruby/bin:${PATH}" \
-    OPENSSL_FIPS=1
+    FIPS_MODE=1
 RUN ruby --version && \
     irb --version && \
     gem --version && \
@@ -51,7 +58,7 @@ CMD irb
 FROM ubuntu-ruby-fips-slim as ubuntu-ruby-fips-dev
 
 RUN apt-get update && \
-	apt-get install -y postgresql-client && \
+	apt-get install -y jq && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 

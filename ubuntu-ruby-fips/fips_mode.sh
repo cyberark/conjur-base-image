@@ -90,13 +90,5 @@ disable)
 "") print_fips_state ;;
 *) echo "invalid action" ;;
 esac
-#
-#
-#cp /etc/ssl/openssl.cnf /etc/ssl/openssl.cnf.old
-##
-#sed -i 's/\[openssl_init\]/\[openssl_init\]\nalg_section = algorithm_sect/g' /etc/ssl/openssl.cnf
-#sed -i 's/# .include fipsmodule.cnf/.include \/etc\/ssl\/fipsmodule.cnf/g' /etc/ssl/openssl.cnf
-#sed -i '/fips = fips_sect/s/^# *//' /etc/ssl/openssl.cnf
-#printf "[algorithm_sect]\ndefault_properties = fips=yes" >>/etc/ssl/openssl.cnf
 
 set +e

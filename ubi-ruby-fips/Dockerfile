@@ -12,22 +12,19 @@ RUN ./build_ruby.sh
 # Conjur Base Image (UBI)
 FROM registry.access.redhat.com/$UBI_VERSION/ubi as ubi-ruby-fips-slim
 ARG BUNDLER_VERSION
+ARG PG_VERSION
 
 RUN yum -y update && \
-  ### We need libreadline-dev for its readline capabilities
-  ### Install openssl, readline, postgresql client
-  yum install -y openssl \
-                 readline && \
-  #    yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-8-x86_64/postgresql10-libs-10.16-1PGDG.rhel8.x86_64.rpm \
-  #                   https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-8-x86_64/postgresql10-10.16-1PGDG.rhel8.x86_64.rpm \
-  #                   https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-8-x86_64/postgresql10-devel-10.16-1PGDG.rhel8.x86_64.rpm
+  yum install -y libpq && \
+  yum install -y https://download.postgresql.org/pub/repos/yum/${PG_VERSION%%.*}/redhat/rhel-9-$(uname -m)/postgresql${PG_VERSION%%.*}-libs-${PG_VERSION}-1PGDG.rhel9.$(uname -m).rpm && \
+  yum install -y https://download.postgresql.org/pub/repos/yum/${PG_VERSION%%.*}/redhat/rhel-9-$(uname -m)/postgresql${PG_VERSION%%.*}-${PG_VERSION}-1PGDG.rhel9.$(uname -m).rpm && \
   yum --disableplugin=subscription-manager clean all && \
   echo "exclude=ruby*" >> /etc/yum.conf # disable ability to install ruby with package manager
 
 ## Copy ruby binaries from ubi-ruby-builder
 RUN mkdir -p /var/lib/ruby/
 COPY --from=ubi-ruby-builder /var/lib/ruby/ /var/lib/ruby/
-ENV PATH="/usr/pgsql-10/bin:/var/lib/ruby/bin:${PATH}"
+ENV PATH="/var/lib/ruby/bin:${PATH}"
 
 ## Install Ruby tools
 RUN gem install --no-document bundler:$BUNDLER_VERSION
