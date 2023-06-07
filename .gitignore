@@ -2,6 +2,4 @@
 test-results
 .vscode
 .idea
-openssl-builder/openssl
-openssl-builder/OPENSSL_BUILDER_TAG
 .DS_Store

@@ -24,24 +24,12 @@ The Ubuntu container image will be built by a three-stage process:
 ### Docker images    
 | Image name  | Description |
 |---|---|
-| openssl-builder | Installs OpenSSL with the FIPS 140-2 compliant module|
-| postgres-client-builder | Installs Postgres client |
-| ubuntu-ruby-builder | Installs Ruby version |
 | ubuntu-ruby-fips | Final image |
 
 
 ### Steps
 
-Create image for openssl-builder:
-```
-./openssl-builder/build.sh
-```
-Create images for ubuntu-ruby-builder and postgres-client-builder:
-```
-./postgres-client-builder/build.sh
-./ubuntu-ruby-builder/build.sh
-```
-Create the final image:
+Create the image:
 
 $IMAGE_NAME is assumed to be the required name of Docker image
 

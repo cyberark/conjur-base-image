@@ -32,7 +32,6 @@ CVE-2021-3711
 # 2. Trivy detect the usage of openssl 1.0.2 (can be reproduced with
 #    docker run -v /var/run/docker.sock:/var/run/docker.sock
 #   -v $(PWD):/workspace --rm aquasec/trivy -f json -o /workspace/scan_results-conjur-unfixed.json --no-progress
-#   --ignorefile .trivyignore registry.tld/ruby-fips-base-image-phusion:1.0.0)
 #
 # Performed by @yahalomk approved by @shaharglazner
 CVE-2020-1967
