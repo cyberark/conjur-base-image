@@ -135,7 +135,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - Bumped Ruby version from 2.5.1 to 2.5.8 to address [CVE-2020-10663](https://nvd.nist.gov/vuln/detail/CVE-2020-10663).
 
-[Unreleased]: https://github.com/cyberark/conjur-base-image/compare/v2.0.3...HEAD
+[Unreleased]: https://github.com/cyberark/conjur-base-image/compare/v2.0.6...HEAD
+[2.0.6]: https://github.com/cyberark/conjur-base-image/compare/v2.0.4...v2.0.6
+[2.0.4]: https://github.com/cyberark/conjur-base-image/compare/v2.0.3...v2.0.4
 [2.0.3]: https://github.com/cyberark/conjur-base-image/compare/v2.0.2...v2.0.3
 [2.0.2]: https://github.com/cyberark/conjur-base-image/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/cyberark/conjur-base-image/compare/v2.0.0...v2.0.1
