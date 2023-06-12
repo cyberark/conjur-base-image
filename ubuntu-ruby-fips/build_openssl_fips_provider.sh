@@ -17,7 +17,7 @@ echo "$OPEN_SSL_FIPS_PROVIDER_SHA256" openssl.tar.gz | sha256sum -c -
 tar -xf openssl.tar.gz
 cd "openssl-${OPEN_SSL_FIPS_PROVIDER_VERSION}"
 ./config enable-fips --openssldir=/usr/lib/ssl --prefix=/usr/lib/ssl
-make -j 4 -s
+make --jobs 4 --silent
 
 cp providers/fips.so /usr/local/lib/fips.so
 

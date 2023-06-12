@@ -61,6 +61,3 @@ RUN apt-get update && \
 	apt-get install -y jq && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
-
-RUN mkdir docs
-COPY generate-description.sh ./docs/generate-description.sh

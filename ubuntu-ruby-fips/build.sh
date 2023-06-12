@@ -37,14 +37,9 @@ docker build -t ubuntu-ruby-fips:"${UBUNTU_VERSION}"-slim \
 	.
 
 echo "Running docker container to generate description..."
-docker run --rm \
-  --env BUNDLER_VERSION \
-  --env RUBY_FULL_VERSION \
-  --env PG_VERSION \
-  --volume "$(pwd):/docs" \
-  --workdir "/docs" \
-  ubuntu-ruby-fips:"${UBUNTU_VERSION}" \
-  ./generate-description.sh
+OPENSSL_VERSION=$(docker run --rm ubuntu-ruby-fips:"${UBUNTU_VERSION}" openssl version | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
+export OPENSSL_VERSION
+./generate-description.sh
 echo "Description generated and can be found in Description.md file"
 
 set +e

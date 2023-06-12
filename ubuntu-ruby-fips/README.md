@@ -1,7 +1,7 @@
 # Ubuntu container image
-This container image includes Ubuntu version `20.04` which contains the following packages:
+This container image includes Ubuntu version `22.04` which contains the following packages:
 
-* OpenSSL: built by SafeLogic to be FIPS compliant.
+* OpenSSL: configured to be FIPS compliant.
 * Ruby: compiled against the FIPS 140-2 compliant OpenSSL module.
 * Postgres client: compiled against the FIPS 140-2 compliant OpenSSL module.
 * Bundler.
@@ -15,13 +15,13 @@ The exact versions of packages mentioned above can be found in [Description.md](
 1. Docker version is 17.05 or higher
 
 
-The Ubuntu container image will be built by a three-stage process: 
+The Ubuntu container image will be built by a three-stage process:
 
 1. The first stage builds the OpenSSL compiled with the FIPS 140-2 compliant OpenSSL module.
 1. The second stage builds the Ruby and Postgres client packages.
 1. The third stage ships the results of both stages, without the penalty of the build-chain and tooling.
 
-### Docker images    
+### Docker images
 | Image name  | Description |
 |---|---|
 | ubuntu-ruby-fips | Final image |

@@ -17,15 +17,6 @@ Three images included:
 - [Ubuntu](./ubuntu-ruby-fips/)
 - [UBI](./ubi-ruby-fips/)
 
-## Certification level
-
-![](https://img.shields.io/badge/Certification%20Level-Trusted-007BFF?link=https://github.com/cyberark/community/blob/main/Conjur/conventions/certification-levels.md)
-
-This repo is a **Trusted** level project. It has been reviewed by CyberArk to verify that it will securely
-work with Conjur Open Source as documented. For more detailed information on our certification levels, see
-[our community guidelines](https://github.com/cyberark/community/blob/main/Conjur/conventions/certification-levels.md#community).
-
-
 ## Feature
 
 * A minimal base image to reduce attack surface and external dependencies
@@ -35,9 +26,9 @@ work with Conjur Open Source as documented. For more detailed information on our
 * Jenkins pipeline for building the Docker image
 * Automated tests validate FIPS mode is successfully enabled and all artifacts are compiled against the FIPS 140-2 compliant
 * OpenSSL version installed in the Ubuntu image:
-  * OpenSSL version: `openssl-1.0.2zg` (built by SafeLogic to be FIPS-Compliant)
+  * OpenSSL version: `3.0.2` (configured to be FIPS-Compliant)
 * OpenSSL version installed in the UBI image:
-  * OpenSSL version: `openssl-1.1.1k`
+  * OpenSSL version: `3.0.7` (with FIPS 140-2 compliant OpenSSL module from RedHat UBI 9)
 
 ## Usage
 

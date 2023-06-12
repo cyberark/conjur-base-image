@@ -14,18 +14,17 @@ The exact versions of packages mentioned above can be found in [Description.md](
 1. Docker version is 17.05 or higher
 
 
-### Docker images    
+### Docker images
 | Image name  | Description |
 |---|---|
-| ubi-ruby-builder | Installs Ruby version |
 | ubi-ruby | Final image |
 
 
 ### Steps
 
-Create image for ubi-ruby-builder:
+Create the image:
 ```
-./ubi-ruby-builder/build.sh
+./ubi-ruby/build.sh
 ```
 Create the final image:
 
