@@ -30,13 +30,9 @@ RUN wget https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
     apt-key add ACCC4CF8.asc && \
     echo "deb-src https://apt-archive.postgresql.org/pub/repos/apt focal-pgdg-archive main" >> /etc/apt/sources.list.d/pgdg.list && \
     apt-get update && \
-    apt-get source postgresql-10=10.16-1.pgdg20.04+1
+    apt-get source postgresql-15=15.3-1.pgdg20.04+1
 
 ## Compile postgres client
-#
-# `make -C postgresql-$PG_VERSION/src/backend` is required to ensure that the
-# header files are properly generated for Postgres 10. This is not required
-# to build the client tools in v11+.
 RUN cd postgresql-$PG_VERSION && \
     env CC=gcc CPPFLAGS=-I/usr/local/ssl/include LDFLAGS=-L/usr/local/ssl/lib ./configure --with-openssl --without-readline --prefix=/usr/local/pgsql  && \
     cd - && \
@@ -44,7 +40,6 @@ RUN cd postgresql-$PG_VERSION && \
     make && \
     make install && \
     cd - && \
-    make -C postgresql-$PG_VERSION/src/backend  && \
     cd postgresql-$PG_VERSION/src/bin && \
     make && \
     make install && \

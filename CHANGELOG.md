@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.0.7] - 2023-05-16
 
+### Changed
+- Update Postgres to version 15.3 in all base images.
+  [cyberark/conjur-base-image#113](https://github.com/cyberark/conjur-base-image/pull/113)
+
 ### Security
 - Update bundler to 2.2.33 to remove CVE-2021-43809.
   [cyberark/conjur-base-image#111](https://github.com/cyberark/conjur-base-image/pull/111)
