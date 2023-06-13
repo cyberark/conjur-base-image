@@ -25,7 +25,7 @@ RUN yum -y update && \
 ## Copy ruby binaries from ubi-ruby-builder
 RUN mkdir -p /var/lib/ruby/
 COPY --from=ubi-ruby-builder /var/lib/ruby/ /var/lib/ruby/
-ENV PATH="/usr/pgsql-10/bin:/var/lib/ruby/bin:${PATH}"
+ENV PATH="/usr/pgsql-15/bin:/var/lib/ruby/bin:${PATH}"
 
 ## Install Ruby tools
 RUN gem install --no-document bundler:$BUNDLER_VERSION

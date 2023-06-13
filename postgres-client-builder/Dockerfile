@@ -34,7 +34,7 @@ RUN wget https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
 
 ## Compile postgres client
 RUN cd postgresql-$PG_VERSION && \
-    env CC=gcc CPPFLAGS=-I/usr/local/ssl/include LDFLAGS=-L/usr/local/ssl/lib ./configure --with-openssl --without-readline --prefix=/usr/local/pgsql  && \
+    env CC=gcc CPPFLAGS=-I/usr/local/ssl/include LDFLAGS=-L/usr/local/ssl/lib ./configure --with-ssl=openssl --without-readline --prefix=/usr/local/pgsql  && \
     cd - && \
     cd postgresql-$PG_VERSION/src/interfaces && \
     make && \
