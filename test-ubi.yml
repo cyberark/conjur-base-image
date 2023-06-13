@@ -75,6 +75,18 @@ commandTests:
     command: "pg_dump"
     args: ["--version"]
     expectedOutput: ["^pg_dump \\(PostgreSQL\\) 15.3\n$"]
+  - name: "psql linked with valid libcrypto.so version"
+    command: "bash"
+    args:
+      - -c
+      - find / -type f -name psql | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3 | head -1 | tr -d '\n'
+    expectedOutput: [ "^/lib64/libcrypto.so.3$" ]
+  - name: "psql linked with valid libssl.so version"
+    command: "bash"
+    args:
+      - -c
+      - find / -type f -name psql | xargs ldd | grep "libssl.so" | cut -d' ' -f3 | tr -d '\n'
+    expectedOutput: [ "^/lib64/libssl.so.3$" ]
   # bundler tests
   - name: "bundler version"
     command: "bundler"
