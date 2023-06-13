@@ -6,7 +6,6 @@ commandTests:
     args: ["version"]
     expectedOutput: ["^OpenSSL 3.0.2 15 Mar 2022 \\(Library: OpenSSL 3.0.2 15 Mar 2022\\)\n$"]
   - name: "libssl.so linked with valid libcrypto.so version"
-    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
     args:
       - -c
@@ -47,7 +46,6 @@ commandTests:
       - find / -name *ssl*.*so* | grep ruby | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
     expectedOutput: ["^OpenSSL 3.0.2 15 Mar 2022$"]
   - name: "Ruby linked with valid libssl.so version"
-    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
     args:
       - -c
@@ -83,7 +81,6 @@ commandTests:
       - find / -type f -name libpq.so* | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3 | xargs strings | grep "^OpenSSL\s\([0-9]\.\)\{2\}[0-9]" | tr -d '\n'
     expectedOutput: ["^OpenSSL 3.0.2 15 Mar 2022$"]
   - name: "libpq linked with valid libssl.so version"
-    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
     args:
       - -c
