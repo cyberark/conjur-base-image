@@ -7,11 +7,14 @@ if (params.MODE == "PROMOTE") {
   release.promote(params.VERSION_TO_PROMOTE) { sourceVersion, targetVersion, assetDirectory ->
     // Nothing to do here except the promote() automation itself
   }
+
+  // Copy Github Enterprise release to Github
+  release.copyEnterpriseRelease(params.VERSION_TO_PROMOTE)
   return
 }
 
 pipeline {
-  agent { label 'executor-v2' }
+  agent { label 'conjur-enterprise-common-agent' }
 
   environment {
     MODE = release.canonicalizeMode()
@@ -36,9 +39,20 @@ pipeline {
       }
     }
 
+    stage('Get InfraPool ExecutorV2 Agent') {
+      steps {
+        script {
+          // Request ExecutorV2 agents for 1 hour(s)
+          INFRAPOOL_EXECUTORV2_AGENT_0 = getInfraPoolAgent.connected(type: "ExecutorV2", quantity: 1, duration: 1)[0]
+        }
+      }
+    }
+
     stage ('Prepare pipeline') {
       steps {
-        updateVersion("CHANGELOG.md", "${BUILD_NUMBER}")
+        script {
+          updateVersion(INFRAPOOL_EXECUTORV2_AGENT_0, "CHANGELOG.md", "${BUILD_NUMBER}")
+        }
       }
     }
 
@@ -46,17 +60,23 @@ pipeline {
       parallel {
         stage ('Build, Test, and Scan ubuntu-ruby-fips image') {
           steps {
-            buildTestAndScanImage('ubuntu-ruby-fips')
+            script {
+              buildTestAndScanImage('ubuntu-ruby-fips')
+            }
           }
         }
         stage ('Build, Test, and Scan ubi-ruby-fips image') {
           steps {
-            buildTestAndScanImage('ubi-ruby-fips')
+            script {
+              buildTestAndScanImage('ubi-ruby-fips')
+            }
           }
         }
         stage ('Build, Test, and Scan ubi-nginx image') {
           steps {
-            buildTestAndScanImage('ubi-nginx')
+            script {
+              buildTestAndScanImage('ubi-nginx')
+            }
           }
         }
       }
@@ -70,16 +90,20 @@ pipeline {
       }
 
       steps {
-        release {
-          // Push internal images
-          sh "./ubuntu-ruby-fips/push.sh registry.tld"
-          sh "./ubi-ruby-fips/push.sh registry.tld"
-          sh "./ubi-nginx/push.sh registry.tld"
+        script {
+          release(INFRAPOOL_EXECUTORV2_AGENT_0) {
+            // Push internal images
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./phusion-ruby-fips/push.sh registry.tld"
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh registry.tld"
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push.sh registry.tld"
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push.sh registry.tld"
 
-          // Push Dockerhub images
-          sh "./ubuntu-ruby-fips/push.sh"
-          sh "./ubi-ruby-fips/push.sh"
-          sh "./ubi-nginx/push.sh"
+            // Push Dockerhub images
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./phusion-ruby-fips/push.sh"
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh"
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push.sh"
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push.sh"
+          }
         }
       }
     }
@@ -87,16 +111,17 @@ pipeline {
 
   post {
     always {
-      archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**/*.xml', fingerprint: true
-      junit 'test-results/**/*.xml'
-      cleanupAndNotify(currentBuild.currentResult, "#development")
+      script {
+        INFRAPOOL_EXECUTORV2_AGENT_0.agentArchiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**/*.json', fingerprint: true
+        releaseInfraPoolAgent(".infrapool/release_agents")
+      }
     }
   }
 }
 
 def buildTestAndScanImage(name) {
-  sh "./${name}/build.sh"
-  sh "./${name}/test.sh"
-  scanAndReport("${name}:latest", "HIGH", false)
-  scanAndReport("${name}:latest", "NONE", true)
+  INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./${name}/build.sh"
+  INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./${name}/test.sh"
+  scanAndReport(INFRAPOOL_EXECUTORV2_AGENT_0, "${name}:latest", "HIGH", false)
+  scanAndReport(INFRAPOOL_EXECUTORV2_AGENT_0, "${name}:latest", "NONE", true)
 }
