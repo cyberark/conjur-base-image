@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [2.0.7] - 2023-05-16
 
 ### Changed
+- Changed daily build to release the base images so we get the latest versions of
+  unpinned dependencies quickly
+  [cyberark/conjur-base-image#117](https://github.com/cyberark/conjur-base-image/pull/117)
 - Update Postgres to version 15.3 in all base images.
   [cyberark/conjur-base-image#113](https://github.com/cyberark/conjur-base-image/pull/113)
 

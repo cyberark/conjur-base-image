@@ -18,7 +18,7 @@ pipeline {
   }
 
   triggers {
-    cron(getDailyCronString())
+    parameterizedCron(getDailyCronString("%MODE=RELEASE"))
   }
 
   stages {
