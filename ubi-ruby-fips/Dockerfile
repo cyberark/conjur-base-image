@@ -16,8 +16,9 @@ RUN yum -y update && \
     yum install -y http://mirror.centos.org/centos/8-stream/PowerTools/x86_64/os/Packages/perl-IO-Tty-1.12-11.el8.x86_64.rpm \
                    http://mirror.centos.org/centos/8-stream/PowerTools/x86_64/os/Packages/perl-Readonly-2.05-5.el8.noarch.rpm \
                    http://mirror.centos.org/centos/8-stream/PowerTools/x86_64/os/Packages/perl-IPC-Run-0.99-1.el8.noarch.rpm && \
-### Remove the private keys included in Perl-IO
+### Remove the private keys included in Perl-IO and perl-Net-SSLeay
     rm -rf /usr/share/doc/perl-IO-Socket-SSL/certs/* && \
+    rm -rf /usr/share/doc/perl-Net-SSLeay/examples/server_key.pem && \
 ### Install openssl, postgresql client
     yum install -y openssl && \
     yum install -y https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8-x86_64/postgresql15-libs-15.3-1PGDG.rhel8.x86_64.rpm \
