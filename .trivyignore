@@ -92,3 +92,9 @@ CVE-2021-3449
 # it because it doesn't handle the 1.0.2 line available only by premium 
 # support and thus thinks we're still vulnerable. 
 CVE-2023-0286
+
+# Scanners have started flagging CVE-2017-14033 because they are matching 
+# the version of Ruby that shipped the vulnerable openssl gem with the 
+# version of openssl itself. We use Ruby 3 in our base images, so already
+# have the fix for this issue.
+CVE-2017-14033
