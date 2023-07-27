@@ -32,6 +32,3 @@ ENV PATH="/usr/pgsql-15/bin:/var/lib/ruby/bin:${PATH}"
 
 ## Install Ruby tools
 RUN gem install --no-document bundler:$BUNDLER_VERSION
-
-## Remove private keys included for Perl IO since we don't use them
-RUN rm -rf /usr/share/doc/perl-IO-Socket-SSL/certs/* 
