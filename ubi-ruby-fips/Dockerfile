@@ -1,12 +1,36 @@
 ARG UBI_VERSION
-ARG RUBY_BUILDER_TAG
-ARG BUNDLER_VERSION=2.2.33
 
-# Ruby Builder
-FROM ubi-ruby-builder:$RUBY_BUILDER_TAG as ubi-ruby-builder
+# ==============================================================================
+# Ruby FIPS Builder
+# ==============================================================================
+FROM registry.access.redhat.com/$UBI_VERSION/ubi as ubi-ruby-fips-builder
+ARG RUBY_FULL_VERSION
+ARG RUBY_MAJOR_VERSION
+ARG RUBY_SHA256
 
+RUN yum -y clean all && yum -y makecache && yum -y update
+
+RUN yum install -y --setopt=tsflags=nodocs gcc \
+                                           gcc-c++ \
+                                           make \
+                                           openssl-devel \
+                                           wget \
+                                           zlib-devel
+RUN yum install -y --setopt=tsflags=nodocs http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/readline-devel-7.0-10.el8.x86_64.rpm
+
+## Compile ruby
+RUN wget --quiet https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR_VERSION/ruby-$RUBY_FULL_VERSION.tar.gz && \
+    echo "$RUBY_SHA256 ruby-$RUBY_FULL_VERSION.tar.gz" | sha256sum -c - && \
+    tar -xvf ruby-$RUBY_FULL_VERSION.tar.gz && \
+    cd ruby-$RUBY_FULL_VERSION && \
+    ./configure --prefix=/var/lib/ruby && \
+    make -j4 && \
+    make install
+
+# ==============================================================================
 # Conjur Base Image (UBI)
-FROM registry.access.redhat.com/$UBI_VERSION/ubi
+# ==============================================================================
+FROM registry.access.redhat.com/$UBI_VERSION/ubi as ubi-ruby-fips-slim
 ARG BUNDLER_VERSION
 
 RUN yum -y update && \
@@ -27,8 +51,27 @@ RUN yum -y update && \
 
 ## Copy ruby binaries from ubi-ruby-builder
 RUN mkdir -p /var/lib/ruby/
-COPY --from=ubi-ruby-builder /var/lib/ruby/ /var/lib/ruby/
+COPY --from=ubi-ruby-fips-builder /var/lib/ruby/ /var/lib/ruby/
 ENV PATH="/usr/pgsql-15/bin:/var/lib/ruby/bin:${PATH}"
 
 ## Install Ruby tools
 RUN gem install --no-document bundler:$BUNDLER_VERSION
+
+# ==============================================================================
+# Ruby Builder
+# ==============================================================================
+FROM ubi-ruby-fips-slim as ubi-ruby-builder
+
+RUN yum -y update && \
+    yum install -y gcc \
+                   gcc-c++ \
+                   git \
+                   glibc-devel \
+                   libxml2-devel \
+                   libxslt-devel \
+                   make
+
+# ==============================================================================
+# Conjur Base Image (UBI) with dev tooling
+# ==============================================================================
+FROM ubi-ruby-fips-slim as ubi-ruby-fips-dev

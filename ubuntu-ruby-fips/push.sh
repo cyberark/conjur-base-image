@@ -4,18 +4,36 @@ cd "$(dirname "$0")"
 
 . ../push.sh
 
-UBUNTU_VERSION=20.04
-LOCAL_IMAGE="ubuntu-ruby-fips:latest"
-IMAGE="cyberark/ubuntu-ruby-fips"
-REGISTRY="$(normalize_repo_name "$1")"
-TAG=$(<../VERSION)
+set -a # Marks all created or modified variables or functions for export.
+source ../versions.env
+set +a
 
-if [[ -z "${REGISTRY:-}" ]]; then
-  # Push to public registry with VERSION
-  main_tag_and_push "${LOCAL_IMAGE}" "${IMAGE}" "${TAG}"
-else
-  # Push to internal locations with VERSION and image versions
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBUNTU_VERSION}-${TAG}"
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBUNTU_VERSION}"
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${TAG}"
-fi
+REGISTRY="$(normalize_repo_name "$1")"
+
+# ${1} - image name
+# ${2} - image tag
+# ${3} - tag suffix
+push_image() {
+  LOCAL_IMAGE="${1}:${2}"
+  IMAGE="cyberark/${1}"
+  TAG=$(<../VERSION)
+
+  if [[ -z "${REGISTRY:-}" ]]; then
+    # Push to public registry with Ubuntu version and and image versions
+    tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${UBUNTU_VERSION}-${TAG}${3}"
+    tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${UBUNTU_VERSION}${3}"
+    tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${TAG}${3}"
+    tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${2}"
+  else
+    # Push to internal locations with Ubunntu version and image versions
+    tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBUNTU_VERSION}-${TAG}${3}"
+    tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBUNTU_VERSION}${3}"
+    tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${TAG}${3}"
+    tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${2}"
+  fi
+}
+
+push_image "ubuntu-ruby-builder" "latest" ""
+push_image "ubuntu-ruby-fips" "latest" ""
+push_image "ubuntu-ruby-postgres-fips" "latest" ""
+push_image "ubuntu-ruby-fips" "slim" "-slim"

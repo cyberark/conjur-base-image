@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [cyberark/conjur-base-image#117](https://github.com/cyberark/conjur-base-image/pull/117)
 - Update Postgres to version 15.3 in all base images.
   [cyberark/conjur-base-image#113](https://github.com/cyberark/conjur-base-image/pull/113)
+- Remove Phusion in favour of additional Ubuntu image. Change tagging strategy.
+  [cyberark/conjur-base-image#122](https://github.com/cyberark/conjur-base-image/pull/122)
 
 ### Security
 - Update bundler to 2.2.33 to remove CVE-2021-43809.
