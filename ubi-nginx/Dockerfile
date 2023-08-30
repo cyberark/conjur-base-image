@@ -1,4 +1,6 @@
-FROM registry.access.redhat.com/ubi8/ubi
+ARG UBI_VERSION
+
+FROM registry.access.redhat.com/$UBI_VERSION/ubi
 
 ARG WWWDATA_UID=888
 ARG NGINX_VERSION

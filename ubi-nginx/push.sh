@@ -4,7 +4,10 @@ cd "$(dirname "$0")"
 
 . ../push.sh
 
-NGINX_VERSION=1.20
+set -a # Marks all created or modified variables or functions for export.
+source ../versions.env
+set +a
+
 LOCAL_IMAGE="ubi-nginx:latest"
 IMAGE="conjur-nginx"
 readonly REDHAT_REGISTRY="quay.io"
@@ -22,8 +25,10 @@ REGISTRY="$(normalize_repo_name "$1")"
 TAG=$(<../VERSION)
 
 if [[ -z "${REGISTRY:-}" ]]; then
-  # Push to public registry with VERSION
+  # Push to public registry with UBI version and and image versions
   if summon -f ../secrets.yml bash -c "docker login ${REDHAT_REGISTRY} -u ${user} -p \${REDHAT_API_KEY}"; then
+    tag_and_push "${LOCAL_IMAGE}" "${REDHAT_IMAGE}:${UBI_VERSION}-${TAG}"
+    tag_and_push "${LOCAL_IMAGE}" "${REDHAT_IMAGE}:${UBI_VERSION}"
     tag_and_push "${LOCAL_IMAGE}" "${REDHAT_IMAGE}:${TAG}"
     "./bin/scan_redhat_image" "${REDHAT_IMAGE}:${TAG}" "${prefixless}"
   else
@@ -32,6 +37,8 @@ if [[ -z "${REGISTRY:-}" ]]; then
   fi
 else
   # Push to internal locations with VERSION and image versions
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}-${TAG}"
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${NGINX_VERSION}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBI_VERSION}-${TAG}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBI_VERSION}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${TAG}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:latest"
 fi
