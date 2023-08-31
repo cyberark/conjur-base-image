@@ -76,6 +76,19 @@ commandTests:
       - 'puts(OpenSSL::Digest::MD5.new)'
     exitCode: 1
     expectedError: [".*Digest initialization failed.*"]
+  - name: "Ruby can read RSA key in RedHat style FIPS enable"
+    envVars:
+      # this is an undocumented method of enabling RedHat's
+      # patches in the OpenSSL library and may lead to issues
+      # when reading RSA keys
+      - key: OPENSSL_FORCE_FIPS_MODE
+        value: '1'
+    setup: [["openssl", "genrsa", "-out", "/tmp/key.pem", "2048"]]
+    command: "ruby"
+    args:
+      - -ropenssl
+      - -e
+      - 'OpenSSL::PKey::RSA.new(File.read("/tmp/key.pem"))'
   # postgres lib tests
   - name: "libpq linked with valid libcrypto.so version"
     command: "bash"
