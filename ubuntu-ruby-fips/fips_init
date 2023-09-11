@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e
+
+if ! command -v openssl &>/dev/null; then
+  echo "openssl could not be found"
+  exit 1
+fi
+
+OPENSSL_MODULES=$(openssl version -m | sed -n 's/.*"\(.*\)"/\1/p')
+OPENSSL_DIR=$(openssl version -d | sed -n 's/.*"\(.*\)"/\1/p')
+
+if [ -f "${OPENSSL_MODULES}/fips.so" ]; then
+  return
+fi
+
+mv /usr/local/lib/fips.so "${OPENSSL_MODULES}"
+openssl fipsinstall -module "${OPENSSL_MODULES}/fips.so" -out "${OPENSSL_DIR}"/fipsmodule.cnf -provider_name fips
+
+# Prepare additional configuration file for non-FIPS mode (selectable by OPENSSL_CONF env variable)
+OPENSSL_CONF=$(realpath "${OPENSSL_DIR}"/openssl.cnf)
+OPENSSL_NON_FIPS_CONF=$(realpath "${OPENSSL_DIR}"/openssl_non_fips.cnf)
+cp "${OPENSSL_CONF}" "${OPENSSL_NON_FIPS_CONF}"
+
+patch --quiet "${OPENSSL_CONF}" <<EOF
+51c51
+< # .include fipsmodule.cnf
+---
+> .include /usr/lib/ssl/fipsmodule.cnf
+53a54
+> alg_section = algorithm_sect
+62c63
+< # fips = fips_sect
+---
+> fips = fips_sect
+73c74
+< # activate = 1
+---
+> activate = 1
+397a399,402
+> MinProtocol = TLSv1.2
+> MinProtocol = DTLSv1.2
+> [algorithm_sect]
+> default_properties = "fips=yes"
+EOF
+
+set +e

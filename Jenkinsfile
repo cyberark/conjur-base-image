@@ -35,21 +35,10 @@ pipeline {
         }
       }
     }
+
     stage ('Prepare pipeline') {
       steps {
         updateVersion("CHANGELOG.md", "${BUILD_NUMBER}")
-      }
-    }
-
-    stage ('Build and tag openssl-builder image') {
-      steps {
-        sh "./openssl-builder/build.sh"
-      }
-    }
-
-    stage ('Build and tag postgres-client-builder image') {
-      steps {
-        sh "./postgres-client-builder/build.sh"
       }
     }
 
@@ -98,7 +87,8 @@ pipeline {
 
   post {
     always {
-      archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**/*.json', fingerprint: true
+      archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**/*.xml', fingerprint: true
+      junit 'test-results/**/*.xml'
       cleanupAndNotify(currentBuild.currentResult, "#development")
     }
   }

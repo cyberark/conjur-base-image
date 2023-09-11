@@ -32,7 +32,6 @@ CVE-2021-3711
 # 2. Trivy detect the usage of openssl 1.0.2 (can be reproduced with
 #    docker run -v /var/run/docker.sock:/var/run/docker.sock
 #   -v $(PWD):/workspace --rm aquasec/trivy -f json -o /workspace/scan_results-conjur-unfixed.json --no-progress
-#   --ignorefile .trivyignore registry.tld/ruby-fips-base-image-phusion:1.0.0)
 #
 # Performed by @yahalomk approved by @shaharglazner
 CVE-2020-1967
@@ -89,8 +88,8 @@ CVE-2020-1971
 CVE-2021-3449
 
 # We have the fix for this CVE in place. However, trivy still detects
-# it because it doesn't handle the 1.0.2 line available only by premium 
-# support and thus thinks we're still vulnerable. 
+# it because it doesn't handle the 1.0.2 line available only by premium
+# support and thus thinks we're still vulnerable.
 CVE-2023-0286
 
 # Scanners have started flagging CVE-2017-14033 because they are matching 

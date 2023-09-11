@@ -3,7 +3,6 @@ ARG UBI_VERSION
 FROM registry.access.redhat.com/$UBI_VERSION/ubi
 
 ARG WWWDATA_UID=888
-ARG NGINX_VERSION
 
 # Ports below 1024 are privileged in OpenShift, so we configure these to serve
 # http / https traffic in conjur.conf.
@@ -14,26 +13,23 @@ ENV HOME=/var/www \
 
 LABEL name="ubi-nginx" \
       vendor="CyberArk" \
-      version="$NGINX_VERSION" \
-      release="$NGINX_VERSION" \
+      version="$UBI_VERSION" \
+      release="$UBI_VERSION" \
       summary="UBI-based Nginx image for use with Conjur" \
       description="UBI-based Nginx image for use with Conjur"
 
-RUN yum -y clean all && yum -y makecache
+COPY yum/nginx.repo /etc/yum.repos.d/
 
-# Install nginx version and
-RUN yum -y update && \
-    yum -y module enable nginx:$NGINX_VERSION && \
-    INSTALL_PKGS="bind-utils \
-                  gettext \
-                  hostname \
-                  nginx \
-                  nginx-mod-stream \
-                  nginx-mod-http-perl \
-                  nss_wrapper" && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    yum -y clean all --enablerepo='*' && \
+RUN dnf config-manager --add-repo /etc/yum.repos.d/nginx.repo && \
+    dnf -y update && \
+    dnf install -y --nodocs \
+      bind-utils \
+      gettext \
+      hostname \
+      nginx \
+      nss_wrapper && \
+    dnf clean all && \
+    rm -rf /var/cache/yum /var/cache/dnf /var/lib/dnf && \
     # Remove default site config
     rm -rf /etc/nginx/conf.d/*
 
@@ -70,7 +66,6 @@ RUN test "$(id www-data)" = "uid=${WWWDATA_UID}(www-data) gid=${WWWDATA_UID}(www
     fix-permissions -u www-data "$HOME" \
                                 "/etc/nginx" \
                                 "/etc/ssl" \
-                                "/var/lib/nginx" \
                                 "/var/log/nginx" \
                                 "/var/tmp/nginx" \
                                 "/var/run/nginx" \

@@ -1,110 +1,130 @@
 ARG UBUNTU_VERSION
-ARG OPENSSL_BUILDER_TAG
-ARG PG_BUILDER_TAG
 
-# OpenSSL and postgres-client Builders
-FROM openssl-builder:$OPENSSL_BUILDER_TAG as OpenSSL-builder
-FROM postgres-client-builder:$PG_BUILDER_TAG as postgres-client-builder
+# ==============================================================================
+# FIPS Provider builder
+# ==============================================================================
+FROM ubuntu:${UBUNTU_VERSION} as fips-provider-builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+ARG OPEN_SSL_FIPS_PROVIDER_VERSION
+ARG OPEN_SSL_FIPS_PROVIDER_SHA256
+
+COPY build_openssl_fips_provider.sh /
+RUN /build_openssl_fips_provider.sh
 
 # ==============================================================================
 # Ruby FIPS Builder
 # ==============================================================================
-FROM ubuntu:$UBUNTU_VERSION as ubuntu-ruby-fips-builder
+FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-fips-builder
 ARG RUBY_FULL_VERSION
 ARG RUBY_MAJOR_VERSION
 ARG RUBY_SHA256
+ARG BUNDLER_VERSION
+ARG RUBY_HOME=/var/lib/ruby
 
-ENV LD_LIBRARY_PATH="/usr/local/ssl/lib"
+ENV BUNDLE_SILENCE_ROOT_WARNING=1 \
+    LANG=C.UTF-8
 
-COPY --from=OpenSSL-builder /usr/local/ssl/ /usr/local/ssl/
-
-RUN sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
-
-RUN apt-get update && \
-    apt-get install -y build-essential \
-                       libreadline-dev \
-                       gcc \
-                       make \
-                       zlib1g-dev \
-                       dpkg-dev \
-                       wget
-
-## Compile ruby
-RUN wget --quiet https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR_VERSION/ruby-$RUBY_FULL_VERSION.tar.gz && \
-    echo "$RUBY_SHA256 ruby-$RUBY_FULL_VERSION.tar.gz" | sha256sum -c - && \
-    tar -xvf ruby-$RUBY_FULL_VERSION.tar.gz && \
-    cd ruby-$RUBY_FULL_VERSION && \
-    ./configure --with-openssl-dir=/usr/local/ssl --prefix=/var/lib/ruby && \
-    make -j4 && \
-    make install
+COPY build_ruby.sh /
+RUN /build_ruby.sh
 
 # ==============================================================================
 # Conjur Base Image (Ubuntu)
 # ==============================================================================
-FROM ubuntu:$UBUNTU_VERSION as ubuntu-ruby-fips-slim
-ARG BUNDLER_VERSION
+FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-fips-slim
+ARG PG_VERSION
+ARG RUBY_HOME=/var/lib/ruby
 
-### We need libreadline-dev for its readline capabilities
+COPY apt/keyrings/ /etc/apt/keyrings/
 RUN apt-get update && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y libreadline-dev
+    apt-get install -y gnupg && \
+    for f in /etc/apt/keyrings/*.pub; do \
+      file=$(basename -- "$f"); gpg --dearmor < $f > /etc/apt/keyrings/${file%.*}.gpg; rm $f; \
+    done;
+COPY apt/sources.list.d/ /etc/apt/sources.list.d/
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=Etc/UTC \
+    BUNDLE_SILENCE_ROOT_WARNING=1 \
+    LANG=C.UTF-8 \
+    PATH="${RUBY_HOME}/bin:${PATH}" \
+    RUBY_HOME=${RUBY_HOME}
 
-RUN apt-get purge -y --auto-remove openssl libssl1.1
+RUN apt-get update && \
+    export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then apt-cache madison libpq5 | sed -n 's/^ *libpq5 *| *\([0-9]*\)\.[0-9]*-.*$/\1/p' | sort -Vr | head -1; else echo "${PG_VERSION%%.*}"; fi) && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+      openssl \
+      curl \
+      patch \
+      ca-certificates \
+      tzdata \
+      xz-utils \
+      netcat-openbsd \
+      "libpq5=${PG_VERSION}*" \
+      "libpq-dev=${PG_VERSION}*" \
+      "postgresql-client-${PG_MAJOR_VERSION}*=${PG_VERSION}*" \
+      libyaml-0-2 && \
+    apt-get clean && \
+    apt-mark hold ruby && \
+    rm -rf /var/lib/apt/lists/* /var/log/apt/*
 
-# Install the FIPS compliant OpenSSL
-## Copy to binary from openssl builder
-COPY --from=OpenSSL-builder /usr/local/ssl/ /usr/local/ssl/
-COPY --from=OpenSSL-builder /usr/share/ca-certificates/ /usr/share/ca-certificates/
-COPY --from=OpenSSL-builder /etc/ssl/certs/ /etc/ssl/certs/
-RUN rm -rf /usr/local/ssl/certs
-RUN ln -sf /etc/ssl/certs/ /usr/local/ssl/
+# Copy ruby binaries from ubuntu-ruby-fips-builder
+COPY --from=ubuntu-ruby-fips-builder ${RUBY_HOME} ${RUBY_HOME}
+# Copy fips provider from fips-provider-builder
+COPY --from=fips-provider-builder /usr/local/lib/fips.so /usr/local/lib/fips.so
 
-## Mock openssl and libssl
-COPY --from=openSSL-builder /ca-certificates_*_all.deb /
-COPY --from=openSSL-builder /openssl_*_all.deb /
-COPY --from=openSSL-builder /libssl1.0.0_*_all.deb /
+COPY fips_init fips_mode /usr/local/bin/
 
-RUN dpkg -i ca-certificates_*_all.deb
-RUN dpkg -i openssl_*_all.deb
-RUN dpkg -i libssl1.0.0_*_all.deb
+# Enables FIPS mode for GnuPG
+ENV LIBGCRYPT_FORCE_FIPS_MODE=1
 
-## Prevent openssl and libssl package from being automatically installed, upgraded or remove
-RUN apt-mark hold ca-certificates
-RUN apt-mark hold openssl
-RUN apt-mark hold libssl1.0.0
-RUN apt-mark hold libssl1.1
+RUN /usr/local/bin/fips_init && \
+    rm /usr/local/bin/fips_init && \
+    bundle config --global jobs "$(nproc --all)"
 
-## Copy postgres and ruby binaries from fips-artifacts
-RUN mkdir -p /var/lib/pgsql/ /var/lib/ruby/
-COPY --from=postgres-client-builder /usr/local/pgsql/ /usr/local/pgsql/
-COPY --from=ubuntu-ruby-fips-builder /var/lib/ruby/ /var/lib/ruby/
+RUN ruby --version && \
+    irb --version && \
+    gem --version && \
+    bundler --version && \
+    ruby -ropenssl -e 'puts OpenSSL::OPENSSL_VERSION'
 
-ENV PATH="/usr/local/pgsql/bin:/var/lib/ruby/bin:/usr/local/ssl/bin:${PATH}" \
-    DEBIAN_FRONTEND=noninteractive \
-    LD_LIBRARY_PATH="/usr/local/ssl/lib" \
-    OPENSSL_FIPS=1
-
-## Install Ruby tools
-RUN gem install --no-document bundler:$BUNDLER_VERSION
+CMD ["irb"]
 
 # ==============================================================================
 # Ruby Builder
 # ==============================================================================
 FROM ubuntu-ruby-fips-slim as ubuntu-ruby-builder
 
+# We don't want FIPS mode on the builder since it disables bundler optimizations
+ENV OPENSSL_CONF=/usr/lib/ssl/openssl_non_fips.cnf
+
 RUN apt-get update && \
-    apt-get install -y libz-dev
-RUN apt-get install -y git build-essential
+    apt-get install -y \
+      git \
+      build-essential \
+      libreadline-dev \
+      libz-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /var/log/apt/*
 
 # ==============================================================================
 # Conjur Base Image (Ubuntu) with dev tooling
 # ==============================================================================
 FROM ubuntu-ruby-fips-slim as ubuntu-ruby-fips-dev
 
+RUN apt-get update && \
+    apt-get install -y \
+      jq \
+      vim \
+      nano && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /var/log/apt/*
+
 # ==============================================================================
 # Tool 'setuser' Builder
 # ==============================================================================
-FROM golang:1.19 as setuser-builder
+FROM golang:latest as setuser-builder
 WORKDIR /src
 COPY ./setuser /src
 RUN go build .
@@ -112,13 +132,14 @@ RUN go build .
 # ==============================================================================
 # Conjur Base Image (Ubuntu) with postgres server
 # ==============================================================================
-FROM ubuntu:$UBUNTU_VERSION as ubuntu-ruby-postgres-fips
-ARG BUNDLER_VERSION
-
-ENV DEBIAN_FRONTEND=noninteractive
+FROM ubuntu-ruby-fips-dev as ubuntu-ruby-postgres-fips
+ARG PG_VERSION
 
 RUN apt-get update && \
+    export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then apt-cache madison libpq5 | sed -n 's/^ *libpq5 *| *\([0-9]*\)\.[0-9]*-.*$/\1/p' | sort -Vr | head -1; else echo "${PG_VERSION%%.*}"; fi) && \
     apt-get install -y \
+      "postgresql-${PG_MAJOR_VERSION}=${PG_VERSION}*" \
+      "postgresql-${PG_MAJOR_VERSION}-pglogical" \
       libreadline-dev \
       libdbd-pgsql \
       keyutils \
@@ -126,50 +147,14 @@ RUN apt-get update && \
       ldap-utils \
       logrotate \
       runit \
+      nginx \
       libarchive13 \
-      cron
+      cron \
+      syslog-ng-core \
+      syslog-ng-mod-sql && \
+    locale-gen en_US.UTF-8 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /var/log/apt/*
 
 COPY runit /etc/service/
 COPY --from=setuser-builder /src/setuser /sbin/setuser
-
-RUN apt-get purge -y --auto-remove openssl libssl1.1 libldap-2.4.2
-# Install the FIPS compliant OpenSSL
-## Copy to binary from openssl builder
-COPY --from=OpenSSL-builder /usr/local/ssl/ /usr/local/ssl/
-COPY --from=OpenSSL-builder /usr/share/ca-certificates/ /usr/share/ca-certificates/
-COPY --from=OpenSSL-builder /etc/ssl/certs/ /etc/ssl/certs/
-RUN rm -rf /usr/local/ssl/certs
-RUN ln -sf /etc/ssl/certs/ /usr/local/ssl/
-
-## Mock openssl and libssl
-COPY --from=openSSL-builder /ca-certificates_*_all.deb /
-COPY --from=openSSL-builder /openssl_*_all.deb /
-COPY --from=openSSL-builder /libssl1.0.0_*_all.deb /
-
-RUN dpkg -i ca-certificates_*_all.deb
-RUN dpkg -i openssl_*_all.deb
-RUN dpkg -i libssl1.0.0_*_all.deb
-
-## Prevent openssl and libssl package from being automatically installed, upgraded or removed
-RUN apt-mark hold ca-certificates
-RUN apt-mark hold openssl
-RUN apt-mark hold libssl1.0.0
-RUN apt-mark hold libssl1.1
-
-# Install SASL dependency for OpenLDAP
-RUN apt-get install -y libsasl2-dev && \
-    apt-mark hold libssl1.1
-
-## Copy postgres and ruby binaries from builders
-RUN mkdir -p /var/lib/pgsql/ /var/lib/ruby/
-COPY --from=postgres-client-builder /usr/local/pgsql/ /usr/local/pgsql/
-COPY --from=ubuntu-ruby-fips-builder /var/lib/ruby/ /var/lib/ruby/
-
-RUN ln -s /usr/local/ssl/bin/openssl /usr/bin/
-
-ENV PATH="/usr/local/openldap/bin:/usr/local/pgsql/bin:/var/lib/ruby/bin:/usr/local/ssl/bin:${PATH}" \
-    LD_LIBRARY_PATH="/usr/local/ssl/lib" \
-    OPENSSL_FIPS=1
-
-## Install Ruby tools
-RUN gem install --no-document bundler:$BUNDLER_VERSION

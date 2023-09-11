@@ -1,5 +1,0 @@
-Section: misc
-Priority: optional
-Version: 20190110ubuntu1.1
-Package: ca-certificates
-Description: Common CA certificates

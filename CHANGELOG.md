@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [cyberark/conjur-base-image#113](https://github.com/cyberark/conjur-base-image/pull/113)
 - Remove Phusion in favour of additional Ubuntu image. Change tagging strategy.
   [cyberark/conjur-base-image#122](https://github.com/cyberark/conjur-base-image/pull/122)
+- Updated UBI version to 9 and Ubuntu to 22.04. Bumped Ruby version to 3.2
+  [cyberark/conjur-base-image#112](https://github.com/cyberark/conjur-base-image/pull/112)
 
 ### Security
 - Update bundler to 2.2.33 to remove CVE-2021-43809.
@@ -31,7 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Added processing in openssl-builder to handle the new format of openssl tgz files
-  where the DV team put all the extra files we needed in the Extension folder to 
+  where the DV team put all the extra files we needed in the Extension folder to
   stop breaking all the teams that relied on the absence of those files to get
   static linking of the libraries. This .tgz file format is used from SafeLogic
   release 1.0.2zf-55 onwards.
@@ -92,14 +94,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Rolled back Postgres client version, in UBI-based image, back to 10.16 to match Conjur 
+- Rolled back Postgres client version, in UBI-based image, back to 10.16 to match Conjur
   [cyberark/conjur-base-image#62](https://github.com/cyberark/conjur-base-image/pull/62)
 
 ## [1.0.4] - 2021-07-22
 
 - Upgraded ubi8 base image to resolve [CVE-2021-33910](https://nvd.nist.gov/vuln/detail/CVE-2021-33910)
   (no specific PR, as the build automatically picked up the new ubi8 image from RedHat)
-- Rolled Postgres version back to 10.16 to match Conjur 
+- Rolled Postgres version back to 10.16 to match Conjur
   cyberark/conjur-base-image#59](https://github.com/cyberark/conjur-base-image/pull/59)
 
 ## [1.0.3] - 2021-06-07
@@ -124,7 +126,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - UBI-based Nginx image to support Conjur server running on OpenShift.
   [cyberark/conjur-base-image#28](https://github.com/cyberark/conjur-base-image/issues/28)
-- UBI-based image to support Conjur server running on OpenShift. Uses a builder image to install Ruby 
+- UBI-based image to support Conjur server running on OpenShift. Uses a builder image to install Ruby
   compiled with FIPS-enabled OpenSSL.
   [cyberark/conjur-base-image#35](https://github.com/cyberark/conjur-base-image/issues/35)
 - Use a builder image for OpenLDAP compiled with FIPS-enabled OpenSSL. This is

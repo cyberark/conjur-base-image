@@ -11,33 +11,24 @@
 
 # Conjur Base Image
 
-This repo builds a Docker image that contains OpenSSL, Ruby and PostgreSQL client libraries compiled against the FIPS 140-2 compliant OpenSSL module.
+This repo builds a Docker image that contains Ruby client libraries compiled against the FIPS 140-2 compliant OpenSSL module.
 
 Three images included:
 - [Ubuntu](./ubuntu-ruby-fips/)
 - [UBI](./ubi-ruby-fips/)
 
-## Certification level
-
-![](https://img.shields.io/badge/Certification%20Level-Trusted-007BFF?link=https://github.com/cyberark/community/blob/main/Conjur/conventions/certification-levels.md)
-
-This repo is a **Trusted** level project. It has been reviewed by CyberArk to verify that it will securely
-work with Conjur Open Source as documented. For more detailed information on our certification levels, see
-[our community guidelines](https://github.com/cyberark/community/blob/main/Conjur/conventions/certification-levels.md#community).
-
-
 ## Feature
 
 * A minimal base image to reduce attack surface and external dependencies
 * Vulnerability scanning
-* Builder container for OpenSSL, Ruby, and PostgreSQL client
+* Builder container for Ruby client
 * Last security update
 * Jenkins pipeline for building the Docker image
 * Automated tests validate FIPS mode is successfully enabled and all artifacts are compiled against the FIPS 140-2 compliant
-* OpenSSL version installed in the Ubuntu images:
-  * OpenSSL version: `openssl-1.0.2zg` (built by SafeLogic to be FIPS-Compliant)
+* OpenSSL version installed in the Ubuntu image:
+  * OpenSSL version: `3` (configured to be FIPS-Compliant)
 * OpenSSL version installed in the UBI image:
-  * OpenSSL version: `openssl-1.1.1k`
+  * OpenSSL version: `3` (with FIPS 140-2 compliant OpenSSL module from RedHat UBI 9)
 
 ## Usage
 
@@ -50,6 +41,11 @@ The Federal Information Processing Standard Publication 140-2, (FIPS PUB 140-2),
 The title is Security Requirements for Cryptographic Modules.
 
 For more information, visit the [FIPS 140-2 Wikipedia Page](https://en.wikipedia.org/wiki/FIPS_140-2).
+
+### Important
+
+For [UBI](./ubi-ruby-fips/) image FIPS module is disabled by default.
+Please refer to [this readme](./ubi-ruby-fips/README.md) for more information.
 
 ## Contributing
 

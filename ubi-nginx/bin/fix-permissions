@@ -16,6 +16,6 @@ fi
 for location in "$@"; do
   echo "Fixing permissions ($username): $location"
   find "$location" -exec chown $username:0 {} \; \
-       -exec chmod g+rw {} \; \
-       -type d -exec chmod g+x {} + 
+    -exec chmod g+rw {} \; \
+    -type d -exec chmod g+x {} +
 done
