@@ -8,7 +8,8 @@ set -a # Marks all created or modified variables or functions for export.
 source ../versions.env
 set +a
 
-docker build -t ubi-nginx:latest \
+docker buildx build -t ubi-nginx:latest \
   --pull \
+  --platform linux/arm64 \
   --build-arg UBI_VERSION \
   .

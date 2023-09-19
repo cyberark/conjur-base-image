@@ -11,10 +11,11 @@ set +a
 function build() {
   set -e
   echo "building ${1} image from target ${2}"
-  docker build \
+  docker buildx build \
     --tag "${1}" \
     --target="${2}" \
     --pull \
+    --platform linux/arm64 \
     --build-arg UBI_VERSION \
     --build-arg RUBY_FULL_VERSION \
     --build-arg RUBY_MAJOR_VERSION \
