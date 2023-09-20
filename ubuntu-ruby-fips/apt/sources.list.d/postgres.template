@@ -1,0 +1,1 @@
+deb [signed-by=/etc/apt/keyrings/postgres.gpg] http://apt.postgresql.org/pub/repos/apt ${VERSION_CODENAME}-pgdg main ${PG_MAJOR_VERSION}
