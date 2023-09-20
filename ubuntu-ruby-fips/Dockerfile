@@ -151,7 +151,8 @@ RUN apt-get update && \
       libarchive13 \
       cron \
       syslog-ng-core \
-      syslog-ng-mod-sql && \
+      syslog-ng-mod-sql \
+      "postgresql-${PG_MAJOR_VERSION}-cron" && \
     locale-gen en_US.UTF-8 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/log/apt/*

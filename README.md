@@ -13,7 +13,7 @@
 
 This repo builds a Docker image that contains Ruby client libraries compiled against the FIPS 140-2 compliant OpenSSL module.
 
-Three images included:
+Two images included:
 - [Ubuntu](./ubuntu-ruby-fips/)
 - [UBI](./ubi-ruby-fips/)
 
