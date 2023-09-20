@@ -1,0 +1,2 @@
+deb [signed-by=/etc/apt/keyrings/nginx.gpg] http://nginx.org/packages/ubuntu/ ${VERSION_CODENAME} nginx
+deb-src [signed-by=/etc/apt/keyrings/nginx.gpg] http://nginx.org/packages/ubuntu/ ${VERSION_CODENAME} nginx

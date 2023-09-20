@@ -36,19 +36,25 @@ FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-fips-slim
 ARG PG_VERSION
 ARG RUBY_HOME=/var/lib/ruby
 
-COPY apt/keyrings/ /etc/apt/keyrings/
-RUN apt-get update && \
-    apt-get install -y gnupg && \
-    for f in /etc/apt/keyrings/*.pub; do \
-      file=$(basename -- "$f"); gpg --dearmor < $f > /etc/apt/keyrings/${file%.*}.gpg; rm $f; \
-    done;
-COPY apt/sources.list.d/ /etc/apt/sources.list.d/
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Etc/UTC \
     BUNDLE_SILENCE_ROOT_WARNING=1 \
     LANG=C.UTF-8 \
     PATH="${RUBY_HOME}/bin:${PATH}" \
-    RUBY_HOME=${RUBY_HOME}
+    RUBY_HOME=${RUBY_HOME} \
+    PG_VERSION=${PG_VERSION}
+
+COPY apt/ /etc/apt/
+RUN apt-get update && \
+    apt-get install -y gnupg && \
+    for f in /etc/apt/keyrings/*.pub; do \
+      file=$(basename -- "$f"); gpg --dearmor < "$f" > "/etc/apt/keyrings/${file%.*}.gpg"; rm "$f"; \
+    done && \
+    . /etc/os-release && \
+    PG_MAJOR_VERSION=${PG_VERSION%%.*} && \
+    for f in /etc/apt/sources.list.d/*.template; do \
+      file=$(basename -- "$f"); while read line; do eval echo \"$line\"; done < "$f" > "/etc/apt/sources.list.d/${file%.*}.list"; rm "$f"; \
+    done
 
 RUN apt-get update && \
     export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then apt-cache madison libpq5 | sed -n 's/^ *libpq5 *| *\([0-9]*\)\.[0-9]*-.*$/\1/p' | sort -Vr | head -1; else echo "${PG_VERSION%%.*}"; fi) && \
