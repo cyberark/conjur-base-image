@@ -62,6 +62,12 @@ pipeline {
       }
     }
 
+    stage ('Publish experimental images to internal repository') {
+      steps {
+        sh "./ubuntu-ruby-fips/push_experimental.sh registry.tld"
+      }
+    }
+
     stage ('Publish images') {
       when {
         expression {
