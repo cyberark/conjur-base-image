@@ -46,6 +46,7 @@ pipeline {
       parallel {
         stage ('Build, Test, and Scan ubuntu-ruby-fips image') {
           steps {
+            sh "docker buildx ls"
             buildTestAndScanImage('ubuntu-ruby-fips')
           }
         }
