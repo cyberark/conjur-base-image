@@ -11,7 +11,7 @@ if (params.MODE == "PROMOTE") {
 }
 
 pipeline {
-  agent { label 'executor-v2' }
+  agent { label 'azure-linux' }
 
   environment {
     MODE = release.canonicalizeMode()
