@@ -1,0 +1,1 @@
+deb [signed-by=/etc/apt/keyrings/timescaledb.gpg] https://packagecloud.io/timescale/timescaledb/ubuntu/ ${VERSION_CODENAME} main
