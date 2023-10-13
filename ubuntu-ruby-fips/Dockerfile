@@ -154,6 +154,7 @@ RUN apt-get update && \
       logrotate \
       runit \
       nginx \
+      sudo \
       libarchive13 \
       cron \
       syslog-ng-core \
