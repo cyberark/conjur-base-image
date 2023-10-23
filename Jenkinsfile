@@ -93,13 +93,11 @@ pipeline {
         script {
           release(INFRAPOOL_EXECUTORV2_AGENT_0) {
             // Push internal images
-            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./phusion-ruby-fips/push.sh registry.tld"
             INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh registry.tld"
             INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push.sh registry.tld"
             INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push.sh registry.tld"
 
             // Push Dockerhub images
-            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./phusion-ruby-fips/push.sh"
             INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh"
             INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push.sh"
             INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push.sh"
@@ -112,7 +110,7 @@ pipeline {
   post {
     always {
       script {
-        INFRAPOOL_EXECUTORV2_AGENT_0.agentArchiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**/*.json', fingerprint: true
+        INFRAPOOL_EXECUTORV2_AGENT_0.agentArchiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**/*.xml', fingerprint: true
         releaseInfraPoolAgent(".infrapool/release_agents")
       }
     }
