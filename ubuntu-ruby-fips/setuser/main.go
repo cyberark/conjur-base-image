@@ -31,9 +31,21 @@ func main() {
 		fmt.Sprintf("HOME=%s", u.HomeDir),
 	)
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
+	if isTerminal(os.Stdin) {
+		cmd.Stdin = os.Stdin
+	}
 	if err = cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// isTerminal returns true if the given file is a terminal.
+func isTerminal(stdin *os.File) bool {
+	fi, err := stdin.Stat()
+	if err != nil {
+		return false
+	}
+	return (fi.Mode() & os.ModeCharDevice) != 0
 }
 
 func help() string {
