@@ -133,7 +133,8 @@ RUN apt-get update && \
 FROM golang:latest as setuser-builder
 WORKDIR /src
 COPY ./setuser /src
-RUN go build .
+RUN go test && \
+    go build .
 
 # ==============================================================================
 # Conjur Base Image (Ubuntu) with postgres server
