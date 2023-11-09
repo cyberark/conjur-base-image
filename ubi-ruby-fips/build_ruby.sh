@@ -32,33 +32,32 @@ build_ruby() {
   gem install bundler -v "${BUNDLER_VERSION}" --no-document
 }
 
-# before actual release of the new openssl gem we need to use the specific version that
-# works with UBI9 FIPS mode when RedHat patches to OpenSSL lib are enabled
-#
-# this should be removed after new release of ruby openssl gem is available:
-# https://github.com/ruby/openssl/issues/651
+# When we move to the ruby version that uses this openssl version by default then we can remove this method
 patch_openssl_gem() {
   export PATH="${RUBY_HOME:=/var/lib/ruby}/bin:${PATH}"
+  OPENSSL_GEM_VERSION="3.2.0"
+  OLD_OPENSSL_GEM_VERSION="3.1.0"
 
-  dnf install -y --nodocs git
-  cd /tmp
-  git clone https://github.com/ruby/openssl.git
-  cd openssl
-  git reset --hard fcda6cf9d5f69f6dc0c297ca76feff71f9021f00
-  # ruby openssl gem is a special gem, deeply integrated into ruby, non of the standard installation methods allows
-  # to easily update it or replace, keeping two versions in parallel may lead to unintended behaviour
-  bundle install
-  # we need to build the .gem file
-  rake build
-  # and compile the c bindings to the shared library openssl.so
-  rake compile
+  # Installing the new gem without --default flag. Otherwise we would have 2 default gems and it would mess up the installation
+  gem install openssl --version "$OPENSSL_GEM_VERSION"
 
-  # default openssl is a default gem and additionally installed in a sub-standard place (not in the gems folder)
-  # non of the installers/uninstallers handles that way of installation well, therefore we need to manually
-  # overwrite the openssl gem ruby code together with the compiled c bindings
-  cp --update "tmp/x86_64-linux/openssl/$RUBY_FULL_VERSION/openssl.so" "/var/lib/ruby/lib/ruby/$RUBY_MAJOR_VERSION.0/x86_64-linux/openssl.so"
-  cp --update lib/openssl/* "/var/lib/ruby/lib/ruby/$RUBY_MAJOR_VERSION.0/openssl/"
-  cp --update lib/openssl.rb "/var/lib/ruby/lib/ruby/$RUBY_MAJOR_VERSION.0/openssl.rb"
+  # Old gemspec needs to be moved up, out of the default directory. Otherwise the gem cannot be uninstalled
+  mv "/var/lib/ruby/lib/ruby/gems/$RUBY_MAJOR_VERSION.0/specifications/default/openssl-$OLD_OPENSSL_GEM_VERSION.gemspec" "/var/lib/ruby/lib/ruby/gems/$RUBY_MAJOR_VERSION.0/specifications/"
+  gem uninstall openssl --version "$OLD_OPENSSL_GEM_VERSION"
+
+  # When uninstalling default gems old .rb and .so files are left unchanged, so we need to replace the old ones with the newly installed ones
+  mv -f "/var/lib/ruby/lib/ruby/gems/$RUBY_MAJOR_VERSION.0/gems/openssl-$OPENSSL_GEM_VERSION/lib/openssl.rb" "/var/lib/ruby/lib/ruby/$RUBY_MAJOR_VERSION.0/"
+  mv -f "/var/lib/ruby/lib/ruby/gems/$RUBY_MAJOR_VERSION.0/gems/openssl-$OPENSSL_GEM_VERSION/lib/openssl.so" "/var/lib/ruby/lib/ruby/$RUBY_MAJOR_VERSION.0/$(arch)-linux/"
+
+  # "openssl" directory is also unchanged so we need to replace the old one by removing it and moving the newly installed one into its place
+  rm -rf "/var/lib/ruby/lib/ruby/$RUBY_MAJOR_VERSION.0/openssl"
+  mv "/var/lib/ruby/lib/ruby/gems/$RUBY_MAJOR_VERSION.0/gems/openssl-$OPENSSL_GEM_VERSION/lib/openssl" "/var/lib/ruby/lib/ruby/$RUBY_MAJOR_VERSION.0/"
+
+  # Move the new gemspec to the "default" directory. This will result in the new openssl gem being treated as a default gem
+  mv "/var/lib/ruby/lib/ruby/gems/$RUBY_MAJOR_VERSION.0/specifications/openssl-$OPENSSL_GEM_VERSION.gemspec" "/var/lib/ruby/lib/ruby/gems/$RUBY_MAJOR_VERSION.0/specifications/default/"
+
+  # Remove the unnecessary openssl.so file
+  rm -f "/var/lib/ruby/lib/ruby/gems/$RUBY_MAJOR_VERSION.0/extensions/$(arch)-linux/$RUBY_MAJOR_VERSION.0/openssl-$OPENSSL_GEM_VERSION/openssl.so"
 }
 
 main "$@"
