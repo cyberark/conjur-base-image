@@ -158,6 +158,7 @@ RUN apt-get update && \
       sudo \
       libarchive13 \
       cron \
+      dnsmasq \
       syslog-ng-core \
       syslog-ng-mod-sql && \
     locale-gen en_US.UTF-8 && \
