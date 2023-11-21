@@ -7,9 +7,15 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"slices"
 	"strconv"
 	"syscall"
 )
+
+// allowedCommands is the list of allowed commands, this is a set of commands that are used in normal operations by the
+// appliance. Even if setuser does not allow to elevate user privilidges, we do not want setuser to be used with any
+// command since that could be used by the attackers to hide their activities.
+var allowedCommands = []string{"pg_ctl", "pg_dump", "pg_dumpall", "psql", "createuser", "pg_ctlcluster", "true"}
 
 // logFatal is the log.Fatal function needed to be mocked for testing.
 var logFatal = log.Fatal
@@ -25,7 +31,17 @@ func main() {
 	}
 	uid, err := strconv.ParseInt(u.Uid, 10, 32)
 	gid, err := strconv.ParseInt(u.Gid, 10, 32)
-	cmd := exec.Command(os.Args[2], os.Args[3:]...)
+	command := os.Args[2]
+	if !slices.Contains(allowedCommands, command) {
+		logFatal(
+			fmt.Errorf(
+				"command %s not allowed, allowed commands are %v",
+				os.Args[2],
+				allowedCommands,
+			),
+		)
+	}
+	cmd := exec.Command(command, os.Args[3:]...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Credential: &syscall.Credential{Uid: uint32(uid), Gid: uint32(gid)},
 	}
@@ -55,5 +71,7 @@ func isTerminal(stdin *os.File) bool {
 
 // help returns the help message.
 func help() string {
-	return "\nUsage:\n\t" + os.Args[0] + " USERNAME COMMAND [args..]\n"
+	return "\nUsage:\n\t" + os.Args[0] +
+		" USERNAME COMMAND [args..]\n\tallowed commands are: " +
+		fmt.Sprintf("%v", allowedCommands) + "\n"
 }
