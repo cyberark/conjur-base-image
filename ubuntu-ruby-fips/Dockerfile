@@ -147,6 +147,7 @@ RUN apt-get update && \
     apt-get install -y \
       "postgresql-${PG_MAJOR_VERSION}=${PG_VERSION}*" \
       "postgresql-${PG_MAJOR_VERSION}-pglogical" \
+      "timescaledb-2-postgresql-${PG_MAJOR_VERSION}" \
       libreadline-dev \
       libdbd-pgsql \
       keyutils \
