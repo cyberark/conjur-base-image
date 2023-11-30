@@ -2,7 +2,7 @@
 # org the new repo will be in. GitHub automatically applies the correct version.
 
 # Uncomment the appropriate team line to automatically tag the owning team on PRs
-* @Conjur-Enterprise/r-d-developers
+* @Conjur-Enterprise/r-d-developers @Conjur-Enterprise/transition-tech
 
 # Changes to .trivyignore require Security Architect approval
 .trivyignore @Conjur-Enterprise/conjur-security
