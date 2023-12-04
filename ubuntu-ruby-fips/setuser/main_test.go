@@ -9,7 +9,9 @@ import (
 )
 
 func Test_help(t *testing.T) {
-	if help() != "\nUsage:\n\t"+os.Args[0]+" USERNAME COMMAND [args..]\n" {
+	if help() != "\nUsage:\n\t"+
+		os.Args[0]+
+		" USERNAME COMMAND [args..]\n\tallowed commands are: [pg_ctl pg_dump pg_dumpall psql createuser pg_ctlcluster true]\n" {
 		t.Errorf("unexpected help message: %s", help())
 	}
 }
@@ -54,6 +56,7 @@ func Test_main(t *testing.T) {
 	}{
 		{"no args", args{"", ""}, "Usage:"},
 		{"no command", args{"foo", ""}, "Usage:"},
+		{"invalid command", args{currentUser(), "bash"}, "command bash not allowed, allowed commands are"},
 		{"invalid user", args{"foo", "true"}, "user: unknown user foo"},
 		{"valid user", args{currentUser(), "true"}, ""},
 	}
