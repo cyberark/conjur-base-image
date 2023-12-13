@@ -163,6 +163,9 @@ RUN apt-get update && \
       syslog-ng-core \
       syslog-ng-mod-sql && \
     locale-gen en_US.UTF-8 && \
+    # Uncomment the PATH environment variable from the system crontab so that
+    # cron jobs can find the system executables.
+    sed -i 's/^#PATH/PATH/' /etc/crontab && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/log/apt/*
 
