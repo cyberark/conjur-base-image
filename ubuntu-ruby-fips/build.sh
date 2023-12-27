@@ -8,6 +8,8 @@ set -a # Marks all created or modified variables or functions for export.
 source ../versions.env
 set +a
 
+ARCHITECTURE=$(../resolve_architecture.sh)
+
 function build() {
   set -e
   echo "building ${1} image from target ${2}"
@@ -26,10 +28,10 @@ function build() {
     .
 }
 
-build "ubuntu-ruby-postgres-fips:latest" ubuntu-ruby-postgres-fips
-build "ubuntu-ruby-fips:latest" ubuntu-ruby-fips-dev
-build "ubuntu-ruby-builder:latest" ubuntu-ruby-builder
-build "ubuntu-ruby-fips:slim" ubuntu-ruby-fips-slim
+build "ubuntu-ruby-postgres-fips:latest-${ARCHITECTURE}" ubuntu-ruby-postgres-fips
+build "ubuntu-ruby-fips:latest-${ARCHITECTURE}" ubuntu-ruby-fips-dev
+build "ubuntu-ruby-builder:latest-${ARCHITECTURE}" ubuntu-ruby-builder
+build "ubuntu-ruby-fips:slim-${ARCHITECTURE}" ubuntu-ruby-fips-slim
 
 echo "Running docker container to generate description..."
 OPENSSL_VERSION=$(docker run --rm ubuntu-ruby-fips:latest openssl version | tail -1 | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')

@@ -9,28 +9,25 @@ source ../versions.env
 set +a
 
 REGISTRY="$(normalize_repo_name "$1")"
+ARCHITECTURE=$(../resolve_architecture.sh)
 
 # ${1} - image name
 # ${2} - image tag
 # ${3} - tag suffix
 push_image() {
-  LOCAL_IMAGE="${1}:${2}"
+  LOCAL_IMAGE="${1}:${2}-${ARCHITECTURE}"
   IMAGE="cyberark/${1}"
   TAG=$(<../VERSION)
 
-  if [[ -z "${REGISTRY:-}" ]]; then
-    # Push to public registry with Ubuntu version and and image versions
-    tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${UBUNTU_VERSION}-${TAG}${3}"
-    tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${UBUNTU_VERSION}${3}"
-    tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${TAG}${3}"
-    tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${2}"
-  else
-    # Push to internal locations with Ubunntu version and image versions
-    tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBUNTU_VERSION}-${TAG}${3}"
-    tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBUNTU_VERSION}${3}"
-    tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${TAG}${3}"
-    tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${2}"
+  if [[ -n "${REGISTRY:-}" ]]; then
+    IMAGE="${REGISTRY}${IMAGE}"
   fi
+
+  # Push to either internal or public registry depending if registry parameter was passed
+  tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${UBUNTU_VERSION}-${TAG}${3}-${ARCHITECTURE}"
+  tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${UBUNTU_VERSION}${3}-${ARCHITECTURE}"
+  tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${TAG}${3}-${ARCHITECTURE}"
+  tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${2}-${ARCHITECTURE}"
 }
 
 push_image "ubuntu-ruby-builder" "latest" ""

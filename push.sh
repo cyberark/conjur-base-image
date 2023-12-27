@@ -16,3 +16,19 @@ function tag_and_push() {
   docker tag "$sourceImage" "$targetImage"
   docker push "$targetImage"
 }
+
+function create_and_push_manifest() {
+  local sourceImageAmd="$1"
+  local sourceImageArm="$2"
+  local targetImage="$3"
+
+  echo Creating multiarch image: "$targetImage"...
+  docker manifest create \
+    --insecure \
+    "$targetImage" \
+    --amend "$sourceImageAmd" \
+    --amend "$sourceImageArm" \
+
+  echo Pushing multiarch image: "$targetImage"...
+  docker manifest push --insecure "$targetImage"
+}

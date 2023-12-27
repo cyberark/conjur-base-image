@@ -6,6 +6,8 @@ set -a # Marks all created or modified variables or functions for export.
 source ../versions.env
 set +a
 
+ARCHITECTURE=$(../resolve_architecture.sh)
+
 # run common tests
-../test.sh --full-image-name "ubuntu-ruby-fips:latest" --test-file-name test-ubuntu-ruby-fips.yml
-../test.sh --full-image-name "ubuntu-ruby-postgres-fips:latest" --test-file-name test-ubuntu-ruby-postgres-fips.yml
+../test.sh --full-image-name "ubuntu-ruby-fips:latest-${ARCHITECTURE}" --test-file-name test-ubuntu-ruby-fips.yml
+../test.sh --full-image-name "ubuntu-ruby-postgres-fips:latest-${ARCHITECTURE}" --test-file-name test-ubuntu-ruby-postgres-fips.yml

@@ -21,7 +21,7 @@ commandTests:
     args:
       - -c
       - find / -type f -name libssl.so* | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3
-    expectedOutput: ["^/lib/x86_64-linux-gnu/libcrypto.so.3\n$"]
+    expectedOutput: ["^/lib/(x86_64|aarch64|arm64)-linux-gnu/libcrypto.so.3\n$"]
   - name: "libcrypto.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
@@ -52,7 +52,7 @@ commandTests:
   - name: "Ruby version"
     command: "ruby"
     args: ["--version"]
-    expectedOutput: ["^ruby 3.2.2 \\(2023-03-30 revision e51014f9c0\\) \\[x86_64-linux\\]\n$"]
+    expectedOutput: ["^ruby 3.2.2 \\(2023-03-30 revision e51014f9c0\\) \\[(x86_64|aarch64|arm64)-linux\\]\n$"]
   - name: "Ruby linked with valid libcrypto.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
@@ -65,7 +65,7 @@ commandTests:
     args:
       - -c
       - find / -name *ssl*.*so* | grep ruby | xargs ldd | grep "libssl.so" | cut -d' ' -f3
-    expectedOutput: ["^/lib/x86_64-linux-gnu/libssl.so.3\n$"]
+    expectedOutput: ["^/lib/(x86_64|aarch64|arm64)-linux-gnu/libssl.so.3\n$"]
   - name: "Ruby sees valid OpenSSL version"
     command: "ruby"
     args:
@@ -100,7 +100,7 @@ commandTests:
     args:
       - -c
       - find / -type f -name libpq.so* | xargs ldd | grep "libssl.so" | cut -d' ' -f3
-    expectedOutput: ["^/lib/x86_64-linux-gnu/libssl.so.3\n$"]
+    expectedOutput: ["^/lib/(x86_64|aarch64|arm64)-linux-gnu/libssl.so.3\n$"]
   # bundler tests
   - name: "bundler version"
     command: "bundler"
