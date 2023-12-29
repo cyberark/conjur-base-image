@@ -8,7 +8,9 @@ set -a # Marks all created or modified variables or functions for export.
 source ../versions.env
 set +a
 
-docker build -t ubi-nginx:latest \
+ARCHITECTURE=$(../resolve_architecture.sh)
+
+docker build -t ubi-nginx:latest-"${ARCHITECTURE}" \
   --pull \
   --build-arg UBI_VERSION \
   .

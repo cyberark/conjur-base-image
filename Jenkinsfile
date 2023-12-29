@@ -59,31 +59,45 @@ pipeline {
     }
     stage ('Build, Test, and Scan images') {
       parallel {
-        stage ('Build, Test, and Scan ubi-ruby-fips image') {
+        stage ('ubuntu-ruby-fips arm64 images'){
           steps {
             script {
-              buildTestAndScanImage('ubi-ruby-fips')
+              buildTestAndScanImage('ubuntu-ruby-fips', INFRAPOOL_EXECUTORV2ARM_AGENT_0, 'arm64')
             }
           }
         }
-        stage ('Build, Test, and Scan ubi-nginx image') {
+        stage ('ubi-ruby-fips arm64 images'){
           steps {
             script {
-              buildTestAndScanImage('ubi-nginx')
+              buildTestAndScanImage('ubi-ruby-fips', INFRAPOOL_EXECUTORV2ARM_AGENT_0, 'arm64')
             }
           }
         }
-        stage ('Build, Test, and Scan arm64 images'){
+        stage ('ubi-nginx arm64 images'){
           steps {
             script {
-              buildTestAndScanImageWithArch('ubuntu-ruby-fips', INFRAPOOL_EXECUTORV2ARM_AGENT_0, 'arm64')
+              buildTestAndScanImage('ubi-nginx', INFRAPOOL_EXECUTORV2ARM_AGENT_0, 'arm64')
             }
           }
         }
-        stage ('Build, Test, and Scan amd64 images'){
+        stage ('ubuntu-ruby-fips amd64 images'){
           steps {
             script {
-              buildTestAndScanImageWithArch('ubuntu-ruby-fips', INFRAPOOL_EXECUTORV2_AGENT_0, 'amd64')
+              buildTestAndScanImage('ubuntu-ruby-fips', INFRAPOOL_EXECUTORV2_AGENT_0, 'amd64')
+            }
+          }
+        }
+        stage ('ubi-ruby-fips amd64 images'){
+          steps {
+            script {
+              buildTestAndScanImage('ubi-ruby-fips', INFRAPOOL_EXECUTORV2_AGENT_0, 'amd64')
+            }
+          }
+        }
+        stage ('ubi-nginx amd64 images'){
+          steps {
+            script {
+              buildTestAndScanImage('ubi-nginx', INFRAPOOL_EXECUTORV2_AGENT_0, 'amd64')
             }
           }
         }
@@ -96,6 +110,8 @@ pipeline {
           steps {
             script {
               INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh './ubuntu-ruby-fips/push_internal.sh'
+              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh './ubi-ruby-fips/push_internal.sh'
+              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh './ubi-nginx/push_internal.sh'
             }
           }
         }
@@ -103,16 +119,20 @@ pipeline {
           steps {
             script {
               INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubuntu-ruby-fips/push_internal.sh'
+              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-ruby-fips/push_internal.sh'
+              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-nginx/push_internal.sh'
             }
           }
         }
       }
     }
 
-    stage ('Push manifest to internal registry'){
+    stage ('Push manifests to internal registry'){
       steps {
         script {
           INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubuntu-ruby-fips/push_multiarch_internal.sh'
+          INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-ruby-fips/push_multiarch_internal.sh'
+          INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-nginx/push_multiarch_internal.sh'
         }
       }
     }
@@ -129,9 +149,12 @@ pipeline {
             script {
               // Push internal images
               INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh registry.tld"
+              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubi-ruby-fips/push.sh registry.tld"
+              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubi-nginx/push.sh registry.tld"
 
               // Push Dockerhub images
               INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh"
+              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubi-ruby-fips/push.sh"
             }
           }
         }
@@ -140,9 +163,12 @@ pipeline {
             script {
               // Push internal images
               INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh registry.tld"
+              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push.sh registry.tld"
+              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push.sh registry.tld"
 
               // Push Dockerhub images
               INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh"
+              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push.sh"
             }
           }
         }
@@ -161,12 +187,12 @@ pipeline {
           release(INFRAPOOL_EXECUTORV2_AGENT_0) {
             // Push internal images
             INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push_multiarch.sh registry.tld"
-            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push.sh registry.tld"
-            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push.sh registry.tld"
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push_multiarch.sh registry.tld"
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push_multiarch.sh registry.tld"
 
             // Push Dockerhub images
             INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push_multiarch.sh"
-            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push.sh"
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push_multiarch.sh"
             INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push.sh"
           }
         }
@@ -184,14 +210,7 @@ pipeline {
   }
 }
 
-def buildTestAndScanImage(name) {
-  INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./${name}/build.sh"
-  INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./${name}/test.sh"
-  scanAndReport(INFRAPOOL_EXECUTORV2_AGENT_0, "${name}:latest", "HIGH", false)
-  scanAndReport(INFRAPOOL_EXECUTORV2_AGENT_0, "${name}:latest", "NONE", true)
-}
-
-def buildTestAndScanImageWithArch(name, def agent, arch) {
+def buildTestAndScanImage(name, def agent, arch) {
   agent.agentSh "./${name}/build.sh"
   agent.agentSh "./${name}/test.sh"
   scanAndReport(agent, "${name}:latest-${arch}", "HIGH", false)

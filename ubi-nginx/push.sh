@@ -8,7 +8,8 @@ set -a # Marks all created or modified variables or functions for export.
 source ../versions.env
 set +a
 
-LOCAL_IMAGE="ubi-nginx:latest"
+ARCHITECTURE=$(../resolve_architecture.sh)
+LOCAL_IMAGE="ubi-nginx:latest-${ARCHITECTURE}"
 IMAGE="conjur-nginx"
 readonly REDHAT_REGISTRY="quay.io"
 
@@ -36,9 +37,9 @@ if [[ -z "${REGISTRY:-}" ]]; then
     exit 1
   fi
 else
-  # Push to internal locations with UBI version and and image versions
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBI_VERSION}-${TAG}"
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBI_VERSION}"
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${TAG}"
-  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:latest"
+  # Push to internal locations with UBI version, image versions and architecture name
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBI_VERSION}-${TAG}-${ARCHITECTURE}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${UBI_VERSION}-${ARCHITECTURE}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:${TAG}-${ARCHITECTURE}"
+  tag_and_push "${LOCAL_IMAGE}" "${REGISTRY}${IMAGE}:latest-${ARCHITECTURE}"
 fi

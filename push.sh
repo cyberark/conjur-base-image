@@ -27,7 +27,7 @@ function create_and_push_manifest() {
     --insecure \
     "$targetImage" \
     --amend "$sourceImageAmd" \
-    --amend "$sourceImageArm" \
+    --amend "$sourceImageArm"
 
   echo Pushing multiarch image: "$targetImage"...
   docker manifest push --insecure "$targetImage"

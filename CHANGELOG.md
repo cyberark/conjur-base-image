@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.0.10] - 2023-12-29
+
+### Changed
+- Added multi-arch support for ubi base images.
+  [Conjur-Enterprise/conjur-base-image#12](https://github.cyberng.com/Conjur-Enterprise/conjur-base-image/pull/12)
+
 ## [2.0.9] - 2023-12-27
 
 ### Changed
