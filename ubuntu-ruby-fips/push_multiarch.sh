@@ -21,7 +21,7 @@ function push_image() {
     IMAGE="${REGISTRY}${IMAGE}"
   fi
 
-  # Push to internal locations
+  # Push to either internal or public registry depending on whether registry parameter was passed
   create_and_push_manifest \
     "${IMAGE}:${UBUNTU_VERSION}-${TAG}${3}-amd64" \
     "${IMAGE}:${UBUNTU_VERSION}-${TAG}${3}-arm64" \
