@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.0.10] - 2023-12-29
 
+### Added
+- Added `libcap2-bin` package to Appliance base image for the `capsh` command to
+  check permitted capabilities.
+  [Conjur-Enterprise/conjur-base-image#13](https://github.cyberng.com/Conjur-Enterprise/conjur-base-image/pull/13)
+
 ### Changed
 - Added multi-arch support for ubi base images.
   [Conjur-Enterprise/conjur-base-image#12](https://github.cyberng.com/Conjur-Enterprise/conjur-base-image/pull/12)

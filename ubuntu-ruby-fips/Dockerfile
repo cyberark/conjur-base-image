@@ -161,7 +161,10 @@ RUN apt-get update && \
       cron \
       dnsmasq \
       syslog-ng-core \
-      syslog-ng-mod-sql && \
+      syslog-ng-mod-sql \
+      # libcap2-bin is required for the `capsh`
+      # command to check permitted capabilities
+      libcap2-bin && \
     locale-gen en_US.UTF-8 && \
     # Uncomment the PATH environment variable from the system crontab so that
     # cron jobs can find the system executables.
