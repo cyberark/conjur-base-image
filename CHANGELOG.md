@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added `libcap2-bin` package to Appliance base image for the `capsh` command to
   check permitted capabilities.
   [Conjur-Enterprise/conjur-base-image#13](https://github.cyberng.com/Conjur-Enterprise/conjur-base-image/pull/13)
+- Disable `pam_loginuid` module for Cron in Appliance base image for backward
+  compability with the Phusion base image.
+  []()
 
 ### Changed
 - Added multi-arch support for ubi base images.

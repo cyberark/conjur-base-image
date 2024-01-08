@@ -169,6 +169,10 @@ RUN apt-get update && \
     # Uncomment the PATH environment variable from the system crontab so that
     # cron jobs can find the system executables.
     sed -i 's/^#PATH/PATH/' /etc/crontab && \
+    # Disable the pam_loginuid.so PAM module for cron jobs. This is carried
+    # forward from the Phusion base image and is required for cron jobs to run:
+    # https://github.com/phusion/baseimage-docker/blob/master/image/services/cron/cron.sh#L10-L11
+    sed -i 's/^\s*session\s\+required\s\+pam_loginuid.so/# &/' /etc/pam.d/cron && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/log/apt/*
 
