@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   check permitted capabilities.
   [Conjur-Enterprise/conjur-base-image#13](https://github.cyberng.com/Conjur-Enterprise/conjur-base-image/pull/13)
 - Disable `pam_loginuid` module for Cron in Appliance base image for backward
-  compability with the Phusion base image.
-  []()
+  compatibility with the Phusion base image.
+  [Conjur-Enterprise/conjur-base-image#14](https://github.cyberng.com/Conjur-Enterprise/conjur-base-image/pull/14)
 
 ### Changed
 - Added multi-arch support for ubi base images.
