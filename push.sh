@@ -22,6 +22,9 @@ function create_and_push_manifest() {
   local sourceImageArm="$2"
   local targetImage="$3"
 
+  docker pull "$sourceImageAmd"
+  docker pull "$sourceImageArm"
+
   echo Creating multiarch image: "$targetImage"...
   docker manifest create \
     --insecure \
@@ -31,4 +34,10 @@ function create_and_push_manifest() {
 
   echo Pushing multiarch image: "$targetImage"...
   docker manifest push --insecure "$targetImage"
+
+  # Because the bill of materials is created based on local docker images this is necessary in order to have
+  # identical records in BOM files as previously, before multi-arch changes
+  docker rmi "$sourceImageAmd"
+  docker rmi "$sourceImageArm"
+  docker pull "$targetImage"
 }
