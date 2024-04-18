@@ -137,6 +137,15 @@ RUN go test && \
     go build .
 
 # ==============================================================================
+# Tool 'timescaledb-parallel-copy' Builder
+# This step is needed to install latest
+# version of the timescaledb-parallel-copy tool
+# ==============================================================================
+FROM golang:latest as timescaledb-parallel-copy-builder
+
+RUN go install github.com/timescale/timescaledb-parallel-copy/cmd/timescaledb-parallel-copy@latest
+
+# ==============================================================================
 # Conjur Base Image (Ubuntu) with postgres server
 # ==============================================================================
 FROM ubuntu-ruby-fips-dev as ubuntu-ruby-postgres-fips
@@ -178,3 +187,4 @@ RUN apt-get update && \
 
 COPY runit /etc/service/
 COPY --from=setuser-builder /src/setuser /sbin/setuser
+COPY --from=timescaledb-parallel-copy-builder /go/bin/timescaledb-parallel-copy /usr/bin/timescaledb-parallel-copy
