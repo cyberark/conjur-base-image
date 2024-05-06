@@ -34,8 +34,8 @@ build "ubuntu-ruby-builder:latest-${ARCHITECTURE}" ubuntu-ruby-builder
 build "ubuntu-ruby-fips:slim-${ARCHITECTURE}" ubuntu-ruby-fips-slim
 
 echo "Running docker container to generate description..."
-OPENSSL_VERSION=$(docker run --rm ubuntu-ruby-fips:latest openssl version | tail -1 | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
-PG_VERSION=$(docker run --rm ubuntu-ruby-fips:latest apt-cache show libpq5 | grep Version | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\)-.*$/\1/')
+OPENSSL_VERSION=$(docker run --rm "ubuntu-ruby-fips:latest-${ARCHITECTURE}" openssl version | tail -1 | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
+PG_VERSION=$(docker run --rm "ubuntu-ruby-fips:latest-${ARCHITECTURE}" apt-cache show libpq5 | grep Version | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\)-.*$/\1/')
 export OPENSSL_VERSION
 export PG_VERSION
 ./generate-description.sh
