@@ -212,6 +212,7 @@ pipeline {
     always {
       script {
         INFRAPOOL_EXECUTORV2_AGENT_0.agentArchiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**/*.xml', fingerprint: true
+        junit("test-results/**/*.xml")
         releaseInfraPoolAgent(".infrapool/release_agents")
       }
     }
