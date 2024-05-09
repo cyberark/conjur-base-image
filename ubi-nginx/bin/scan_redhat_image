@@ -7,7 +7,7 @@
 # the project's Red Hat portal page: https://connect.redhat.com/projects/{CERT_PID}/images
 #
 # Example: scan_redhat_image "scan.connect.redhat.com/ospid-{myProjectId}/{myProjectName}:latest" "{myCertPid}"
-PREFLIGHT_VERSION=1.9.1
+PREFLIGHT_VERSION=1.9.4
 mkdir preflight-linux-amd64
 curl \
   -o preflight-linux-amd64/preflight \
