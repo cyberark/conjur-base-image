@@ -65,6 +65,7 @@ pipeline {
         }
       }
     }
+
     stage ('Build, Test, and Scan images') {
       parallel {
         stage ('ubuntu-ruby-fips arm64 images'){
