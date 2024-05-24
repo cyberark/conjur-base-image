@@ -12,7 +12,7 @@ Section 1: Apache-2.0
 
 Section 2: BSD-2-Clause
 >>> https://github.com/nginx/nginx v1.20
->>> https://github.com/ruby/ruby v3.2
+>>> https://github.com/ruby/ruby v3.3
 
 Section 3: PostgreSQL License
 >>> https://github.com/postgres/postgres v15_3
