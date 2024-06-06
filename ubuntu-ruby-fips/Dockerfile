@@ -155,6 +155,7 @@ RUN apt-get update && \
     export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then apt-cache madison libpq5 | sed -n 's/^ *libpq5 *| *\([0-9]*\)\.[0-9]*-.*$/\1/p' | sort -Vr | head -1; else echo "${PG_VERSION%%.*}"; fi) && \
     apt-get install -y \
       "postgresql-${PG_MAJOR_VERSION}=${PG_VERSION}*" \
+      "postgresql-${PG_MAJOR_VERSION}-pglogical" \
       "timescaledb-2-postgresql-${PG_MAJOR_VERSION}" \
       libreadline-dev \
       libdbd-pgsql \
