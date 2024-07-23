@@ -137,13 +137,13 @@ RUN go test && \
     go build .
 
 # ==============================================================================
-# Tool 'timescaledb-parallel-copy' Builder
+# Timescaledb Tool Builder
 # This step is needed to install latest
-# version of the timescaledb-parallel-copy tool
+# version of the timescaledb-tune tool
 # ==============================================================================
-FROM golang:latest as timescaledb-parallel-copy-builder
+FROM golang:latest as timescaledb-tool-builder
 
-RUN go install github.com/timescale/timescaledb-parallel-copy/cmd/timescaledb-parallel-copy@latest
+RUN go install github.com/timescale/timescaledb-tune/cmd/timescaledb-tune@latest
 
 # ==============================================================================
 # Conjur Base Image (Ubuntu) with postgres server
@@ -182,9 +182,12 @@ RUN apt-get update && \
     # forward from the Phusion base image and is required for cron jobs to run:
     # https://github.com/phusion/baseimage-docker/blob/master/image/services/cron/cron.sh#L10-L11
     sed -i 's/^\s*session\s\+required\s\+pam_loginuid.so/# &/' /etc/pam.d/cron && \
+    # Remove timescaledb-parallel-copy that has vulnerabilities
+    # in timescaledb-2-postgresql-15 DEB package
+    rm /usr/bin/timescaledb-parallel-copy && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/log/apt/*
 
 COPY runit /etc/service/
 COPY --from=setuser-builder /src/setuser /sbin/setuser
-COPY --from=timescaledb-parallel-copy-builder /go/bin/timescaledb-parallel-copy /usr/bin/timescaledb-parallel-copy
+COPY --from=timescaledb-tool-builder /go/bin/timescaledb-tune /usr/bin/timescaledb-tune
