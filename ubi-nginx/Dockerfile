@@ -3,6 +3,7 @@ ARG UBI_VERSION
 FROM registry.access.redhat.com/$UBI_VERSION/ubi
 
 ARG WWWDATA_UID=888
+ARG UBI_VERSION
 
 # Ports below 1024 are privileged in OpenShift, so we configure these to serve
 # http / https traffic in conjur.conf.
