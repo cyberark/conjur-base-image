@@ -41,6 +41,8 @@ func main() {
 			),
 		)
 	}
+	// file deepcode ignore CommandInjection: This is by design. This tool allows to change the user for execution of following command.
+	// The input is sanitized above, and only few limited commands are allowed to be passed.
 	cmd := exec.Command(command, os.Args[3:]...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Credential: &syscall.Credential{Uid: uint32(uid), Gid: uint32(gid)},
