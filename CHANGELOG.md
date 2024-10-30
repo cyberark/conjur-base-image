@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.0.11] - 2024-10-30
+
+### Security
+- Bumped Ruby version to 3.2.6 to address CVE-2024-49761.
+
 ## [2.0.10] - 2023-12-29
 
 ### Added
