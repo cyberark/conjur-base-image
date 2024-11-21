@@ -37,12 +37,14 @@ RUN dnf install -y --nodocs "https://download.postgresql.org/pub/repos/yum/repor
       openldap-clients \
       tzdata \
       xz \
-      libpq5-${PG_VERSION}* \
-      libpq5-devel-${PG_VERSION}* \
       postgresql${PG_MAJOR_VERSION}-${PG_VERSION:=$PG_MAJOR_VERSION}* && \
     dnf erase -y pgdg-redhat-repo && \
     dnf clean all && \
-    rm -rf /var/cache/yum /var/cache/dnf /var/lib/dnf
+    rm -rf /var/cache/yum /var/cache/dnf /var/lib/dnf && \
+    # Previously, this was created when installing libpq5 separately. Using
+    # postgresql15-libs, this symlink isn't created, but is still necessary.
+    ln -s /usr/lib64/libssl.so.3 /usr/lib64/libssl.so
+
 
 # Copy ruby binaries from ubi-ruby-fips-builder
 RUN mkdir -p "${RUBY_HOME}"
