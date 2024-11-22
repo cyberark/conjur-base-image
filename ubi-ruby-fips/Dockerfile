@@ -72,19 +72,28 @@ CMD ["irb"]
 # ==============================================================================
 FROM ubi-ruby-fips-slim as ubi-ruby-builder
 
-RUN dnf -y update && \
+RUN dnf install -y --nodocs \
+      "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-$(arch)/pgdg-redhat-repo-latest.noarch.rpm" && \
+    dnf -y update && \
+    export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then dnf list libpq5 | sed -n 's/^libpq5[^ ]* *\([0-9]*\)\.[0-9]*-.*$/\1/p'; else echo "${PG_VERSION%%.*}"; fi) && \
     dnf -qy module disable ruby && \
-    dnf install -y --nodocs \
+    dnf install -y --nodocs --nobest \
         gcc \
         gcc-c++ \
         git \
         glibc-devel \
         libxml2-devel \
         libxslt-devel \
+        postgresql${PG_MAJOR_VERSION}-devel \
         make && \
+    dnf erase -y pgdg-redhat-repo && \
     dnf clean all && \
-    rm -rf /var/cache/yum /var/cache/dnf /var/lib/dnf
-
+    rm -rf /var/cache/yum /var/cache/dnf /var/lib/dnf && \
+    # Tell bundler where to find the Postgresql dev dependencies when building
+    # the `pg` gem.
+    bundle config build.pg \
+        --with-pg-lib=/usr/pgsql-${PG_MAJOR_VERSION}/lib \
+        --with-pg-include=/usr/pgsql-${PG_MAJOR_VERSION}/include
 
 # ==============================================================================
 # Conjur Base Image (UBI) with dev tooling
