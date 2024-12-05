@@ -3,7 +3,7 @@ ARG UBI_VERSION
 # ==============================================================================
 # Ruby FIPS Builder
 # ==============================================================================
-FROM registry.access.redhat.com/$UBI_VERSION/ubi as ubi-ruby-fips-builder
+FROM registry.access.redhat.com/$UBI_VERSION/ubi:latest as ubi-ruby-fips-builder
 ARG RUBY_FULL_VERSION
 ARG RUBY_MAJOR_VERSION
 ARG RUBY_SHA256
@@ -19,7 +19,7 @@ RUN /build_ruby.sh
 # ==============================================================================
 # Conjur Base Image (UBI)
 # ==============================================================================
-FROM registry.access.redhat.com/$UBI_VERSION/ubi as ubi-ruby-fips-slim
+FROM registry.access.redhat.com/$UBI_VERSION/ubi:latest as ubi-ruby-fips-slim
 ARG PG_VERSION
 ARG RUBY_HOME=/var/lib/ruby
 
@@ -28,8 +28,8 @@ ENV BUNDLE_SILENCE_ROOT_WARNING=1 \
     PATH="${RUBY_HOME}/bin:${PATH}" \
     RUBY_HOME=${RUBY_HOME}
 
-RUN dnf install -y --nodocs "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-$(arch)/pgdg-redhat-repo-latest.noarch.rpm" && \
-    dnf -y update && \
+RUN dnf -y update && \
+    dnf install -y --nodocs "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-$(arch)/pgdg-redhat-repo-latest.noarch.rpm" && \
     export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then dnf list libpq5 | sed -n 's/^libpq5[^ ]* *\([0-9]*\)\.[0-9]*-.*$/\1/p'; else echo "${PG_VERSION%%.*}"; fi) && \
     dnf -qy module disable ruby && \
     dnf install -y --nodocs \
@@ -37,7 +37,7 @@ RUN dnf install -y --nodocs "https://download.postgresql.org/pub/repos/yum/repor
       openldap-clients \
       tzdata \
       xz \
-      postgresql${PG_MAJOR_VERSION}-${PG_VERSION:=$PG_MAJOR_VERSION}* && \
+      "postgresql${PG_MAJOR_VERSION}-${PG_VERSION:=$PG_MAJOR_VERSION}*" && \
     dnf erase -y pgdg-redhat-repo && \
     dnf clean all && \
     rm -rf /var/cache/yum /var/cache/dnf /var/lib/dnf && \
@@ -72,9 +72,9 @@ CMD ["irb"]
 # ==============================================================================
 FROM ubi-ruby-fips-slim as ubi-ruby-builder
 
-RUN dnf install -y --nodocs \
+RUN dnf -y update && \
+    dnf install -y --nodocs \
       "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-$(arch)/pgdg-redhat-repo-latest.noarch.rpm" && \
-    dnf -y update && \
     export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then dnf list libpq5 | sed -n 's/^libpq5[^ ]* *\([0-9]*\)\.[0-9]*-.*$/\1/p'; else echo "${PG_VERSION%%.*}"; fi) && \
     dnf -qy module disable ruby && \
     dnf install -y --nodocs --nobest \
