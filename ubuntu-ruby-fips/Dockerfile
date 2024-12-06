@@ -54,9 +54,8 @@ RUN apt-get update && \
     PG_MAJOR_VERSION=${PG_VERSION%%.*} && \
     for f in /etc/apt/sources.list.d/*.template; do \
       file=$(basename -- "$f"); while read line; do eval echo \"$line\"; done < "$f" > "/etc/apt/sources.list.d/${file%.*}.list"; rm "$f"; \
-    done
-
-RUN apt-get update && \
+    done && \
+    apt-get update && \
     export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then apt-cache madison libpq5 | sed -n 's/^ *libpq5 *| *\([0-9]*\)\.[0-9]*-.*$/\1/p' | sort -Vr | head -1; else echo "${PG_VERSION%%.*}"; fi) && \
     apt-get upgrade -y && \
     apt-get install -y \

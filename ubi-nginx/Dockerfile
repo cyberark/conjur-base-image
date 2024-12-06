@@ -1,6 +1,6 @@
 ARG UBI_VERSION
 
-FROM registry.access.redhat.com/$UBI_VERSION/ubi
+FROM registry.access.redhat.com/$UBI_VERSION/ubi:latest
 
 ARG WWWDATA_UID=888
 ARG UBI_VERSION
