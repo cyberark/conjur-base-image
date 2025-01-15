@@ -14,6 +14,7 @@ ENV HOME=/var/www \
 
 LABEL name="ubi-nginx" \
       vendor="CyberArk" \
+      maintainer="CyberArk" \
       version="$UBI_VERSION" \
       release="$UBI_VERSION" \
       summary="UBI-based Nginx image for use with Conjur" \
