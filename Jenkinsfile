@@ -201,9 +201,9 @@ pipeline {
 
     stage ('Run security scans') {
       // This pipeline currently pushes 16 containers (8 ARM64 and 8 AMD64). It's a 
-      // conscious choice not to scan the others. The ubuntu-ruby-fips-builder and 
-      // ubuntu-ruby-postgres-fips containers aren't used anywhere. The -slim containers 
-      // have all their layers represented in the containers we do scan and thus all issues
+      // conscious choice not to scan the others. The ubuntu-ruby-postgres-fips 
+      // container isn't used anywhere. The -slim containers have all their layers 
+      // represented in the containers we do scan and thus all issues
       // should be detected. 
       environment {
         TAG = INFRAPOOL_EXECUTORV2_AGENT_0.agentSh(returnStdout: true, script: 'echo -n "$(<VERSION)"')
@@ -215,7 +215,7 @@ pipeline {
         stage('ubi-ruby-fips-builder AMD64 image scans') {
           steps {
             runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
-              image: "registry.tld/cyberark/ubi-ruby-fips-builder:${BUILT_VERSION}-amd64",
+              image: "registry.tld/cyberark/ubi-ruby-fips-builder:${TAG}-amd64",
               arch: 'linux/amd64')
           }
         }
@@ -223,7 +223,23 @@ pipeline {
         stage('ubi-ruby-fips-builder ARM64 image scans') {
           steps {
             runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
-              image: "registry.tld/cyberark/ubi-ruby-fips-builder:${BUILT_VERSION}-arm64",
+              image: "registry.tld/cyberark/ubi-ruby-fips-builder:${TAG}-arm64",
+              arch: 'linux/arm64')
+          }
+        }
+
+        stage('ubuntu-ruby-fips-builder AMD64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+              image: "registry.tld/cyberark/ubuntu-ruby-fips-builder:${TAG}-amd64",
+              arch: 'linux/amd64')
+          }
+        }
+
+        stage('ubuntu-ruby-fips-builder ARM64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+              image: "registry.tld/cyberark/ubuntu-ruby-fips-builder:${TAG}-arm64",
               arch: 'linux/arm64')
           }
         }
