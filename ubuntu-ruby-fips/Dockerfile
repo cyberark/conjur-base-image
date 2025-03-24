@@ -3,7 +3,7 @@ ARG UBUNTU_VERSION
 # ==============================================================================
 # FIPS Provider builder
 # ==============================================================================
-FROM ubuntu:${UBUNTU_VERSION} as fips-provider-builder
+FROM ubuntu:${UBUNTU_VERSION} AS fips-provider-builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -16,7 +16,7 @@ RUN /build_openssl_fips_provider.sh
 # ==============================================================================
 # Ruby FIPS Builder
 # ==============================================================================
-FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-fips-builder
+FROM ubuntu:${UBUNTU_VERSION} AS ubuntu-ruby-fips-builder
 ARG RUBY_FULL_VERSION
 ARG RUBY_MAJOR_VERSION
 ARG RUBY_SHA256
@@ -32,7 +32,7 @@ RUN /build_ruby.sh
 # ==============================================================================
 # Conjur Base Image (Ubuntu)
 # ==============================================================================
-FROM ubuntu:${UBUNTU_VERSION} as ubuntu-ruby-fips-slim
+FROM ubuntu:${UBUNTU_VERSION} AS ubuntu-ruby-fips-slim
 ARG PG_VERSION
 ARG RUBY_HOME=/var/lib/ruby
 
@@ -99,7 +99,7 @@ CMD ["irb"]
 # ==============================================================================
 # Ruby Builder
 # ==============================================================================
-FROM ubuntu-ruby-fips-slim as ubuntu-ruby-builder
+FROM ubuntu-ruby-fips-slim AS ubuntu-ruby-builder
 
 # We don't want FIPS mode on the builder since it disables bundler optimizations
 ENV OPENSSL_CONF=/usr/lib/ssl/openssl_non_fips.cnf
@@ -116,7 +116,7 @@ RUN apt-get update && \
 # ==============================================================================
 # Conjur Base Image (Ubuntu) with dev tooling
 # ==============================================================================
-FROM ubuntu-ruby-fips-slim as ubuntu-ruby-fips-dev
+FROM ubuntu-ruby-fips-slim AS ubuntu-ruby-fips-dev
 
 RUN apt-get update && \
     apt-get install -y \
@@ -129,7 +129,7 @@ RUN apt-get update && \
 # ==============================================================================
 # Tool 'setuser' Builder
 # ==============================================================================
-FROM golang:latest as setuser-builder
+FROM golang:latest AS setuser-builder
 WORKDIR /src
 COPY ./setuser /src
 RUN go test && \
@@ -140,14 +140,14 @@ RUN go test && \
 # This step is needed to install latest
 # version of the timescaledb-tune tool
 # ==============================================================================
-FROM golang:latest as timescaledb-tool-builder
+FROM golang:latest AS timescaledb-tool-builder
 
 RUN go install github.com/timescale/timescaledb-tune/cmd/timescaledb-tune@latest
 
 # ==============================================================================
 # Conjur Base Image (Ubuntu) with postgres server
 # ==============================================================================
-FROM ubuntu-ruby-fips-dev as ubuntu-ruby-postgres-fips
+FROM ubuntu-ruby-fips-dev AS ubuntu-ruby-postgres-fips
 ARG PG_VERSION
 
 RUN apt-get update && \

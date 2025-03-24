@@ -33,6 +33,7 @@ build_ruby() {
 }
 
 # When we move to the ruby version that uses this openssl version by default then we can remove this method
+# This will be when we move to Ruby 3.3 or later.
 patch_openssl_gem() {
   export PATH="${RUBY_HOME:=/var/lib/ruby}/bin:${PATH}"
   OPENSSL_GEM_VERSION="3.2.0"

@@ -1,11 +1,62 @@
+@Library(['product-pipelines-shared-library', 'conjur-enterprise-sharedlib']) _
+
+def productName = 'Conjur Base Images'
+def productTypeName = 'Conjur Enterprise'
+
 // Automated release, promotion and dependencies
 properties([
   release.addParams()
 ])
 
 if (params.MODE == "PROMOTE") {
-  release.promote(params.VERSION_TO_PROMOTE) { sourceVersion, targetVersion, assetDirectory ->
-    // Nothing to do here except the promote() automation itself
+
+  release.promote(params.VERSION_TO_PROMOTE) { infrapool, sourceVersion, targetVersion, assetDirectory ->
+    env.INFRAPOOL_PRODUCT_NAME = "${productName}"
+    env.INFRAPOOL_DD_PRODUCT_TYPE_NAME = "${productTypeName}"
+
+    def scans = [:]
+
+    scans['ubuntu-ruby-fips arm64'] = {
+      stage("ubuntu-ruby-fips arm64 scans") {
+        runSecurityScans(infrapool,
+          image: "registry.tld/cyberark/ubuntu-ruby-fips:${sourceVersion}-arm64",
+          arch: 'linux/arm64')
+      }
+    }
+
+    scans['ubuntu-ruby-fips amd64'] = {
+      stage("ubuntu-ruby-fips amd64 scans") {
+        runSecurityScans(infrapool,
+          image: "registry.tld/cyberark/ubuntu-ruby-fips:${sourceVersion}-amd64",
+          arch: 'linux/amd64')
+      }
+    }
+
+    scans['ubi-ruby-fips arm64'] = {
+      stage("ubi-ruby-fips arm64 scans") {
+        runSecurityScans(infrapool,
+          image: "registry.tld/cyberark/ubi-ruby-fips:${sourceVersion}-arm64",
+          arch: 'linux/arm64')
+      }
+    }
+
+    scans['ubi-ruby-fips amd64'] = {
+      stage("ubi-ruby-fips amd64 scans") {
+        runSecurityScans(infrapool,
+          image: "registry.tld/cyberark/ubi-ruby-fips:${sourceVersion}-amd64",
+          arch: 'linux/amd64')
+      }
+    }
+
+    scans['ubi-nginx amd64'] = {
+      stage("ubi-nginx amd64 scans") {
+        runSecurityScans(infrapool,
+          image: "registry.tld/cyberark/conjur-nginx:${sourceVersion}-amd64",
+          arch: 'linux/amd64')
+      }
+    }
+
+    parallel(scans)
   }
 
   // Copy Github Enterprise release to Github
@@ -18,6 +69,8 @@ pipeline {
 
   environment {
     MODE = release.canonicalizeMode()
+    INFRAPOOL_PRODUCT_NAME = "${productName}"
+    INFRAPOOL_DD_PRODUCT_TYPE_NAME = "${productTypeName}"
   }
 
   triggers {
@@ -66,47 +119,47 @@ pipeline {
       }
     }
 
-    stage ('Build, Test, and Scan images') {
+    stage ('Build and Test images') {
       parallel {
         stage ('ubuntu-ruby-fips arm64 images'){
           steps {
             script {
-              buildTestAndScanImage('ubuntu-ruby-fips', INFRAPOOL_EXECUTORV2ARM_AGENT_0, 'arm64')
+              buildAndTestImage('ubuntu-ruby-fips', INFRAPOOL_EXECUTORV2ARM_AGENT_0, 'arm64')
             }
           }
         }
         stage ('ubi-ruby-fips arm64 images'){
           steps {
             script {
-              buildTestAndScanImage('ubi-ruby-fips', INFRAPOOL_EXECUTORV2ARM_AGENT_0, 'arm64')
+              buildAndTestImage('ubi-ruby-fips', INFRAPOOL_EXECUTORV2ARM_AGENT_0, 'arm64')
             }
           }
         }
         stage ('ubi-nginx arm64 images'){
           steps {
             script {
-              buildTestAndScanImage('ubi-nginx', INFRAPOOL_EXECUTORV2ARM_AGENT_0, 'arm64')
+              buildAndTestImage('ubi-nginx', INFRAPOOL_EXECUTORV2ARM_AGENT_0, 'arm64')
             }
           }
         }
         stage ('ubuntu-ruby-fips amd64 images'){
           steps {
             script {
-              buildTestAndScanImage('ubuntu-ruby-fips', INFRAPOOL_EXECUTORV2_AGENT_0, 'amd64')
+              buildAndTestImage('ubuntu-ruby-fips', INFRAPOOL_EXECUTORV2_AGENT_0, 'amd64')
             }
           }
         }
         stage ('ubi-ruby-fips amd64 images'){
           steps {
             script {
-              buildTestAndScanImage('ubi-ruby-fips', INFRAPOOL_EXECUTORV2_AGENT_0, 'amd64')
+              buildAndTestImage('ubi-ruby-fips', INFRAPOOL_EXECUTORV2_AGENT_0, 'amd64')
             }
           }
         }
         stage ('ubi-nginx amd64 images'){
           steps {
             script {
-              buildTestAndScanImage('ubi-nginx', INFRAPOOL_EXECUTORV2_AGENT_0, 'amd64')
+              buildAndTestImage('ubi-nginx', INFRAPOOL_EXECUTORV2_AGENT_0, 'amd64')
             }
           }
         }
@@ -145,6 +198,85 @@ pipeline {
         }
       }
     }
+
+    stage ('Run security scans') {
+      // This pipeline currently pushes 16 containers (8 ARM64 and 8 AMD64). It's a 
+      // conscious choice not to scan the others. The ubuntu-ruby-fips-builder and 
+      // ubuntu-ruby-postgres-fips containers aren't used anywhere. The -slim containers 
+      // have all their layers represented in the containers we do scan and thus all issues
+      // should be detected. 
+      environment {
+        TAG = INFRAPOOL_EXECUTORV2_AGENT_0.agentSh(returnStdout: true, script: 'echo -n "$(<VERSION)"')
+        HASH = INFRAPOOL_EXECUTORV2_AGENT_0.agentSh(returnStdout: true, script: 'git log -1 --pretty=format:%h')
+        BUILT_VERSION = "${TAG}-${HASH}"
+      }
+      parallel {
+        // ubi-ruby-fips-builder is persisted and reused (in Conjur), so we need to scan it
+        stage('ubi-ruby-fips-builder AMD64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+              image: "registry.tld/cyberark/ubi-ruby-fips-builder:${BUILT_VERSION}-amd64",
+              arch: 'linux/amd64')
+          }
+        }
+
+        stage('ubi-ruby-fips-builder ARM64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+              image: "registry.tld/cyberark/ubi-ruby-fips-builder:${BUILT_VERSION}-arm64",
+              arch: 'linux/arm64')
+          }
+        }
+
+        stage('ubuntu-ruby-fips AMD64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+              image: "registry.tld/cyberark/ubuntu-ruby-fips:${BUILT_VERSION}-amd64",
+              arch: 'linux/amd64')
+          }
+        }
+
+        stage('ubuntu-ruby-fips ARM64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+              image: "registry.tld/cyberark/ubuntu-ruby-fips:${BUILT_VERSION}-arm64",
+              arch: 'linux/arm64')
+          }
+        }
+
+        stage('ubi-ruby-fips AMD64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+              image: "registry.tld/cyberark/ubi-ruby-fips:${BUILT_VERSION}-amd64",
+              arch: 'linux/amd64')
+          }
+        }
+
+        stage('ubi-ruby-fips ARM64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+              image: "registry.tld/cyberark/ubi-ruby-fips:${BUILT_VERSION}-arm64",
+              arch: 'linux/arm64')
+          }
+        }
+        stage('ubi-nginx AMD64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+              image: "registry.tld/conjur-nginx:${BUILT_VERSION}-amd64",
+              arch: 'linux/amd64')
+          }
+        }
+        stage('ubi-nginx ARM64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+              image: "registry.tld/conjur-nginx:${BUILT_VERSION}-arm64",
+              arch: 'linux/arm64')
+          }
+        }
+
+      }
+    }
+
 
     stage ('Publish latest arch specific images'){
       when {
@@ -220,9 +352,7 @@ pipeline {
   }
 }
 
-def buildTestAndScanImage(name, def agent, arch) {
+def buildAndTestImage(name, def agent, arch) {
   agent.agentSh "./${name}/build.sh"
   agent.agentSh "./${name}/test.sh"
-  scanAndReport(agent, "${name}:latest-${arch}", "HIGH", false)
-  scanAndReport(agent, "${name}:latest-${arch}", "NONE", true)
 }

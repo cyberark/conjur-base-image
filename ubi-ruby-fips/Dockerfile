@@ -3,7 +3,7 @@ ARG UBI_VERSION
 # ==============================================================================
 # Ruby FIPS Builder
 # ==============================================================================
-FROM registry.access.redhat.com/$UBI_VERSION/ubi:latest as ubi-ruby-fips-builder
+FROM registry.access.redhat.com/$UBI_VERSION/ubi:latest AS ubi-ruby-fips-builder
 ARG RUBY_FULL_VERSION
 ARG RUBY_MAJOR_VERSION
 ARG RUBY_SHA256
@@ -19,7 +19,7 @@ RUN /build_ruby.sh
 # ==============================================================================
 # Conjur Base Image (UBI)
 # ==============================================================================
-FROM registry.access.redhat.com/$UBI_VERSION/ubi:latest as ubi-ruby-fips-slim
+FROM registry.access.redhat.com/$UBI_VERSION/ubi:latest AS ubi-ruby-fips-slim
 ARG PG_VERSION
 ARG RUBY_HOME=/var/lib/ruby
 
@@ -70,7 +70,7 @@ CMD ["irb"]
 # ==============================================================================
 # Ruby Builder
 # ==============================================================================
-FROM ubi-ruby-fips-slim as ubi-ruby-builder
+FROM ubi-ruby-fips-slim AS ubi-ruby-builder
 
 RUN dnf -y update && \
     dnf install -y --nodocs \
@@ -98,7 +98,7 @@ RUN dnf -y update && \
 # ==============================================================================
 # Conjur Base Image (UBI) with dev tooling
 # ==============================================================================
-FROM ubi-ruby-fips-slim as ubi-ruby-fips-dev
+FROM ubi-ruby-fips-slim AS ubi-ruby-fips-dev
 
 RUN dnf -y update && \
     dnf install -y --nodocs \
