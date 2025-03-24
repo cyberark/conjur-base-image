@@ -5,7 +5,7 @@ This image includes the following packages:
 
 * OpenSSL version `3.0.2`: configured to be FIPS-compliant.
 * OpenSSL FIPS provider version `3.0.9`: allowing the OpenSSL to work in FIPS-compliant mode.
-* Ruby version `3.2.6`: compiled against the FIPS 140-2 compliant OpenSSL module.
+* Ruby version `3.2.7`: compiled against the FIPS 140-2 compliant OpenSSL module.
 * Postgres client version `15.8`: linked against the FIPS 140-2 compliant OpenSSL module.
 * Bundler version `2.4.19`.
 

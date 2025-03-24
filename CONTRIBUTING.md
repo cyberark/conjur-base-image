@@ -118,3 +118,15 @@ create a build with parameters.
 2. Select "Release" from the "Mode" dropdown and click the "Build" button:
 
    ![Trigger Release](resources/create-a-release.png)
+
+### Upgrading Ruby
+
+Upgrading Ruby in our base images requires changes to multiple files. Here's what needs to update:
+
+- /versions.env - update RUBY_FULL_VERSION (and RUBY_MAJOR_VERSION if doing more than a patch level upgrade)
+- /version.env - update RUBY_SHA256. Ruby provides these in the announcements of the new version. Use the .tar.gz file's SHA.
+- /test-ubi-ruby-fips.yml - update the version, date, and revision string in the Ruby tests (currently around line 41)
+- /test-ubuntu-ruby-fips.yml - update the version, date, and revision string in the Ruby tests (currently around line 55)
+- /test-ubuntu-ruby-postgres-fips.yml - update the version, date, and revision string in the Ruby tests (currently around line 55)
+- ubi-ruby-fips/Description.md - update the ruby version
+- ubuntu-ruby-fips/Description.md - update the ruby version

@@ -52,7 +52,7 @@ commandTests:
   - name: "Ruby version"
     command: "ruby"
     args: ["--version"]
-    expectedOutput: ["^ruby 3.2.6 \\(2024-10-30 revision 63aeb018eb\\) \\[(x86_64|aarch64|arm64)-linux\\]\n$"]
+    expectedOutput: ["^ruby 3.2.7 \\(2025-02-04 revision 02ec315244\\) \\[(x86_64|aarch64|arm64)-linux\\]\n$"]
   - name: "Ruby linked with valid libcrypto.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
