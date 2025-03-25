@@ -199,35 +199,33 @@ pipeline {
       }
     }
 
-    stage ('Run security scans') {
-      // This pipeline currently pushes 16 containers (8 ARM64 and 8 AMD64). It's a 
-      // conscious choice not to scan the others. The ubuntu-ruby-fips-builder and 
-      // ubuntu-ruby-postgres-fips containers aren't used anywhere. The -slim containers 
-      // have all their layers represented in the containers we do scan and thus all issues
-      // should be detected. 
+    // This pipeline currently pushes 16 containers (8 ARM64 and 8 AMD64) but we only
+    // scan 12 here. It's a conscious choice not to scan the *-slim images here because
+    // all their layers are represented in the containers we do scan 
+    // and thus all issues should be detected. Because we're scanning so many 
+    // images, however, these are split into 2 groups - the Ubuntu-based images and the 
+    // UBI-based main images.
+    stage ('Run Ubuntu security scans') {
       environment {
         TAG = INFRAPOOL_EXECUTORV2_AGENT_0.agentSh(returnStdout: true, script: 'echo -n "$(<VERSION)"')
         HASH = INFRAPOOL_EXECUTORV2_AGENT_0.agentSh(returnStdout: true, script: 'git log -1 --pretty=format:%h')
         BUILT_VERSION = "${TAG}-${HASH}"
       }
       parallel {
-        // ubi-ruby-fips-builder is persisted and reused (in Conjur), so we need to scan it
-        stage('ubi-ruby-fips-builder AMD64 image scans') {
+        stage('ubuntu-ruby-builder AMD64 image scans') {
           steps {
             runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
-              image: "registry.tld/cyberark/ubi-ruby-fips-builder:${BUILT_VERSION}-amd64",
+              image: "registry.tld/cyberark/ubuntu-ruby-builder:${BUILT_VERSION}-amd64",
               arch: 'linux/amd64')
           }
         }
-
-        stage('ubi-ruby-fips-builder ARM64 image scans') {
+        stage('ubuntu-ruby-builder ARM64 image scans') {
           steps {
             runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
-              image: "registry.tld/cyberark/ubi-ruby-fips-builder:${BUILT_VERSION}-arm64",
+              image: "registry.tld/cyberark/ubuntu-ruby-builder:${BUILT_VERSION}-arm64",
               arch: 'linux/arm64')
           }
         }
-
         stage('ubuntu-ruby-fips AMD64 image scans') {
           steps {
             runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
@@ -235,7 +233,6 @@ pipeline {
               arch: 'linux/amd64')
           }
         }
-
         stage('ubuntu-ruby-fips ARM64 image scans') {
           steps {
             runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
@@ -243,7 +240,46 @@ pipeline {
               arch: 'linux/arm64')
           }
         }
+        stage('ubuntu-ruby-postgres-fips AMD64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+              image: "registry.tld/cyberark/ubuntu-ruby-postgres-fips:${BUILT_VERSION}-amd64",
+              arch: 'linux/amd64')
+          }
+        }
+        stage('ubuntu-ruby-postgres-fips ARM64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+              image: "registry.tld/cyberark/ubuntu-ruby-postgres-fips:${BUILT_VERSION}-arm64",
+              arch: 'linux/arm64')
+          }
+        }
+      }
+    }
 
+    stage ('Run UBI security scans') {
+      environment {
+        TAG = INFRAPOOL_EXECUTORV2_AGENT_0.agentSh(returnStdout: true, script: 'echo -n "$(<VERSION)"')
+        HASH = INFRAPOOL_EXECUTORV2_AGENT_0.agentSh(returnStdout: true, script: 'git log -1 --pretty=format:%h')
+        BUILT_VERSION = "${TAG}-${HASH}"
+      }
+      parallel {
+        stage('ubi-ruby-builder AMD64 image scans') {
+          steps {
+            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+              image: "registry.tld/cyberark/ubi-ruby-builder:${BUILT_VERSION}-amd64",
+              arch: 'linux/amd64')
+          }
+        }
+        stage('ubi-ruby-builder ARM64 image scans') {
+          steps {
+            // When the builder images are pushed, the hash is not added to the 
+            // label, so just use the TAG value here.
+            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+              image: "registry.tld/cyberark/ubi-ruby-builder:${BUILT_VERSION}-arm64",
+              arch: 'linux/arm64')
+          }
+        }
         stage('ubi-ruby-fips AMD64 image scans') {
           steps {
             runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
@@ -251,7 +287,6 @@ pipeline {
               arch: 'linux/amd64')
           }
         }
-
         stage('ubi-ruby-fips ARM64 image scans') {
           steps {
             runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
@@ -273,11 +308,13 @@ pipeline {
               arch: 'linux/arm64')
           }
         }
-
       }
     }
 
-
+    // This pipeline currently pushes 16 containers (8 ARM64 and 8 AMD64). It's a 
+    // conscious choice not to scan the others not listed here because the -slim 
+    // containers have all their layers represented in the containers we do scan 
+    // and thus all issues should be detected. 
     stage ('Publish latest arch specific images'){
       when {
         expression {
