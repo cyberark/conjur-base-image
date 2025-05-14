@@ -27,4 +27,7 @@ make install
 
 "${RUBY_HOME:=/var/lib/ruby}/bin/gem" install bundler -v "${BUNDLER_VERSION}" --no-document
 
+# Uninstall unused gems to not introduce vulnerabilities in the future
+"${RUBY_HOME:=/var/lib/ruby}/bin/gem" uninstall -aI net-imap net-pop net-smtp
+
 set -e

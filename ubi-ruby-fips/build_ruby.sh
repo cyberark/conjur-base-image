@@ -30,6 +30,9 @@ build_ruby() {
 
   export PATH="${RUBY_HOME:=/var/lib/ruby}/bin:${PATH}"
   gem install bundler -v "${BUNDLER_VERSION}" --no-document
+
+  # Uninstall unused gems to not introduce vulnerabilities in the future
+  "${RUBY_HOME:=/var/lib/ruby}/bin/gem" uninstall -aI net-imap net-pop net-smtp
 }
 
 # When we move to the ruby version that uses this openssl version by default then we can remove this method
