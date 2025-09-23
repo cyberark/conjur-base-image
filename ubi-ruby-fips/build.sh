@@ -32,7 +32,7 @@ build "ubi-ruby-builder:latest-${ARCHITECTURE}" ubi-ruby-builder
 
 echo "Running docker container to generate description..."
 OPENSSL_VERSION=$(docker run --rm "ubi-ruby-fips:latest-${ARCHITECTURE}" openssl version | tail -1 | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
-PG_VERSION=$(docker run --rm "ubi-ruby-fips:latest-${ARCHITECTURE}" dnf list installed libpq5 | tail -1 | tr -s ' ' | cut -d' ' -f2- | sed 's/^\([0-9]*\.[0-9]*\).*$/\1/')
+PG_VERSION=$(docker run --rm "ubi-ruby-fips:latest-${ARCHITECTURE}" psql --version | cut -d ' ' -f3)
 export OPENSSL_VERSION
 export PG_VERSION
 ./generate-description.sh
