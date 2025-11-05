@@ -24,7 +24,8 @@ function build() {
     --build-arg RUBY_SHA256 \
     --build-arg BUNDLER_VERSION \
     --build-arg PG_VERSION \
-    .
+    -f Dockerfile \
+    ..
 }
 
 build "ubi-ruby-fips:latest-${ARCHITECTURE}" ubi-ruby-fips-dev

@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG OPEN_SSL_FIPS_PROVIDER_VERSION
 ARG OPEN_SSL_FIPS_PROVIDER_SHA256
 
-COPY build_openssl_fips_provider.sh /
+COPY ubuntu-ruby-fips/build_openssl_fips_provider.sh /
 RUN /build_openssl_fips_provider.sh
 
 # ==============================================================================
@@ -26,7 +26,10 @@ ARG RUBY_HOME=/var/lib/ruby
 ENV BUNDLE_SILENCE_ROOT_WARNING=1 \
     LANG=C.UTF-8
 
-COPY build_ruby.sh /
+COPY ubuntu-ruby-fips/build_ruby.sh /
+
+COPY Gemfile Gemfile.lock /
+
 RUN /build_ruby.sh
 
 # ==============================================================================
@@ -44,7 +47,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     RUBY_HOME=${RUBY_HOME} \
     PG_VERSION=${PG_VERSION}
 
-COPY apt/ /etc/apt/
+COPY ubuntu-ruby-fips/apt/ /etc/apt/
 RUN apt-get update && \
     apt-get install -y gnupg && \
     for f in /etc/apt/keyrings/*.pub; do \
@@ -79,7 +82,11 @@ COPY --from=ubuntu-ruby-fips-builder ${RUBY_HOME} ${RUBY_HOME}
 # Copy fips provider from fips-provider-builder
 COPY --from=fips-provider-builder /usr/local/lib/fips.so /usr/local/lib/fips.so
 
-COPY fips_init fips_mode /usr/local/bin/
+# Copy Gemfile and Gemfile.lock from ubuntu-ruby-fips-builder
+COPY --from=ubuntu-ruby-fips-builder /Gemfile /Gemfile.lock /base/
+COPY --from=ubuntu-ruby-fips-builder /usr/local/bundle /usr/local/bundle
+
+COPY ubuntu-ruby-fips/fips_init ubuntu-ruby-fips/fips_mode /usr/local/bin/
 
 # Enables FIPS mode for GnuPG
 ENV LIBGCRYPT_FORCE_FIPS_MODE=1
@@ -131,7 +138,7 @@ RUN apt-get update && \
 # ==============================================================================
 FROM golang:latest AS setuser-builder
 WORKDIR /src
-COPY ./setuser /src
+COPY ubuntu-ruby-fips/setuser /src
 RUN go test && \
     go build .
 
@@ -187,6 +194,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/log/apt/*
 
-COPY runit /etc/service/
+COPY ubuntu-ruby-fips/runit /etc/service/
 COPY --from=setuser-builder /src/setuser /sbin/setuser
 COPY --from=timescaledb-tool-builder /go/bin/timescaledb-tune /usr/bin/timescaledb-tune

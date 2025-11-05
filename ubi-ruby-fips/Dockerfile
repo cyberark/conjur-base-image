@@ -13,7 +13,10 @@ ARG RUBY_HOME=/var/lib/ruby
 ENV BUNDLE_SILENCE_ROOT_WARNING=1 \
     LANG=C.UTF-8
 
-COPY build_ruby.sh /
+COPY ubi-ruby-fips/build_ruby.sh /
+
+COPY Gemfile Gemfile.lock /
+
 RUN /build_ruby.sh
 
 # ==============================================================================
@@ -50,7 +53,11 @@ RUN dnf -y update && \
 RUN mkdir -p "${RUBY_HOME}"
 COPY --from=ubi-ruby-fips-builder ${RUBY_HOME} ${RUBY_HOME}
 
-COPY fips_init fips_mode /usr/local/bin/
+# Copy Gemfile and Gemfile.lock from ubi-ruby-fips-builder
+COPY --from=ubi-ruby-fips-builder /Gemfile /Gemfile.lock /base/
+COPY --from=ubi-ruby-fips-builder /usr/local/bundle /usr/local/bundle
+
+COPY ubi-ruby-fips/fips_init ubi-ruby-fips/fips_mode /usr/local/bin/
 
 # Enables FIPS mode for GnuPG
 ENV LIBGCRYPT_FORCE_FIPS_MODE=1
