@@ -14,6 +14,7 @@ function build() {
   set -e
   echo "building ${1} image from target ${2}"
   docker build \
+    --platform "linux/${ARCHITECTURE}" \
     --tag "${1}" \
     --target="${2}" \
     --pull \

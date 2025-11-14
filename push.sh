@@ -11,10 +11,11 @@ function normalize_repo_name() {
 function tag_and_push() {
   local sourceImage="$1"
   local targetImage="$2"
+  local arch="linux/$(../resolve_architecture.sh)"
 
   echo Tagging and pushing "$targetImage"...
   docker tag "$sourceImage" "$targetImage"
-  docker push "$targetImage"
+  docker push --platform "$arch" "$targetImage"
 }
 
 function create_and_push_manifest() {
@@ -22,8 +23,8 @@ function create_and_push_manifest() {
   local sourceImageArm="$2"
   local targetImage="$3"
 
-  docker pull "$sourceImageAmd"
-  docker pull "$sourceImageArm"
+  docker pull --platform linux/amd64 "$sourceImageAmd"
+  docker pull --platform linux/arm64 "$sourceImageArm"
 
   echo Creating multiarch image: "$targetImage"...
   docker manifest create \
