@@ -10,7 +10,7 @@ set +a
 
 ARCHITECTURE=$(../resolve_architecture.sh)
 
-docker build -t ubi-nginx:latest-"${ARCHITECTURE}" \
+docker build --platform "linux/${ARCHITECTURE}" -t ubi-nginx:latest-"${ARCHITECTURE}" \
   --pull \
   --build-arg UBI_VERSION \
   .
