@@ -26,7 +26,8 @@ function build() {
     --build-arg PG_VERSION \
     --build-arg OPEN_SSL_FIPS_PROVIDER_VERSION \
     --build-arg OPEN_SSL_FIPS_PROVIDER_SHA256 \
-    .
+    -f Dockerfile \
+    ..
 }
 
 build "ubuntu-ruby-postgres-fips:latest-${ARCHITECTURE}" ubuntu-ruby-postgres-fips
