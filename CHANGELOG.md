@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [2.0.14] - 2025-12-02
 ### Changed
 - Include Gemfile in the images to centralise gem version management. CNJR-11756
+- Upgraded Ruby to 3.4.7. CNJR-11924
 
 ## [2.0.13] - 2025-09-23
 

@@ -3,12 +3,12 @@
 with Ruby configured to be FIPS 140-2 compliant [OpenSSL module](https://www.openssl.org/docs/fips.html).
 This image includes the following packages:
 
-* OpenSSL version `3.2.2`: with FIPS 140-2 compliant OpenSSL module from RedHat UBI 9.
+* OpenSSL version `3.5.1`: with FIPS 140-2 compliant OpenSSL module from RedHat UBI 9.
   Please note FIPS module is disabled by default for this image. For more information
   and toggling on/off procedure refer to [readme](./ubi-ruby-fips/README.md).
-* OpenSSL FIPS provider version `3.2.2`: allowing the OpenSSL to work in FIPS-compliant mode.
-* Ruby version `3.2.7`: compiled against the FIPS 140-2 compliant OpenSSL module.
-* Postgres client version `15.14`: linked against the FIPS 140-2 compliant OpenSSL module.
+* OpenSSL FIPS provider version `3.5.1`: allowing the OpenSSL to work in FIPS-compliant mode.
+* Ruby version `3.4.7`: compiled against the FIPS 140-2 compliant OpenSSL module.
+* Postgres client version `15.15`: linked against the FIPS 140-2 compliant OpenSSL module.
 * Bundler version `2.4.19`.
 
 Source code: https://github.com/cyberark/conjur-base-image
