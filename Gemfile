@@ -9,6 +9,7 @@ git_source(:github) { |name| "https://github.com/#{name}.git" }
 # Shared gems used in Conjur
 # --------------------------------
 
+gem 'benchmark'
 gem 'command_class'
 gem 'concurrent-ruby'
 gem 'nokogiri'
@@ -21,6 +22,7 @@ gem 'pg'
 gem 'sequel'
 
 gem 'gli'
+gem 'ostruct'
 gem 'rexml', '~> 3'
 gem 'ffi', '>= 1.9.24'
 gem 'conjur-rack-heartbeat', '~> 2.2'
@@ -46,7 +48,7 @@ gem 'sigdump', require: 'sigdump/setup'
 group :development, :test do
   gem 'aruba'
   gem 'ci_reporter_rspec'
-  gem 'cucumber', '~> 7.1'
+  gem 'cucumber', '~> 9.2'
   gem 'debase', '~> 0.2.5.beta2'
   gem 'debase-ruby_core_source', '~> 3.3'
   gem 'json_spec', '~> 1.1'
