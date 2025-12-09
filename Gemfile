@@ -83,6 +83,5 @@ end
 # Other shared gems
 # --------------------------------
 
-gem 'conjur-appliance-logging', git: 'https://github.com/conjurinc/appliance-logging.git', branch: 'master'
 gem 'conjur-api', '= 6.0.1.pre.139' # Versions above has a breaking change resulting in NameErrors
 gem 'parallel'
