@@ -13,8 +13,8 @@ gem 'benchmark'
 gem 'command_class'
 gem 'concurrent-ruby'
 gem 'nokogiri'
-gem 'puma', '~> 6', '>= 6.4.3'
-gem 'rack', '~> 2'
+gem 'puma', '~> 7'
+gem 'rack'
 gem 'rails', '~> 8.1'
 gem 'rake'
 
@@ -85,5 +85,5 @@ end
 # Other shared gems
 # --------------------------------
 
-gem 'conjur-api', '= 6.0.1.pre.139' # Versions above has a breaking change resulting in NameErrors
+gem 'conjur-api'
 gem 'parallel'
