@@ -1,4 +1,4 @@
-ARG UBUNTU_VERSION
+ARG UBUNTU_VERSION=24.04
 
 # ==============================================================================
 # FIPS Provider builder
