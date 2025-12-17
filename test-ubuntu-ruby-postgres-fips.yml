@@ -52,7 +52,7 @@ commandTests:
   - name: "Ruby version"
     command: "ruby"
     args: ["--version"]
-    expectedOutput: ["^ruby 3.2.7 \\(2025-02-04 revision 02ec315244\\) \\[(x86_64|aarch64|arm64)-linux\\]\n$"]
+    expectedOutput: ["^ruby 3.4.7 \\(2025-10-08 revision 7a5688e2a2\\) \\+PRISM \\[(x86_64|aarch64|arm64)-linux\\]\n$"]
   - name: "Ruby linked with valid libcrypto.so version"
     setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
     command: "bash"
@@ -105,4 +105,4 @@ commandTests:
   - name: "bundler version"
     command: "bundler"
     args: ["--version"]
-    expectedOutput: ["^Bundler version 2.4.19\n$"]
+    expectedOutput: ["^Bundler version 2.7.2\n$"]
