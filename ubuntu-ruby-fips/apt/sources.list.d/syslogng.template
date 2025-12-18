@@ -1,0 +1,1 @@
+deb [signed-by=/etc/apt/keyrings/syslogng.gpg] https://ose-repo.syslog-ng.com/apt/ stable ubuntu-${COMPONENT_NAME}
