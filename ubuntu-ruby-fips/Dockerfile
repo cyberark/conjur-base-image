@@ -1,4 +1,4 @@
-ARG UBUNTU_VERSION
+ARG UBUNTU_VERSION=24.04
 
 # ==============================================================================
 # FIPS Provider builder
@@ -55,6 +55,12 @@ RUN apt-get update && \
     done && \
     . /etc/os-release && \
     PG_MAJOR_VERSION=${PG_VERSION%%.*} && \
+    # Component name differ for amd64 and arm64 architectures for Syslog-NG OSE
+    COMPONENT_NAME=$(case $(dpkg --print-architecture) in \
+      amd64) echo "$VERSION_CODENAME" ;; \
+      arm64) echo "$VERSION_CODENAME-arm64" ;; \
+      *) echo "" ;; \
+    esac) && \
     for f in /etc/apt/sources.list.d/*.template; do \
       file=$(basename -- "$f"); while read line; do eval echo \"$line\"; done < "$f" > "/etc/apt/sources.list.d/${file%.*}.list"; rm "$f"; \
     done && \
@@ -163,6 +169,9 @@ RUN apt-get update && \
       "postgresql-${PG_MAJOR_VERSION}=${PG_VERSION}*" \
       "postgresql-${PG_MAJOR_VERSION}-pglogical" \
       "timescaledb-2-postgresql-${PG_MAJOR_VERSION}" \
+      syslog-ng-core \
+      syslog-ng-scl \
+      syslog-ng-mod-sql \
       libreadline-dev \
       libdbd-pgsql \
       keyutils \
@@ -175,8 +184,6 @@ RUN apt-get update && \
       libarchive13 \
       cron \
       dnsmasq \
-      syslog-ng-core \
-      syslog-ng-mod-sql \
       # libcap2-bin is required for the `capsh`
       # command to check permitted capabilities
       libcap2-bin && \
