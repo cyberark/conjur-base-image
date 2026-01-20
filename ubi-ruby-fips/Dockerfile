@@ -91,11 +91,12 @@ RUN dnf -y update && \
         glibc-devel \
         libxml2-devel \
         libxslt-devel \
-        postgresql${PG_MAJOR_VERSION}-devel \
         make && \
+    dnf download -y postgresql${PG_MAJOR_VERSION}-devel --destdir /tmp/rpms && \
+    rpm -ivh --nodeps /tmp/rpms/postgresql${PG_MAJOR_VERSION}-devel-*.rpm &&  \
     dnf erase -y pgdg-redhat-repo && \
     dnf clean all && \
-    rm -rf /var/cache/yum /var/cache/dnf /var/lib/dnf && \
+    rm -rf /var/cache/yum /var/cache/dnf /var/lib/dnf /tmp/rpms && \
     # Tell bundler where to find the Postgresql dev dependencies when building
     # the `pg` gem.
     bundle config build.pg \
