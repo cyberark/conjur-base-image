@@ -2,6 +2,7 @@
 package main
 
 import (
+	"crypto/fips140"
 	"fmt"
 	"log"
 	"os"
@@ -22,6 +23,10 @@ var logFatal = log.Fatal
 
 // main runs the given command as the given user.
 func main() {
+	if !fips140.Enabled() {
+		log.Print("WARN: Compliance with FIPS 140-3 is not enabled")
+	}
+
 	if len(os.Args) < 3 {
 		logFatal(help())
 	}

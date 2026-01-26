@@ -143,6 +143,9 @@ RUN apt-get update && \
 # Tool 'setuser' Builder
 # ==============================================================================
 FROM golang:latest AS setuser-builder
+
+ENV GOFIPS140=latest
+
 WORKDIR /src
 COPY ubuntu-ruby-fips/setuser /src
 RUN go test && \
