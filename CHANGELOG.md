@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Upgraded Bundler to 2.7.2. CNJR-11924
 - Upgraded Ubuntu to 24.04. CNJR-11925
 
+### Security
+- Bumped rack to 3.2.5 to resolve CVE-2026-22860. CONJSE-2082
+
 ## [2.0.13] - 2025-09-23
 
 ### Security
