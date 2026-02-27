@@ -8,7 +8,7 @@ This image includes the following packages:
   and toggling on/off procedure refer to [readme](./ubi-ruby-fips/README.md).
 * OpenSSL FIPS provider version `3.5.1`: allowing the OpenSSL to work in FIPS-compliant mode.
 * Ruby version `3.4.7`: compiled against the FIPS 140-2 compliant OpenSSL module.
-* Postgres client version `15.15`: linked against the FIPS 140-2 compliant OpenSSL module.
+* Postgres client version `18.2`: linked against the FIPS 140-2 compliant OpenSSL module.
 * Bundler version `2.7.2`.
 
 Source code: https://github.com/cyberark/conjur-base-image
