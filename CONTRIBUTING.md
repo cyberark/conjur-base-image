@@ -80,17 +80,6 @@ docker run --rm \
 Alternatively, you can run the `./{image-name}/test.sh` script after building
 the image and view the results in the `./test-results/` folder.
 
-### Security testing
-To run vulnerability scanning using [trivy](https://github.com/aquasecurity/trivy) execute
-
-   ```sh-session
- docker run --rm \
-   -v /var/run/docker.sock:/var/run/docker.sock \
-   -v ${pwd}:/workspace \
-   aquasec/trivy:latest \
-   --no-progress --ignorefile /workspace/.trivyignore --ignore-unfixed "image:tag"
-   ```
-
 ## Releasing
 
 Our base images use our automated release process to propagate out everywhere
