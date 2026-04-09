@@ -51,7 +51,7 @@ if (params.MODE == "PROMOTE") {
     scans['ubi-nginx amd64'] = {
       stage("ubi-nginx amd64 scans") {
         runSecurityScans(infrapool,
-          image: "registry.tld/cyberark/conjur-nginx:${sourceVersion}-amd64",
+          image: "registry.tld/conjur-nginx:${sourceVersion}-amd64",
           arch: 'linux/amd64')
       }
     }
