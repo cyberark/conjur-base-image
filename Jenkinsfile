@@ -56,6 +56,14 @@ if (params.MODE == "PROMOTE") {
       }
     }
 
+    scans['ubi-nginx arm64'] = {
+      stage("ubi-nginx arm64 scans") {
+        runSecurityScans(infrapool,
+          image: "registry.tld/conjur-nginx:${sourceVersion}-arm64",
+          arch: 'linux/arm64')
+      }
+    }
+
     parallel(scans)
   }
 
@@ -303,7 +311,7 @@ pipeline {
         }
         stage('ubi-nginx ARM64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
               image: "registry.tld/conjur-nginx:${BUILT_VERSION}-arm64",
               arch: 'linux/arm64')
           }
@@ -381,9 +389,17 @@ pipeline {
   post {
     always {
       script {
-        INFRAPOOL_EXECUTORV2_AGENT_0.agentArchiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**/*.xml', fingerprint: true
-        junit("test-results/**/*.xml")
-        releaseInfraPoolAgent(".infrapool/release_agents")
+        try {
+          def hasExecutorAgent = binding.hasVariable('INFRAPOOL_EXECUTORV2_AGENT_0') && INFRAPOOL_EXECUTORV2_AGENT_0 != null
+
+          if (hasExecutorAgent) {
+            INFRAPOOL_EXECUTORV2_AGENT_0.agentArchiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**/*.xml', fingerprint: true
+          }
+
+          junit("test-results/**/*.xml")
+        } finally {
+          releaseInfraPoolAgent(".infrapool/release_agents")
+        }
       }
     }
   }
