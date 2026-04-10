@@ -122,7 +122,9 @@ RUN apt-get update && \
       git \
       build-essential \
       libreadline-dev \
-      libz-dev && \
+      libz-dev \
+      libsqlite3-dev \
+      libsqlcipher-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/log/apt/*
 
