@@ -18,53 +18,68 @@ if (params.MODE == "PROMOTE") {
 
     scans['ubuntu-ruby-fips arm64'] = {
       stage("ubuntu-ruby-fips arm64 scans") {
+      retry(3) {
         runSecurityScans(infrapool,
           image: "registry.tld/cyberark/ubuntu-ruby-fips:${sourceVersion}-arm64",
           arch: 'linux/arm64')
+        }
       }
     }
 
     scans['ubuntu-ruby-fips amd64'] = {
       stage("ubuntu-ruby-fips amd64 scans") {
+      retry(3) {
         runSecurityScans(infrapool,
           image: "registry.tld/cyberark/ubuntu-ruby-fips:${sourceVersion}-amd64",
           arch: 'linux/amd64')
+        }
       }
     }
 
     scans['ubi-ruby-fips arm64'] = {
       stage("ubi-ruby-fips arm64 scans") {
-        runSecurityScans(infrapool,
-          image: "registry.tld/cyberark/ubi-ruby-fips:${sourceVersion}-arm64",
-          arch: 'linux/arm64')
+        retry(3) {
+          runSecurityScans(infrapool,
+            image: "registry.tld/cyberark/ubi-ruby-fips:${sourceVersion}-arm64",
+            arch: 'linux/arm64')
+        }
       }
     }
 
     scans['ubi-ruby-fips amd64'] = {
       stage("ubi-ruby-fips amd64 scans") {
-        runSecurityScans(infrapool,
-          image: "registry.tld/cyberark/ubi-ruby-fips:${sourceVersion}-amd64",
-          arch: 'linux/amd64')
+        retry(3) {
+          runSecurityScans(infrapool,
+            image: "registry.tld/cyberark/ubi-ruby-fips:${sourceVersion}-amd64",
+            arch: 'linux/amd64')
+        }
       }
     }
 
     scans['ubi-nginx amd64'] = {
       stage("ubi-nginx amd64 scans") {
-        runSecurityScans(infrapool,
-          image: "registry.tld/conjur-nginx:${sourceVersion}-amd64",
-          arch: 'linux/amd64')
+        retry(3) {
+          runSecurityScans(infrapool,
+            image: "registry.tld/conjur-nginx:${sourceVersion}-amd64",
+            arch: 'linux/amd64')
+        }
       }
     }
 
     scans['ubi-nginx arm64'] = {
       stage("ubi-nginx arm64 scans") {
-        runSecurityScans(infrapool,
-          image: "registry.tld/conjur-nginx:${sourceVersion}-arm64",
-          arch: 'linux/arm64')
+        retry(3) {
+          runSecurityScans(infrapool,
+            image: "registry.tld/conjur-nginx:${sourceVersion}-arm64",
+            arch: 'linux/arm64')
+        }
       }
     }
 
-    parallel(scans)
+    stage('Parallel Stage') {
+      failFast true
+      parallel(scans)
+    }
   }
 
   // Copy Github Enterprise release to Github
@@ -222,44 +237,56 @@ pipeline {
       parallel {
         stage('ubuntu-ruby-builder AMD64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
-              image: "registry.tld/cyberark/ubuntu-ruby-builder:${BUILT_VERSION}-amd64",
-              arch: 'linux/amd64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+                image: "registry.tld/cyberark/ubuntu-ruby-builder:${BUILT_VERSION}-amd64",
+                arch: 'linux/amd64')
+            }
           }
         }
         stage('ubuntu-ruby-builder ARM64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
-              image: "registry.tld/cyberark/ubuntu-ruby-builder:${BUILT_VERSION}-arm64",
-              arch: 'linux/arm64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+                image: "registry.tld/cyberark/ubuntu-ruby-builder:${BUILT_VERSION}-arm64",
+                arch: 'linux/arm64')
+            }
           }
         }
         stage('ubuntu-ruby-fips AMD64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
-              image: "registry.tld/cyberark/ubuntu-ruby-fips:${BUILT_VERSION}-amd64",
-              arch: 'linux/amd64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+                image: "registry.tld/cyberark/ubuntu-ruby-fips:${BUILT_VERSION}-amd64",
+                arch: 'linux/amd64')
+            }
           }
         }
         stage('ubuntu-ruby-fips ARM64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
-              image: "registry.tld/cyberark/ubuntu-ruby-fips:${BUILT_VERSION}-arm64",
-              arch: 'linux/arm64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+                image: "registry.tld/cyberark/ubuntu-ruby-fips:${BUILT_VERSION}-arm64",
+                arch: 'linux/arm64')
+            }
           }
         }
         stage('ubuntu-ruby-postgres-fips AMD64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
-              image: "registry.tld/cyberark/ubuntu-ruby-postgres-fips:${BUILT_VERSION}-amd64",
-              arch: 'linux/amd64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+                image: "registry.tld/cyberark/ubuntu-ruby-postgres-fips:${BUILT_VERSION}-amd64",
+                arch: 'linux/amd64')
+            }
           }
         }
         stage('ubuntu-ruby-postgres-fips ARM64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
-              image: "registry.tld/cyberark/ubuntu-ruby-postgres-fips:${BUILT_VERSION}-arm64",
-              arch: 'linux/arm64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+                image: "registry.tld/cyberark/ubuntu-ruby-postgres-fips:${BUILT_VERSION}-arm64",
+                arch: 'linux/arm64')
+            }
           }
         }
       }
@@ -274,46 +301,58 @@ pipeline {
       parallel {
         stage('ubi-ruby-builder AMD64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
-              image: "registry.tld/cyberark/ubi-ruby-builder:${BUILT_VERSION}-amd64",
-              arch: 'linux/amd64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+                image: "registry.tld/cyberark/ubi-ruby-builder:${BUILT_VERSION}-amd64",
+                arch: 'linux/amd64')
+            }
           }
         }
         stage('ubi-ruby-builder ARM64 image scans') {
           steps {
             // When the builder images are pushed, the hash is not added to the 
             // label, so just use the TAG value here.
-            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
-              image: "registry.tld/cyberark/ubi-ruby-builder:${BUILT_VERSION}-arm64",
-              arch: 'linux/arm64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+                image: "registry.tld/cyberark/ubi-ruby-builder:${BUILT_VERSION}-arm64",
+                arch: 'linux/arm64')
+            }
           }
         }
         stage('ubi-ruby-fips AMD64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
-              image: "registry.tld/cyberark/ubi-ruby-fips:${BUILT_VERSION}-amd64",
-              arch: 'linux/amd64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+                image: "registry.tld/cyberark/ubi-ruby-fips:${BUILT_VERSION}-amd64",
+                arch: 'linux/amd64')
+            }
           }
         }
         stage('ubi-ruby-fips ARM64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
-              image: "registry.tld/cyberark/ubi-ruby-fips:${BUILT_VERSION}-arm64",
-              arch: 'linux/arm64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+                image: "registry.tld/cyberark/ubi-ruby-fips:${BUILT_VERSION}-arm64",
+                arch: 'linux/arm64')
+            }
           }
         }
         stage('ubi-nginx AMD64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
-              image: "registry.tld/conjur-nginx:${BUILT_VERSION}-amd64",
-              arch: 'linux/amd64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2_AGENT_0,
+                image: "registry.tld/conjur-nginx:${BUILT_VERSION}-amd64",
+                arch: 'linux/amd64')
+            }
           }
         }
         stage('ubi-nginx ARM64 image scans') {
           steps {
-            runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
-              image: "registry.tld/conjur-nginx:${BUILT_VERSION}-arm64",
-              arch: 'linux/arm64')
+            retry(3) {
+              runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
+                image: "registry.tld/conjur-nginx:${BUILT_VERSION}-arm64",
+                arch: 'linux/arm64')
+            }
           }
         }
       }
