@@ -168,7 +168,14 @@ RUN go install github.com/timescale/timescaledb-tune/cmd/timescaledb-tune@latest
 FROM ubuntu-ruby-fips-dev AS ubuntu-ruby-postgres-fips
 ARG PG_VERSION
 
-RUN apt-get update && \
+RUN printf '%s\n' \
+      # Prevent package manager from installing `timescaledb-tune` and `timescaledb-parallel-copy` \
+      # As we later install `timescaledb-tune` manually from sources, we don't want the package manager \
+      # to install it and cause a hash conflicts on security scans. \
+      'path-exclude=/usr/bin/timescaledb-tune' \
+      'path-exclude=/usr/bin/timescaledb-parallel-copy' \
+      > /etc/dpkg/dpkg.cfg.d/excludes-timescaledb-tools && \
+    apt-get update && \
     export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then apt-cache madison libpq5 | sed -n 's/^ *libpq5 *| *\([0-9]*\)\.[0-9]*-.*$/\1/p' | sort -Vr | head -1; else echo "${PG_VERSION%%.*}"; fi) && \
     apt-get install -y \
       "postgresql-${PG_MAJOR_VERSION}=${PG_VERSION}*" \
@@ -200,9 +207,13 @@ RUN apt-get update && \
     # forward from the Phusion base image and is required for cron jobs to run:
     # https://github.com/phusion/baseimage-docker/blob/master/image/services/cron/cron.sh#L10-L11
     sed -i 's/^\s*session\s\+required\s\+pam_loginuid.so/# &/' /etc/pam.d/cron && \
-    # Remove timescaledb-parallel-copy that has vulnerabilities
-    # in timescaledb-2-postgresql-15 DEB package
-    rm /usr/bin/timescaledb-parallel-copy && \
+    # Register local diversions before replacing or removing package-owned files so scanners do not report md5sum mismatches \
+    dpkg-divert --quiet --local --rename \
+      --divert /usr/bin/timescaledb-tune.distrib \
+      --add /usr/bin/timescaledb-tune && \
+    dpkg-divert --quiet --local --rename \
+      --divert /usr/bin/timescaledb-parallel-copy.distrib \
+      --add /usr/bin/timescaledb-parallel-copy && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/log/apt/*
 

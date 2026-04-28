@@ -106,3 +106,25 @@ commandTests:
     command: "bundler"
     args: ["--version"]
     expectedOutput: ["^Bundler version 2.7.2\n$"]
+  - name: "timescaledb-tune stays on expected path"
+    command: "bash"
+    args:
+      - -c
+      - command -v timescaledb-tune
+    expectedOutput: ["^/usr/bin/timescaledb-tune\n$"]
+  - name: "dpkg verify reports no non-config md5 mismatches"
+    command: "bash"
+    args:
+      - -c
+      - |
+        set -o pipefail
+        violations="$(
+          (dpkg -V 2>&1 || true) |
+            awk 'length($1) == 9 && index($1, "5") && $2 != "c" { print }'
+        )"
+        [ -z "$violations" ] || { printf '%s\n' "$violations"; exit 1; }
+  - name: "timescaledb-parallel-copy package binary stays excluded"
+    command: "bash"
+    args:
+      - -c
+      - test ! -e /usr/bin/timescaledb-parallel-copy && test ! -e /usr/bin/timescaledb-parallel-copy.distrib
