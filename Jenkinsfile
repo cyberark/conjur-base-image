@@ -194,18 +194,18 @@ pipeline {
         stage ('Push arm64 images'){
           steps {
             script {
-              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh './ubuntu-ruby-fips/push_internal.sh'
-              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh './ubi-ruby-fips/push_internal.sh'
-              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh './ubi-nginx/push_internal.sh'
+              retry(3) { INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh './ubuntu-ruby-fips/push_internal.sh' }
+              retry(3) { INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh './ubi-ruby-fips/push_internal.sh' }
+              retry(3) { INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh './ubi-nginx/push_internal.sh' }
             }
           }
         }
         stage ('Push amd64 images'){
           steps {
             script {
-              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubuntu-ruby-fips/push_internal.sh'
-              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-ruby-fips/push_internal.sh'
-              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-nginx/push_internal.sh'
+              retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubuntu-ruby-fips/push_internal.sh' }
+              retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-ruby-fips/push_internal.sh' }
+              retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-nginx/push_internal.sh' }
             }
           }
         }
@@ -215,18 +215,18 @@ pipeline {
     stage ('Push manifests to internal registry'){
       steps {
         script {
-          INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubuntu-ruby-fips/push_multiarch_internal.sh'
-          INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-ruby-fips/push_multiarch_internal.sh'
-          INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-nginx/push_multiarch_internal.sh'
+          retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubuntu-ruby-fips/push_multiarch_internal.sh' }
+          retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-ruby-fips/push_multiarch_internal.sh' }
+          retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh './ubi-nginx/push_multiarch_internal.sh' }
         }
       }
     }
 
     // This pipeline currently pushes 16 containers (8 ARM64 and 8 AMD64) but we only
     // scan 12 here. It's a conscious choice not to scan the *-slim images here because
-    // all their layers are represented in the containers we do scan 
-    // and thus all issues should be detected. Because we're scanning so many 
-    // images, however, these are split into 2 groups - the Ubuntu-based images and the 
+    // all their layers are represented in the containers we do scan
+    // and thus all issues should be detected. Because we're scanning so many
+    // images, however, these are split into 2 groups - the Ubuntu-based images and the
     // UBI-based main images.
     stage ('Run Ubuntu security scans') {
       environment {
@@ -310,7 +310,7 @@ pipeline {
         }
         stage('ubi-ruby-builder ARM64 image scans') {
           steps {
-            // When the builder images are pushed, the hash is not added to the 
+            // When the builder images are pushed, the hash is not added to the
             // label, so just use the TAG value here.
             retry(3) {
               runSecurityScans(INFRAPOOL_EXECUTORV2ARM_AGENT_0,
@@ -358,10 +358,10 @@ pipeline {
       }
     }
 
-    // This pipeline currently pushes 16 containers (8 ARM64 and 8 AMD64). It's a 
-    // conscious choice not to scan the others not listed here because the -slim 
-    // containers have all their layers represented in the containers we do scan 
-    // and thus all issues should be detected. 
+    // This pipeline currently pushes 16 containers (8 ARM64 and 8 AMD64). It's a
+    // conscious choice not to scan the others not listed here because the -slim
+    // containers have all their layers represented in the containers we do scan
+    // and thus all issues should be detected.
     stage ('Publish latest arch specific images'){
       when {
         expression {
@@ -373,9 +373,9 @@ pipeline {
           steps {
             script {
               // Push internal images
-              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh registry.tld"
-              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubi-ruby-fips/push.sh registry.tld"
-              INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubi-nginx/push.sh registry.tld"
+              retry(3) { INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh registry.tld" }
+              retry(3) { INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubi-ruby-fips/push.sh registry.tld" }
+              retry(3) { INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubi-nginx/push.sh registry.tld" }
 
               // Push Dockerhub images
               INFRAPOOL_EXECUTORV2ARM_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh"
@@ -387,9 +387,9 @@ pipeline {
           steps {
             script {
               // Push internal images
-              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh registry.tld"
-              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push.sh registry.tld"
-              INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push.sh registry.tld"
+              retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh registry.tld" }
+              retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push.sh registry.tld" }
+              retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push.sh registry.tld" }
 
               // Push Dockerhub images
               INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push.sh"
@@ -411,9 +411,9 @@ pipeline {
         script {
           release(INFRAPOOL_EXECUTORV2_AGENT_0) {
             // Push internal images
-            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push_multiarch.sh registry.tld"
-            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push_multiarch.sh registry.tld"
-            INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push_multiarch.sh registry.tld"
+            retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push_multiarch.sh registry.tld" }
+            retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-ruby-fips/push_multiarch.sh registry.tld" }
+            retry(3) { INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubi-nginx/push_multiarch.sh registry.tld" }
 
             // Push Dockerhub images
             INFRAPOOL_EXECUTORV2_AGENT_0.agentSh "./ubuntu-ruby-fips/push_multiarch.sh"
