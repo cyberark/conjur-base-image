@@ -49,8 +49,7 @@ group :development, :test do
   gem 'aruba'
   gem 'ci_reporter_rspec'
   gem 'cucumber', '~> 9.2'
-  gem 'debase', '~> 0.2.5.beta2'
-  gem 'debase-ruby_core_source', '~> 3.3'
+  gem 'debug', require: false
   gem 'json_spec', '~> 1.1'
   gem 'net-ssh'
 
