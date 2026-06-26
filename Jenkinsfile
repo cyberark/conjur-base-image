@@ -77,8 +77,7 @@ if (params.MODE == "PROMOTE") {
     }
 
     stage('Parallel Stage') {
-      failFast true
-      parallel(scans)
+      parallel(scans + [failFast: true])
     }
   }
 
