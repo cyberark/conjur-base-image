@@ -34,6 +34,8 @@ ENV BUNDLE_SILENCE_ROOT_WARNING=1 \
 RUN dnf -y update && \
     dnf install -y --nodocs "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-$(arch)/pgdg-redhat-repo-latest.noarch.rpm" && \
     export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then dnf list libpq5 | sed -n 's/^libpq5[^ ]* *\([0-9]*\)\.[0-9]*-.*$/\1/p'; else echo "${PG_VERSION%%.*}"; fi) && \
+    dnf config-manager --disable 'pgdg*' && \
+    dnf config-manager --enable "pgdg${PG_MAJOR_VERSION}" && \
     dnf -qy module disable ruby && \
     dnf install -y --nodocs \
       patch \
@@ -83,6 +85,8 @@ RUN dnf -y update && \
     dnf install -y --nodocs \
       "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-$(arch)/pgdg-redhat-repo-latest.noarch.rpm" && \
     export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then dnf list libpq5 | sed -n 's/^libpq5[^ ]* *\([0-9]*\)\.[0-9]*-.*$/\1/p'; else echo "${PG_VERSION%%.*}"; fi) && \
+    dnf config-manager --disable 'pgdg*' && \
+    dnf config-manager --enable "pgdg${PG_MAJOR_VERSION}" && \
     dnf -qy module disable ruby && \
     dnf install -y --nodocs --nobest \
         gcc \
