@@ -37,7 +37,7 @@ gem 'aws-sdk-iam', '~> 1.86'
 # issues with safe_yaml: https://github.com/ruby/psych/discussions/571
 gem 'psych', '= 3.3.2'
 
-gem 'jwt', '~> 2.7.1'
+gem 'jwt', '~> 3.2.0'
 gem 'anyway_config', '~> 2.6'
 gem 'i18n', '~> 1.8.11'
 
