@@ -1,6 +1,6 @@
 @Library([
   'product-pipelines-shared-library',
-  'conjur-enterprise-sharedlib@CNJR-13114'
+  'conjur-enterprise-sharedlib'
 ]) _
 
 def productName = 'Conjur Base Images'
