@@ -1,5 +1,15 @@
 ARG UBUNTU_VERSION=24.04
 
+# OPENSSL_FORCE_FIPS_MODE=0 on apt RUN only (CNJR-13114 / AmznDocker):
+# - CI host AmznDocker enables kernel FIPS; Noble containers inherit
+#   /proc/sys/crypto/fips_enabled and hit Ubuntu LP #2066990 during
+#   update-ca-certificates ("out of memory" symptom).
+# - main built on common-agent + ExecutorV2 (host FIPS off) and never
+#   needed this override; do NOT bake it as ENV — that would diverge
+#   shipped Config.Env from main and is not a product FIPS change.
+# - Product FIPS for ubuntu-ruby-fips remains fips_init / openssl.cnf.
+# See docs/building-on-fips-enabled-hosts.md
+
 # ==============================================================================
 # FIPS Provider builder
 # ==============================================================================
@@ -11,7 +21,8 @@ ARG OPEN_SSL_FIPS_PROVIDER_VERSION
 ARG OPEN_SSL_FIPS_PROVIDER_SHA256
 
 COPY ubuntu-ruby-fips/build_openssl_fips_provider.sh /
-RUN /build_openssl_fips_provider.sh
+# Host-FIPS apt workaround — see comment at top of file (do not use ENV).
+RUN OPENSSL_FORCE_FIPS_MODE=0 /build_openssl_fips_provider.sh
 
 # ==============================================================================
 # Ruby FIPS Builder
@@ -30,7 +41,8 @@ COPY ubuntu-ruby-fips/build_ruby.sh /
 
 COPY Gemfile Gemfile.lock /
 
-RUN /build_ruby.sh
+# Host-FIPS apt workaround — see comment at top of file (do not use ENV).
+RUN OPENSSL_FORCE_FIPS_MODE=0 /build_ruby.sh
 
 # ==============================================================================
 # Conjur Base Image (Ubuntu)
@@ -48,8 +60,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PG_VERSION=${PG_VERSION}
 
 COPY ubuntu-ruby-fips/apt/ /etc/apt/
-RUN apt-get update && \
-    apt-get install -y gnupg && \
+# Host-FIPS apt workaround — see comment at top of file (do not use ENV).
+RUN OPENSSL_FORCE_FIPS_MODE=0 apt-get update && \
+    OPENSSL_FORCE_FIPS_MODE=0 apt-get install -y gnupg && \
     for f in /etc/apt/keyrings/*.pub; do \
       file=$(basename -- "$f"); gpg --dearmor < "$f" > "/etc/apt/keyrings/${file%.*}.gpg"; rm "$f"; \
     done && \
@@ -64,10 +77,10 @@ RUN apt-get update && \
     for f in /etc/apt/sources.list.d/*.template; do \
       file=$(basename -- "$f"); while read line; do eval echo \"$line\"; done < "$f" > "/etc/apt/sources.list.d/${file%.*}.list"; rm "$f"; \
     done && \
-    apt-get update && \
+    OPENSSL_FORCE_FIPS_MODE=0 apt-get update && \
     export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then apt-cache madison libpq5 | sed -n 's/^ *libpq5 *| *\([0-9]*\)\.[0-9]*-.*$/\1/p' | sort -Vr | head -1; else echo "${PG_VERSION%%.*}"; fi) && \
-    apt-get upgrade -y && \
-    apt-get install -y \
+    OPENSSL_FORCE_FIPS_MODE=0 apt-get upgrade -y && \
+    OPENSSL_FORCE_FIPS_MODE=0 apt-get install -y \
       openssl \
       curl \
       patch \
@@ -117,8 +130,9 @@ FROM ubuntu-ruby-fips-slim AS ubuntu-ruby-builder
 # We don't want FIPS mode on the builder since it disables bundler optimizations
 ENV OPENSSL_CONF=/usr/lib/ssl/openssl_non_fips.cnf
 
-RUN apt-get update && \
-    apt-get install -y \
+# Host-FIPS apt workaround — see comment at top of file (do not use ENV).
+RUN OPENSSL_FORCE_FIPS_MODE=0 apt-get update && \
+    OPENSSL_FORCE_FIPS_MODE=0 apt-get install -y \
       git \
       build-essential \
       libreadline-dev \
@@ -133,8 +147,9 @@ RUN apt-get update && \
 # ==============================================================================
 FROM ubuntu-ruby-fips-slim AS ubuntu-ruby-fips-dev
 
-RUN apt-get update && \
-    apt-get install -y \
+# Host-FIPS apt workaround — see comment at top of file (do not use ENV).
+RUN OPENSSL_FORCE_FIPS_MODE=0 apt-get update && \
+    OPENSSL_FORCE_FIPS_MODE=0 apt-get install -y \
       jq \
       vim \
       nano && \
@@ -168,6 +183,7 @@ RUN go install github.com/timescale/timescaledb-tune/cmd/timescaledb-tune@latest
 FROM ubuntu-ruby-fips-dev AS ubuntu-ruby-postgres-fips
 ARG PG_VERSION
 
+# Host-FIPS apt workaround — see comment at top of file (do not use ENV).
 RUN printf '%s\n' \
       # Prevent package manager from installing `timescaledb-tune` and `timescaledb-parallel-copy` \
       # As we later install `timescaledb-tune` manually from sources, we don't want the package manager \
@@ -175,9 +191,9 @@ RUN printf '%s\n' \
       'path-exclude=/usr/bin/timescaledb-tune' \
       'path-exclude=/usr/bin/timescaledb-parallel-copy' \
       > /etc/dpkg/dpkg.cfg.d/excludes-timescaledb-tools && \
-    apt-get update && \
+    OPENSSL_FORCE_FIPS_MODE=0 apt-get update && \
     export PG_MAJOR_VERSION=$(if [ -z "${PG_VERSION}" ]; then apt-cache madison libpq5 | sed -n 's/^ *libpq5 *| *\([0-9]*\)\.[0-9]*-.*$/\1/p' | sort -Vr | head -1; else echo "${PG_VERSION%%.*}"; fi) && \
-    apt-get install -y \
+    OPENSSL_FORCE_FIPS_MODE=0 apt-get install -y \
       "postgresql-${PG_MAJOR_VERSION}=${PG_VERSION}*" \
       "postgresql-${PG_MAJOR_VERSION}-pglogical" \
       "timescaledb-2-postgresql-${PG_MAJOR_VERSION}" \

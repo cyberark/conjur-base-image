@@ -42,3 +42,13 @@ To build the images execute:
 ```
 ./ubuntu-ruby-fips/build.sh
 ```
+
+### FIPS-enabled Jenkins hosts (AmznDocker)
+
+When building on a FIPS-enabled host (AmznDocker), Noble containers inherit host FIPS and
+can hit [Ubuntu LP #2066990](https://bugs.launchpad.net/bugs/2066990) during `apt-get`.
+The Dockerfile prefixes apt/`RUN`s with `OPENSSL_FORCE_FIPS_MODE=0` (not a durable image
+`ENV` — `main` builds on non-FIPS agents and never ships that ENV). Product FIPS via
+`fips_init` is unchanged. `ubuntu-ruby-builder` still runs with FIPS off for Bundler (MD5).
+
+See [docs/building-on-fips-enabled-hosts.md](../docs/building-on-fips-enabled-hosts.md).

@@ -11,6 +11,13 @@ commandTests:
     command: "bash"
     args: [ "fips_mode" ]
     expectedOutput: [ "^FIPS mode is enabled\n$" ]
+  # AmznDocker host apt workaround must not be baked into shipped Config.Env (main parity).
+  - name: "OPENSSL_FORCE_FIPS_MODE not baked as 0"
+    command: "bash"
+    args:
+      - -c
+      - 'if [ "${OPENSSL_FORCE_FIPS_MODE:-}" = "0" ]; then echo "OPENSSL_FORCE_FIPS_MODE=0 must not be baked into image ENV"; exit 1; fi; echo ok'
+    expectedOutput: ["^ok\n$"]
   # OpenSSL tests
   - name: "OpenSSL version"
     command: "openssl"
@@ -23,7 +30,8 @@ commandTests:
       - find / -type f -name libssl.so* | xargs ldd | grep "libcrypto.so" | cut -d' ' -f3
     expectedOutput: ["^/lib/(x86_64|aarch64|arm64)-linux-gnu/libcrypto.so.3\n$"]
   - name: "libcrypto.so version"
-    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
+    # OPENSSL_FORCE_FIPS_MODE=0: apt on FIPS hosts (LP #2066990); not baked into image ENV.
+    setup: [["bash", "-c", "OPENSSL_FORCE_FIPS_MODE=0 apt-get update && OPENSSL_FORCE_FIPS_MODE=0 apt-get install -y binutils"]]
     command: "bash"
     args:
       - -c
@@ -54,7 +62,7 @@ commandTests:
     args: ["--version"]
     expectedOutput: ["^ruby 4.0.5 \\(2026-05-20 revision 64336ffd0e\\) \\+PRISM \\[(x86_64|aarch64|arm64)-linux\\]\n$"]
   - name: "Ruby linked with valid libcrypto.so version"
-    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
+    setup: [["bash", "-c", "OPENSSL_FORCE_FIPS_MODE=0 apt-get update && OPENSSL_FORCE_FIPS_MODE=0 apt-get install -y binutils"]]
     command: "bash"
     args:
       - -c
@@ -89,7 +97,7 @@ commandTests:
     expectedError: [".*Digest initialization failed.*"]
   # postgres lib tests
   - name: "libpq linked with valid libcrypto.so version"
-    setup: [["apt-get", "update"], ["apt-get", "install", "-y", "binutils"]]
+    setup: [["bash", "-c", "OPENSSL_FORCE_FIPS_MODE=0 apt-get update && OPENSSL_FORCE_FIPS_MODE=0 apt-get install -y binutils"]]
     command: "bash"
     args:
       - -c

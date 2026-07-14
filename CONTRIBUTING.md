@@ -80,6 +80,10 @@ docker run --rm \
 Alternatively, you can run the `./{image-name}/test.sh` script after building
 the image and view the results in the `./test-results/` folder.
 
+CI on `conjur-enterprise-AmznDocker` (FIPS-enabled AL2023 hosts) needs the RUN-scoped apt
+workaround in [docs/building-on-fips-enabled-hosts.md](docs/building-on-fips-enabled-hosts.md)
+(`OPENSSL_FORCE_FIPS_MODE=0` on apt only — not durable image ENV).
+
 ## Releasing
 
 Our base images use our automated release process to propagate out everywhere

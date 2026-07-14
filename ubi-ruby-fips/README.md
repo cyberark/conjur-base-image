@@ -61,3 +61,12 @@ FIPS mode.
 
 For additional information, please refer to 
 [official OpenSSL documentation](https://github.com/openssl/openssl/blob/master/README-FIPS.md#installing-the-fips-provider).
+
+### Testing on FIPS-enabled hosts
+
+When container-structure-test runs on a FIPS-enabled Jenkins host (AmznDocker), the kernel
+FIPS flag can make `openssl list -providers` show the FIPS provider even when this image's
+default config has FIPS off. The `fips_mode` script reports image-configured state via
+`openssl.cnf` (`default_properties = fips=yes`), not host kernel leakage.
+
+See [docs/building-on-fips-enabled-hosts.md](../docs/building-on-fips-enabled-hosts.md).
