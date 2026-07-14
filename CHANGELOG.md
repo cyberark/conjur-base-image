@@ -12,8 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [2.1.2] - 2026-07-14
 ### Fixed
 - Do not bake `OPENSSL_FORCE_FIPS_MODE=0` into shipped `ubuntu-ruby-fips*` image ENV.
-  Scope the AmznDocker host apt workaround to Dockerfile `RUN`s only so Config.Env matches
-  `main` (CNJR-13114). See [docs/building-on-fips-enabled-hosts.md](docs/building-on-fips-enabled-hosts.md).
+  Scope the AmznDocker host workaround to Dockerfile `RUN`s only (apt and `fips_init` /
+  `openssl fipsinstall`) so Config.Env matches `main` (CNJR-13114). See
+  [docs/building-on-fips-enabled-hosts.md](docs/building-on-fips-enabled-hosts.md).
 
 ## [2.1.1] - 2026-07-07
 ### Fixed

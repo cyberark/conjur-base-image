@@ -9,17 +9,17 @@ and how that differs from product FIPS in the shipped images.
 
 ### Why is `OPENSSL_FORCE_FIPS_MODE=0` set?
 
-**Only during `apt-get` / package-install `RUN` steps in**
+**Only on specific Dockerfile `RUN`s in**
 [ubuntu-ruby-fips/Dockerfile](../ubuntu-ruby-fips/Dockerfile) — never as a durable image `ENV`.
 
 | Fact | Detail |
 |------|--------|
-| Why needed | AmznDocker enables **host** kernel FIPS. Noble containers inherit `/proc/sys/crypto/fips_enabled=1`. Stock Noble OpenSSL then fails during `update-ca-certificates` ([Ubuntu LP #2066990](https://bugs.launchpad.net/bugs/2066990); often logged as "out of memory"). |
+| Why needed | AmznDocker enables **host** kernel FIPS. Noble containers inherit `/proc/sys/crypto/fips_enabled=1`. Stock Noble OpenSSL then fails during `update-ca-certificates` ([Ubuntu LP #2066990](https://bugs.launchpad.net/bugs/2066990); often logged as "out of memory"). The same inheritance breaks `openssl fipsinstall` inside **`fips_init`** (`Unable to get MAC of type HMAC` / `SELF_TEST_post:missing config data`) until `fipsmodule.cnf` exists. |
 | Why not on `main` | Default-branch CI uses `conjur-enterprise-common-agent` + InfraPool **ExecutorV2** (host FIPS **off**). That pipeline never needed the override. |
-| Why not `ENV` | Baking `OPENSSL_FORCE_FIPS_MODE=0` into `Config.Env` diverges shipped images from `main` and can override kernel FIPS inheritance for consumers. Prefix apt/`RUN`s only. |
+| Why not `ENV` | Baking `OPENSSL_FORCE_FIPS_MODE=0` into `Config.Env` diverges shipped images from `main` and can override kernel FIPS inheritance for consumers. Prefix apt / `fips_init` `RUN`s only. |
 | Not a product FIPS change | Host FIPS ≠ image FIPS. Product FIPS for `ubuntu-ruby-fips` remains **`fips_init`** / openssl.cnf (`default_properties = fips=yes`). |
 
-**Host FIPS stays enabled** on AmznDocker. The override is a build-time accommodation so Noble apt works on that host.
+**Host FIPS stays enabled** on AmznDocker. The override is a build-time accommodation so Noble apt and `fips_init` work on that host.
 
 ### Was the build failure a real memory (OOM) issue?
 
@@ -47,6 +47,7 @@ and how that differs from product FIPS in the shipped images.
 | AmznDocker host | ON | `fips-mode-setup --enable` in AmznDocker userdata |
 | ExecutorV2 / common-agent host (`main`) | OFF | No apt workaround needed |
 | Noble build `apt-get` on AmznDocker | `OPENSSL_FORCE_FIPS_MODE=0` on that `RUN` only | LP #2066990 |
+| Noble `fips_init` on AmznDocker | `OPENSSL_FORCE_FIPS_MODE=0` on that `RUN` only | `openssl fipsinstall` before config exists |
 | Shipped `ubuntu-ruby-fips` | ON via `fips_init`; **no** `OPENSSL_FORCE_FIPS_MODE=0` in ENV | Matches `main` Config.Env |
 | `ubi-ruby-fips` runtime | OFF (default) | product config |
 
@@ -75,7 +76,7 @@ Build and Test (parallel):
 
 ### Related Dockerfile / test changes
 
-1. `OPENSSL_FORCE_FIPS_MODE=0` prefixed on Noble apt/`RUN`s (not durable `ENV`).
+1. `OPENSSL_FORCE_FIPS_MODE=0` prefixed on Noble apt/`RUN`s and the `fips_init` `RUN` (not durable `ENV`).
 2. `fips_mode` — config-based detection ([ubuntu-ruby-fips/fips_mode](../ubuntu-ruby-fips/fips_mode), [ubi-ruby-fips/fips_mode](../ubi-ruby-fips/fips_mode)).
 3. Structure tests assert `OPENSSL_FORCE_FIPS_MODE` is not baked as `0`; apt in test setup uses the same RUN-scoped override when needed.
 

@@ -1,9 +1,11 @@
 ARG UBUNTU_VERSION=24.04
 
-# OPENSSL_FORCE_FIPS_MODE=0 on apt RUN only (CNJR-13114 / AmznDocker):
+# OPENSSL_FORCE_FIPS_MODE=0 on apt / openssl build RUNs only (CNJR-13114 / AmznDocker):
 # - CI host AmznDocker enables kernel FIPS; Noble containers inherit
 #   /proc/sys/crypto/fips_enabled and hit Ubuntu LP #2066990 during
 #   update-ca-certificates ("out of memory" symptom).
+# - Same host FIPS inheritance breaks `openssl fipsinstall` inside fips_init
+#   (HMAC / SELF_TEST_post missing config) until fipsmodule.cnf exists.
 # - main built on common-agent + ExecutorV2 (host FIPS off) and never
 #   needed this override; do NOT bake it as ENV — that would diverge
 #   shipped Config.Env from main and is not a product FIPS change.
@@ -110,7 +112,8 @@ COPY ubuntu-ruby-fips/fips_init ubuntu-ruby-fips/fips_mode /usr/local/bin/
 # Enables FIPS mode for GnuPG
 ENV LIBGCRYPT_FORCE_FIPS_MODE=1
 
-RUN /usr/local/bin/fips_init && \
+# Host-FIPS openssl workaround — see comment at top of file (do not use ENV).
+RUN OPENSSL_FORCE_FIPS_MODE=0 /usr/local/bin/fips_init && \
     rm /usr/local/bin/fips_init && \
     bundle config --global jobs "$(nproc --all)"
 
