@@ -10,7 +10,7 @@ set +a
 
 IMAGE="registry.tld/conjur-nginx"
 TAG=$(<../VERSION)
-HASH=$(git log -1 --pretty=format:%h)
+HASH=$(read_git_sha)
 
 create_and_push_manifest \
   "${IMAGE}:${TAG}-${HASH}-amd64" \

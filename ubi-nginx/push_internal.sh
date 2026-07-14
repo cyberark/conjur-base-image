@@ -13,6 +13,6 @@ ARCHITECTURE=$(../resolve_architecture.sh)
 LOCAL_IMAGE="ubi-nginx:latest-${ARCHITECTURE}"
 IMAGE="registry.tld/conjur-nginx"
 TAG=$(<../VERSION)
-HASH=$(git log -1 --pretty=format:%h)
+HASH=$(read_git_sha)
 
 tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${TAG}-${HASH}-${ARCHITECTURE}"

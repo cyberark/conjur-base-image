@@ -17,7 +17,7 @@ push_image() {
   LOCAL_IMAGE="${1}:${2}-${ARCHITECTURE}"
   IMAGE="registry.tld/cyberark/${1}"
   TAG=$(<../VERSION)
-  HASH=$(git log -1 --pretty=format:%h)
+  HASH=$(read_git_sha)
 
   tag_and_push "${LOCAL_IMAGE}" "${IMAGE}:${TAG}-${HASH}${3}-${ARCHITECTURE}"
 }
