@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   Scope the AmznDocker host workaround to Dockerfile `RUN`s only (apt and `fips_init` /
   `openssl fipsinstall`) so Config.Env matches `main` (CNJR-13114). See
   [docs/building-on-fips-enabled-hosts.md](docs/building-on-fips-enabled-hosts.md).
+- `fips_mode` requires both openssl config `default_properties = fips=yes` and a loaded
+  FIPS provider (avoids host-leak false positives without dropping runtime verification;
+  CNJR-13114).
 
 ## [2.1.1] - 2026-07-07
 ### Fixed

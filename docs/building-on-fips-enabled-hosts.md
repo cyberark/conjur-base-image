@@ -38,7 +38,12 @@ and how that differs from product FIPS in the shipped images.
 
 ### Why did `fips_mode` change?
 
-`fips_mode` used to grep `openssl list -providers` for `fips`, which can report "enabled" on FIPS **hosts** even when the image config has FIPS off (ubi). It now checks `default_properties = fips=yes` in the active openssl config file (image-configured state).
+`fips_mode` used to grep `openssl list -providers` for `fips` alone, which can report "enabled" on FIPS **hosts** even when the image config has FIPS off (ubi). It now requires **both**:
+
+1. Active openssl config declares `default_properties = fips=yes` (image intent; gates host-leak false positives when FIPS is off)
+2. `openssl list -providers` lists the `fips` provider (runtime confirmation the module loaded)
+
+When config does not request FIPS, the script reports disabled even if the host kernel makes the provider appear. When config does request FIPS, a missing/failed provider load reports disabled. On FIPS hosts with config FIPS on, provider presence can still be contaminated by the kernel; structure tests that deny non-FIPS algorithms (MD5) remain the strong runtime enforcement proof.
 
 ### FIPS layers (summary)
 
@@ -77,7 +82,7 @@ Build and Test (parallel):
 ### Related Dockerfile / test changes
 
 1. `OPENSSL_FORCE_FIPS_MODE=0` prefixed on Noble apt/`RUN`s and the `fips_init` `RUN` (not durable `ENV`).
-2. `fips_mode` — config-based detection ([ubuntu-ruby-fips/fips_mode](../ubuntu-ruby-fips/fips_mode), [ubi-ruby-fips/fips_mode](../ubi-ruby-fips/fips_mode)).
+2. `fips_mode` — config + provider detection ([ubuntu-ruby-fips/fips_mode](../ubuntu-ruby-fips/fips_mode), [ubi-ruby-fips/fips_mode](../ubi-ruby-fips/fips_mode)).
 3. Structure tests assert `OPENSSL_FORCE_FIPS_MODE` is not baked as `0`; apt in test setup uses the same RUN-scoped override when needed.
 
 ---

@@ -1,6 +1,7 @@
 #!/bin/bash
-# Report whether OpenSSL FIPS mode is active per image openssl config (not host kernel FIPS leak).
-# See docs/building-on-fips-enabled-hosts.md
+# Report whether OpenSSL FIPS mode is active: config must declare fips=yes (avoids
+# host kernel FIPS leaking into openssl list -providers when image FIPS is off),
+# AND the FIPS provider must actually be loaded. See docs/building-on-fips-enabled-hosts.md
 
 set -e
 
@@ -17,10 +18,18 @@ fips_openssl_config() {
   echo "$(openssl version -d | sed -n 's/.*"\(.*\)"/\1/p')/openssl.cnf"
 }
 
-fips_enabled() {
+fips_config_declares() {
   local conf
   conf=$(fips_openssl_config)
   [[ -f "${conf}" ]] && grep -qE 'default_properties\s*=\s*"?fips=yes' "${conf}"
+}
+
+fips_provider_loaded() {
+  openssl list -providers | grep -qwF fips
+}
+
+fips_enabled() {
+  fips_config_declares && fips_provider_loaded
 }
 
 print_fips_state() {

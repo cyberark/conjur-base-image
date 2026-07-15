@@ -49,13 +49,13 @@ docker run --rm \
   --output text 2>&1 | tee "test-results/$TEXT_REPORT_FILE_NAME"
 test_exit=${PIPESTATUS[0]}
 
-if [ "$test_exit" -eq 0 ]; then
-  docker run --rm \
-    "${STRUCTURE_TEST_ARGS[@]}" \
-    --output junit \
-    --test-report "/workspace/test-results/$REPORT_FILE_NAME"
-  exit 0
-fi
+echo "=== container-structure-test (junit) for $FULL_IMAGE_NAME ==="
+docker run --rm \
+  "${STRUCTURE_TEST_ARGS[@]}" \
+  --output junit \
+  --test-report "/workspace/test-results/$REPORT_FILE_NAME" || true
 
-echo "=== container-structure-test FAILED for $FULL_IMAGE_NAME (exit $test_exit) ==="
+if [ "$test_exit" -ne 0 ]; then
+  echo "=== container-structure-test FAILED for $FULL_IMAGE_NAME (exit $test_exit) ==="
+fi
 exit "$test_exit"

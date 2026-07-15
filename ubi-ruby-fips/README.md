@@ -66,7 +66,9 @@ For additional information, please refer to
 
 When container-structure-test runs on a FIPS-enabled Jenkins host (AmznDocker), the kernel
 FIPS flag can make `openssl list -providers` show the FIPS provider even when this image's
-default config has FIPS off. The `fips_mode` script reports image-configured state via
-`openssl.cnf` (`default_properties = fips=yes`), not host kernel leakage.
+default config has FIPS off. The `fips_mode` script requires both
+`default_properties = fips=yes` in the active openssl config and a loaded FIPS provider, so
+default (FIPS-off) images still report disabled despite host leakage. Algo-denial structure
+tests remain the strong check that FIPS is actually enforced when enabled.
 
 See [docs/building-on-fips-enabled-hosts.md](../docs/building-on-fips-enabled-hosts.md).
