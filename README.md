@@ -35,6 +35,13 @@ Three images included:
 - [Ubuntu](./ubuntu-ruby-fips/) image is the parent image of Conjur Server
 - [UBI](./ubi-ruby-fips/) image is the parent image of Conjur Server for OpenShift
 
+### Building on FIPS-enabled Jenkins hosts (AmznDocker)
+
+CNJR-13114 migrates CI from `conjur-enterprise-common-agent` + InfraPool ExecutorV2 to
+`conjur-enterprise-AmznDocker`. On FIPS hosts, Noble apt needs a **RUN-scoped**
+`OPENSSL_FORCE_FIPS_MODE=0` (not image `ENV`). Product FIPS remains `fips_init`. See
+[docs/building-on-fips-enabled-hosts.md](./docs/building-on-fips-enabled-hosts.md).
+
 ## What is FIPS 140-2
 
 The Federal Information Processing Standard Publication 140-2, (FIPS PUB 140-2), is a U.S. government computer security standard used to approve cryptographic modules.

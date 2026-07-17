@@ -13,7 +13,7 @@ set +a
 function push_image() {
   IMAGE="registry.tld/cyberark/${1}"
   TAG=$(<../VERSION)
-  HASH=$(git log -1 --pretty=format:%h)
+  HASH=$(read_git_sha)
 
   create_and_push_manifest \
     "${IMAGE}:${TAG}-${HASH}${2}-amd64" \

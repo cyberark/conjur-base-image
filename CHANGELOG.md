@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Changed
+- Nothing should go in this section, please add to the latest unreleased version
+  (and update the corresponding date), or add a new version.
+
+## [2.1.2] - 2026-07-14
+### Fixed
+- Do not bake `OPENSSL_FORCE_FIPS_MODE=0` into shipped `ubuntu-ruby-fips*` image ENV.
+  Scope the AmznDocker host workaround to Dockerfile `RUN`s only (apt and `fips_init` /
+  `openssl fipsinstall`) so Config.Env matches `main` (CNJR-13114). See
+  [docs/building-on-fips-enabled-hosts.md](docs/building-on-fips-enabled-hosts.md).
+- `fips_mode` requires both openssl config `default_properties = fips=yes` and a loaded
+  FIPS provider (avoids host-leak false positives without dropping runtime verification;
+  CNJR-13114).
+
+## [2.1.1] - 2026-07-07
+### Fixed
+- Fix Noble ubuntu-ruby-fips build on FIPS-enabled AmznDocker hosts (`OPENSSL_FORCE_FIPS_MODE=0`
+  during apt-get; CNJR-13114). See [docs/building-on-fips-enabled-hosts.md](docs/building-on-fips-enabled-hosts.md).
+- Fix `fips_mode` false positive on FIPS hosts (config-based detection vs provider list).
+
+### Changed
+- Migrate Jenkins CI from `conjur-enterprise-common-agent` + ExecutorV2 to AmznDocker
+  (orchestrator + 1 amd64 worker; CNJR-13114).
+
 ## [2.1.0] - 2026-06-03
 ### Changed
 - Upgraded Ruby to 4.0.5. CNJR-13405
