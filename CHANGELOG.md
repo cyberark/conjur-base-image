@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   FIPS provider (avoids host-leak false positives without dropping runtime verification;
   CNJR-13114).
 
+### Security
+- Update rails to 8.1.3.1 to resolve CVE-2026-66066. CNJR-14949
+
 ## [2.1.1] - 2026-07-07
 ### Fixed
 - Fix Noble ubuntu-ruby-fips build on FIPS-enabled AmznDocker hosts (`OPENSSL_FORCE_FIPS_MODE=0`
