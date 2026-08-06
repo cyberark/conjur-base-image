@@ -44,6 +44,8 @@ RUN dnf -y update && \
       xz \
       "postgresql${PG_MAJOR_VERSION}-${PG_VERSION:=$PG_MAJOR_VERSION}*" && \
     dnf erase -y pgdg-redhat-repo && \
+    # Remove text editor packages not needed in production; eliminates known CVE surface
+    dnf remove -y vim-minimal vim-filesystem || true && \
     dnf clean all && \
     rm -rf /var/cache/yum /var/cache/dnf /var/lib/dnf && \
     # Previously, this was created when installing libpq5 separately. Using
