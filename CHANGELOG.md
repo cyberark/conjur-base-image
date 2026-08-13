@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Security
 - Update rails to 8.1.3.1 to resolve CVE-2026-66066. CNJR-14949
+- Update jwt to 3.2.0 to resolve CVE-2026-45363. CNJR-14014
 
 ## [2.1.1] - 2026-07-07
 ### Fixed
